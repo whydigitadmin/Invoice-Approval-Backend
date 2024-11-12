@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.invoice.approval.entity.GstInvoiceHdrVO;
+import com.invoice.approval.exception.ApplicationException;
 import com.invoice.approval.repo.GstInvoiceHdrRepo;
 
 @Service
@@ -101,5 +102,25 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		
 		return gstInvoiceHdrRepo.save(gstInvoiceHdrVO);
 	}
-
+	
+	@Override
+	public GstInvoiceHdrVO updateApprove3(Long id, String approval, String createdby) throws ApplicationException {
+		GstInvoiceHdrVO gstInvoiceHdrVO= gstInvoiceHdrRepo.findByGstInvoiceHdrId(id);
+		
+		if (gstInvoiceHdrVO.getApprove3Name() == null) {
+		    gstInvoiceHdrVO.setApprove3(approval.equals("1") ? "T" : "F");
+		    gstInvoiceHdrVO.setApprove3Name(createdby);
+		    gstInvoiceHdrVO.setApprove3On(LocalDateTime.now());
+		} else {
+		    switch (gstInvoiceHdrVO.getApprove3()) {
+		        case "T":
+		            throw new ApplicationException("This Invoice Already Approved");
+		        case "F":
+		            throw new ApplicationException("This Invoice Already Rejected");
+		        default:
+		            throw new ApplicationException("Invalid approval status");
+		    }
+		}
+			return gstInvoiceHdrRepo.save(gstInvoiceHdrVO);
+	}
 }

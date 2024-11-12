@@ -70,7 +70,28 @@ public class InvoiceApprovalController extends BaseController {
 		GstInvoiceHdrVO gstInvoiceHdrVO= new GstInvoiceHdrVO();
 		try {
 			gstInvoiceHdrVO = invoiceApprovalService.updateApprove1(id, approval, createdby,userType);
-			responseObjectsMap.put("deKittingVO", gstInvoiceHdrVO);
+			responseObjectsMap.put("gstInvoiceHdrVO", gstInvoiceHdrVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@PutMapping("/approval3")
+	public ResponseEntity<ResponseDTO> updateApproval3(@RequestParam Long id,@RequestParam String approval,@RequestParam String createdby) {
+		String methodName = "updateApproval3()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		GstInvoiceHdrVO gstInvoiceHdrVO= new GstInvoiceHdrVO();
+		try {
+			gstInvoiceHdrVO = invoiceApprovalService.updateApprove3(id, approval, createdby);
+			responseObjectsMap.put("gstInvoiceHdrVO", gstInvoiceHdrVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

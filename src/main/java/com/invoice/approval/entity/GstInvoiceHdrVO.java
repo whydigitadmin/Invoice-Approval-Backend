@@ -46,6 +46,9 @@ public class GstInvoiceHdrVO {
 
     @Column(name = "APPROVE3NAME", length = 30)
     private String approve3Name;
+    
+    @Column(name = "approveemail", length = 1)
+    private String approveEmail;
 
     @Column(name = "APPROVE3ON")
     private LocalDateTime approve3On;
