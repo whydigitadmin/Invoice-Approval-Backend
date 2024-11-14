@@ -13,6 +13,8 @@ public interface InvoiceApprovalService {
 	
 	List<Map<String,Object>>getPendingApprovalReport(String userType);
 	
+	List<Map<String,Object>>getApprovalReport(String userType);
+	
 	GstInvoiceHdrVO updateApprove1(Long id,String approval,String createdby,String userType);
 
 	GstInvoiceHdrVO updateApprove3(Long id, String approval, String createdby) throws ApplicationException;

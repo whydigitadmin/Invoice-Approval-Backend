@@ -21,5 +21,16 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 			+ "from gst_invoicehdr \r\n"
 			+ "where invproceed = 'F' and approve1 = 'T' and approve2='F' and approve2name is null order by createdon desc")
 	Set<Object[]> getPendingDetailsApprove2();
+	
+	
+	@Query(nativeQuery = true,value = "select gst_invoicehdrid,branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,creditdays,creditlimit,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on from gst_invoicehdr \r\n"
+			+ "where invproceed = 'F' and approve1 = 'T' and approve1name is not null order by createdon desc")
+	Set<Object[]> getInvDetailsApprove1();
+	
+	@Query(nativeQuery = true,value = "select gst_invoicehdrid,branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,creditdays,creditlimit,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on from gst_invoicehdr \r\n"
+			+ "where invproceed = 'F' and approve2 = 'T' and approve2name is not null order by createdon desc")
+	Set<Object[]> getInvDetailsApprove2();
+	
+	
 
 }

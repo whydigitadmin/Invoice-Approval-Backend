@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,15 +37,36 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		if(userType.equals("approve1"))
 		{
 			details=gstInvoiceHdrRepo.getPendingDetailsApprove1();
+			
 		}
 		else
 		{
 			details=gstInvoiceHdrRepo.getPendingDetailsApprove2();
+			
 		}
 		
 		return pendingDetails(details);
 	}
 
+	
+	@Override
+	public List<Map<String, Object>> getApprovalReport(String userType) {
+		
+		Set<Object[]>details= new HashSet<>();
+		if(userType.equals("approve1"))
+		{
+			
+			details=gstInvoiceHdrRepo.getInvDetailsApprove1();
+		}
+		else
+		{
+			
+			details=gstInvoiceHdrRepo.getInvDetailsApprove2();
+		}
+		
+		return approveDetails(details);
+	}
+	
 	private List<Map<String, Object>> pendingDetails(Set<Object[]> details) {
 		List<Map<String,Object>>report=new ArrayList<>();
 		for(Object[]det:details)
@@ -63,11 +85,42 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 			dtl.put("totalInvAmtLc", det[8] != null ? df.format(new BigDecimal(det[8].toString())) : "");
 			dtl.put("creditDays", det[9] != null ? Integer.parseInt(det[9].toString()) : 0);
 			dtl.put("creditLimit", det[10] != null ? df.format(new BigDecimal(det[10].toString())) : "");
+			
 			report.add(dtl);
 		}
 		return report;
 	}
 
+	
+	private List<Map<String, Object>> approveDetails(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("gstInvoiceHdrId",det[0]);
+			dtl.put("branchCode", det[1] != null ? det[1].toString() : "");
+			dtl.put("finYear", det[2] != null ? det[2].toString() : "");
+			dtl.put("docId", det[3] != null ? det[3].toString() : "");
+			dtl.put("docDate", det[4] != null ? dateFormat.format((Date) det[4]) : "");
+			dtl.put("partyName", det[5] != null ? det[5].toString() : "");
+			dtl.put("partyCode", det[6] != null ? det[6].toString() : "");
+			dtl.put("outStanding", det[7] != null ? df.format(new BigDecimal(det[7].toString())) : "");
+			dtl.put("totalInvAmtLc", det[8] != null ? df.format(new BigDecimal(det[8].toString())) : "");
+			dtl.put("creditDays", det[9] != null ? Integer.parseInt(det[9].toString()) : 0);
+			dtl.put("creditLimit", det[10] != null ? df.format(new BigDecimal(det[10].toString())) : "");
+			dtl.put("approve1on", det[15] != null ? det[15].toString() : "");
+			dtl.put("approve2on", det[17] != null ? det[17].toString() : "");
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+	
+	
 	@Override
 	public GstInvoiceHdrVO updateApprove1(Long id, String approval, String createdby,String userType) {
 		GstInvoiceHdrVO gstInvoiceHdrVO= gstInvoiceHdrRepo.findByGstInvoiceHdrId(id);
