@@ -32,8 +32,9 @@ public class InvoiceApprovalController extends BaseController {
 	InvoiceApprovalService invoiceApprovalService;
 	
 	
+	
 	@GetMapping("/getPendingDetails")
-	public ResponseEntity<ResponseDTO> getPendingDetails(@RequestParam String userType) {
+	public ResponseEntity<ResponseDTO> getPendingDetails(@RequestParam String userType,String branchCode) {
 		String methodName = "getPendingDetails()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -41,7 +42,7 @@ public class InvoiceApprovalController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<Map<String, Object>> pendingApprovalDetails = new ArrayList<Map<String, Object>>();
 		try {
-			pendingApprovalDetails = invoiceApprovalService.getPendingApprovalReport(userType);
+			pendingApprovalDetails = invoiceApprovalService.getPendingApprovalReport(userType,branchCode);
 
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
@@ -62,7 +63,7 @@ public class InvoiceApprovalController extends BaseController {
 	
 	
 	@GetMapping("/getInvDetailsApprove1")
-	public ResponseEntity<ResponseDTO> getInvDetailsApprove1(@RequestParam String userType) {
+	public ResponseEntity<ResponseDTO> getInvDetailsApprove1(@RequestParam String userType,String branchCode) {
 		String methodName = "getInvDetailsApprove1()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -70,7 +71,7 @@ public class InvoiceApprovalController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<Map<String, Object>> approvedApprovalDetails1 = new ArrayList<Map<String, Object>>();
 		try {
-			approvedApprovalDetails1 = invoiceApprovalService.getApprovalReport(userType);
+			approvedApprovalDetails1 = invoiceApprovalService.getApprovalReport(userType,branchCode);
 
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
@@ -91,7 +92,7 @@ public class InvoiceApprovalController extends BaseController {
 	
 	
 	@GetMapping("/getInvDetailsApprove2")
-	public ResponseEntity<ResponseDTO> getInvDetailsApprove2(@RequestParam String userType) {
+	public ResponseEntity<ResponseDTO> getInvDetailsApprove2(@RequestParam String userType,String branchCode) {
 		String methodName = "getInvDetailsApprove2()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -99,7 +100,7 @@ public class InvoiceApprovalController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<Map<String, Object>> approvedApprovalDetails2 = new ArrayList<Map<String, Object>>();
 		try {
-			approvedApprovalDetails2 = invoiceApprovalService.getApprovalReport(userType);
+			approvedApprovalDetails2 = invoiceApprovalService.getApprovalReport(userType,branchCode);
 
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

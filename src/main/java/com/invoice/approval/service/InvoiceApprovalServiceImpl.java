@@ -29,19 +29,20 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 	
 	@Autowired
 	GstInvoiceHdrRepo gstInvoiceHdrRepo;
-
+	
+	
 	@Override
-	public List<Map<String, Object>> getPendingApprovalReport(String userType) {
+	public List<Map<String, Object>> getPendingApprovalReport(String userType,String branchCode) {
 		
 		Set<Object[]>details= new HashSet<>();
 		if(userType.equals("approve1"))
 		{
-			details=gstInvoiceHdrRepo.getPendingDetailsApprove1();
+			details=gstInvoiceHdrRepo.getPendingDetailsApprove1(branchCode);
 			
 		}
 		else
 		{
-			details=gstInvoiceHdrRepo.getPendingDetailsApprove2();
+			details=gstInvoiceHdrRepo.getPendingDetailsApprove2(branchCode);
 			
 		}
 		
@@ -50,18 +51,18 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 
 	
 	@Override
-	public List<Map<String, Object>> getApprovalReport(String userType) {
+	public List<Map<String, Object>> getApprovalReport(String userType,String branchCode) {
 		
 		Set<Object[]>details= new HashSet<>();
 		if(userType.equals("approve1"))
 		{
 			
-			details=gstInvoiceHdrRepo.getInvDetailsApprove1();
+			details=gstInvoiceHdrRepo.getInvDetailsApprove1(branchCode);
 		}
 		else
 		{
 			
-			details=gstInvoiceHdrRepo.getInvDetailsApprove2();
+			details=gstInvoiceHdrRepo.getInvDetailsApprove2(BranchCode);
 		}
 		
 		return approveDetails(details);

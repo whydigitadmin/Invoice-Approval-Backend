@@ -11,9 +11,9 @@ import com.invoice.approval.exception.ApplicationException;
 @Service
 public interface InvoiceApprovalService {
 	
-	List<Map<String,Object>>getPendingApprovalReport(String userType);
+	List<Map<String,Object>>getPendingApprovalReport(String userType,String branchCode);
 	
-	List<Map<String,Object>>getApprovalReport(String userType);
+	List<Map<String,Object>>getApprovalReport(String userType,String branchCode);
 	
 	GstInvoiceHdrVO updateApprove1(Long id,String approval,String createdby,String userType);
 

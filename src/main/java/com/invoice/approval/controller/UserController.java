@@ -9,7 +9,9 @@
  */
 package com.invoice.approval.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.invoice.approval.common.CommonConstant;
 import com.invoice.approval.common.UserConstants;
 import com.invoice.approval.dto.ResponseDTO;
+import com.invoice.approval.entity.UserVO;
 import com.invoice.approval.service.UserService;
 @CrossOrigin
 @RestController
@@ -35,8 +38,34 @@ public class UserController extends BaseController {
 
 	@Autowired
 	UserService userService;
-
 	
+	
+
+	@GetMapping("/getBranchCodeByUser")
+	public ResponseEntity<ResponseDTO> getBranchCodeByUser(@RequestParam(required =true) String userName) {
+		String methodName = "getBranchCodeByUser()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<UserVO> userVO = new ArrayList<>();
+		try {
+			userVO = userService.getBranchCodeByUser(userName);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();   
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BranchCode information get successfully");
+			responseObjectsMap.put("userVO", userVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"BranchCodeinformation receive failed", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 	@GetMapping("/removeUser")
 	public ResponseEntity<ResponseDTO> removeUser(@RequestParam String userName) {
