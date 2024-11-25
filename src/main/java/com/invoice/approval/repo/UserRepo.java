@@ -1,5 +1,7 @@
 package com.invoice.approval.repo;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,6 +16,9 @@ public interface UserRepo extends JpaRepository<UserVO, Long> {
 
 	@Query(value = "select u from UserVO u where u.id =?1")
 	UserVO getUserById(Long usersId);
+	
+	@Query(nativeQuery=true,value="select a.username,b.branchcode from users a,vg_userbranch b where a.username = b.username")
+	List<UserVO> getBranchCodeDetails(String userName);
 
 	boolean existsByUserName(String userName);
 
