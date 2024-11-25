@@ -34,7 +34,7 @@ public class InvoiceApprovalController extends BaseController {
 	
 	
 	@GetMapping("/getPendingDetails")
-	public ResponseEntity<ResponseDTO> getPendingDetails(@RequestParam String userType,String branchCode) {
+	public ResponseEntity<ResponseDTO> getPendingDetails(@RequestParam String userType,@RequestParam String branchCode) {
 		String methodName = "getPendingDetails()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -63,7 +63,7 @@ public class InvoiceApprovalController extends BaseController {
 	
 	
 	@GetMapping("/getInvDetailsApprove1")
-	public ResponseEntity<ResponseDTO> getInvDetailsApprove1(@RequestParam String userType,String branchCode) {
+	public ResponseEntity<ResponseDTO> getInvDetailsApprove1(@RequestParam String userType,@RequestParam String branchCode) {
 		String methodName = "getInvDetailsApprove1()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -92,7 +92,7 @@ public class InvoiceApprovalController extends BaseController {
 	
 	
 	@GetMapping("/getInvDetailsApprove2")
-	public ResponseEntity<ResponseDTO> getInvDetailsApprove2(@RequestParam String userType,String branchCode) {
+	public ResponseEntity<ResponseDTO> getInvDetailsApprove2(@RequestParam String userType,@RequestParam String branchCode) {
 		String methodName = "getInvDetailsApprove2()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;

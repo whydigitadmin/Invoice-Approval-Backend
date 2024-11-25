@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.invoice.approval.common.CommonConstant;
 import com.invoice.approval.common.UserConstants;
 import com.invoice.approval.dto.ResponseDTO;
-import com.invoice.approval.entity.UserVO;
 import com.invoice.approval.service.UserService;
 @CrossOrigin
 @RestController
@@ -48,16 +47,16 @@ public class UserController extends BaseController {
 		String errorMsg = null;
 		Map<String, Object> responseObjectsMap = new HashMap<>();
 		ResponseDTO responseDTO = null;
-		List<UserVO> userVO = new ArrayList<>();
+		List<Map<String,Object>> mapp = new ArrayList<>();
 		try {
-			userVO = userService.getBranchCodeByUser(userName);
+			mapp = userService.getBranchCodeByUser(userName);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();   
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "BranchCode information get successfully");
-			responseObjectsMap.put("userVO", userVO);
+			responseObjectsMap.put("userVO", mapp );
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap,

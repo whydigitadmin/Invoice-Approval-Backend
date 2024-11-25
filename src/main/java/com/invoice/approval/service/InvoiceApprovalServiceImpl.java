@@ -62,7 +62,7 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		else
 		{
 			
-			details=gstInvoiceHdrRepo.getInvDetailsApprove2(BranchCode);
+			details=gstInvoiceHdrRepo.getInvDetailsApprove2(branchCode);
 		}
 		
 		return approveDetails(details);
