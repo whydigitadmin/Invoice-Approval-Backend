@@ -20,6 +20,7 @@ public class UserResponseDTO {
 	private String employeeCode; 
 	private String email; 
 	private String userType;
+	private String nickName;
 	private boolean loginStatus;
 	private boolean active;
 	

@@ -268,6 +268,7 @@ public class AuthServiceImpl implements AuthService {
 		userDTO.setEmployeeCode(userVO.getEmployeeCode());
 		userDTO.setActive(userVO.isActive());
 		userDTO.setUserType(userVO.getUserType());
+		userDTO.setNickName(userVO.getNickName());
 		userDTO.setEmail(userVO.getEmail());
 		userDTO.setUserName(userVO.getUserName());
 		userDTO.setLoginStatus(userVO.isLoginStatus());
