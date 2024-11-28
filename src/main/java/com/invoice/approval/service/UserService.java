@@ -1,6 +1,7 @@
 package com.invoice.approval.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,5 +18,6 @@ public interface UserService {
 
 	public void removeUser(String userName);
 	
-	public List<UserVO> getBranchCodeByUser(String userName);
+	List<Map<String, Object>> getBranchCodeByUser(String userName);
+	
 }

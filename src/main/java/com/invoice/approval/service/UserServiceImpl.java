@@ -2,7 +2,11 @@ package com.invoice.approval.service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,10 +60,24 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserVO> getBranchCodeByUser(String userName) {
-		
-		return userRepo.getBranchCodeDetails(userName);
+	public List<Map<String, Object>> getBranchCodeByUser(String userName) {
+		Set<Object[]> details = userRepo.getBranchCodeDetails(userName);
+		return getBranchCode(details);
 	}
+
+	private List<Map<String, Object>> getBranchCode(Set<Object[]> details) {
+		List<Map<String, Object>> List1 = new ArrayList<>();
+		for (Object[] ch : details) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("username", ch[0].toString());
+			map.put("branchCode", ch[1].toString());
+			List1.add(map);
+		}
+		return List1;
+
+	}
+	
+	
 	@Override
 	public void removeUser(String userName) {
 		String methodName = "removeUser()";

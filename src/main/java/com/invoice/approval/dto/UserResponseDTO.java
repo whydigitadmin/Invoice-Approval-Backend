@@ -1,6 +1,8 @@
 package com.invoice.approval.dto;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Embedded;
 
@@ -19,9 +21,12 @@ public class UserResponseDTO {
 	private String userName;
 	private String employeeCode; 
 	private String email; 
+	private String employeeName;
 	private String userType;
+	private String nickName;
 	private boolean loginStatus;
 	private boolean active;
+	private List<Map<String, Object>> roleVO;
 	
     @Embedded
     private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
