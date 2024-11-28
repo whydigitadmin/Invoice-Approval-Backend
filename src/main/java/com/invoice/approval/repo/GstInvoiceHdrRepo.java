@@ -21,8 +21,8 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 	
 	@Query(nativeQuery = true,value = "select gst_invoicehdrid,branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,creditdays,creditlimit,approve1,approve1name,approve1on,approve2,approve2name,approve2on,approve3,approve3name,approve3on \r\n"
 			+ "from gst_invoicehdr \r\n"
-			+ "where invproceed = 'F' and approve1 = 'T' and approve2='F' and approve2name is null"
-			+ " AND branchcode in (select branchcode from vg_userbranch where userName =?1) order by createdon desc")
+			+ "where invproceed = 'F' and approve1 = 'T' and approve2='F' and approve2name is null "
+			+ "AND branchcode in (select branchcode from vg_userbranch where userName =?1) order by createdon desc")
 	Set<Object[]> getPendingDetailsApprove2(String userName);
 	
 	

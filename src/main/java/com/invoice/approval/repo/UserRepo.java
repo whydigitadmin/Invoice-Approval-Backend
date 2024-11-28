@@ -10,7 +10,6 @@ import com.invoice.approval.entity.UserVO;
 
 public interface UserRepo extends JpaRepository<UserVO, Long> {
 
-	boolean existsByUserNameOrEmail(String userName, String email);
 
 	@Query("select a from UserVO a where a.userName=?1")
 	UserVO findByUserName(String userName);
@@ -22,5 +21,9 @@ public interface UserRepo extends JpaRepository<UserVO, Long> {
 	Set<Object[]> getBranchCodeDetails(String userName);
 
 	boolean existsByUserName(String userName);
+
+	boolean existsByUserNameOrEmail(String userName,String email);
+
+	UserVO findByUserNameOrEmail(String userName,String email);
 
 }

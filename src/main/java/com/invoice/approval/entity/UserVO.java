@@ -1,11 +1,15 @@
 package com.invoice.approval.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -36,6 +40,8 @@ public class UserVO {
 	private String userName;
 	@Column(name = "nickname")
 	private String nickName;
+	@Column(name = "employeename")
+	private String employeeName;
 	@Column(name = "password")
 	private String password;
 	@Column(name = "email")
@@ -53,8 +59,13 @@ public class UserVO {
 	@Column(name = "modifiedby")
 	private String updatedby;
 
+	@OneToMany(mappedBy = "userVO", cascade = CascadeType.ALL)
+	private List<UserLoginRolesVO> roleAccessVO;
+	
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+	
+	
 	
 	
 	@JsonGetter("active")

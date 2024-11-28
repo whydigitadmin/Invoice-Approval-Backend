@@ -9,6 +9,8 @@
  */
 package com.invoice.approval.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,10 +22,12 @@ public class SignUpFormDTO {
 	private Long id;
 	private String userName;
 	private String password;
+	private String employeeName;
 	private String employeeCode;
 	private String nickName;
 	private String email;
 	private String userType;
 	private boolean isActive;
+	private List<UserLoginRoleAccessDTO> roleAccessDTO;
 
 }
