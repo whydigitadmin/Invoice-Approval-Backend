@@ -29,11 +29,8 @@ public class ScreensVO {
 	@Column(name = "screensid")
 	private Long id;
 	
-	@Column(name="screenname")
+	@Column(name="screenname",length = 50)
 	private String screenName;
-	
-	@Column(name="orgid")
-	private Long orgId;
 	
 	@JsonBackReference
 	@ManyToOne

@@ -31,7 +31,7 @@ public class UserLoginRolesVO {
 	@Column(name="userrolesaccessid")
 	private long id;
 	
-	@Column(name="role")
+	@Column(name="role",length = 50)
 	private String role;
 	@Column(name="roleid")
 	private Long roleId;

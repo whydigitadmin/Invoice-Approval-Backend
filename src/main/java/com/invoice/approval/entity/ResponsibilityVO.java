@@ -34,13 +34,13 @@ public class ResponsibilityVO {
 	@Column(name = "responsibilityid")
 	private Long id;
 	
-	@Column(name="responsibility")
+	@Column(name="responsibility",length = 50)
 	private String responsibility;
 	
-	@Column(name="createdby")
+	@Column(name="createdby",length = 50)
 	private String createdBy;
 	
-	@Column(name="modifiedby")
+	@Column(name="modifiedby",length = 50)
 	private String updatedBy;
 	
 	private boolean active;

@@ -32,7 +32,7 @@ public class RolesResponsibilityVO {
 	@Column(name="responsibilityid")
 	private Long responsibilityId;
 	
-	@Column(name="responsibility")
+	@Column(name="responsibility",length = 50)
 	private String responsibility;
 	
 	

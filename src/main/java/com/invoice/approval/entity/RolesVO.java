@@ -33,11 +33,11 @@ public class RolesVO {
 	@SequenceGenerator(name = "rolesgen", sequenceName = "rolesseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "rolesid")
 	private Long id;
-	@Column(name = "role")
+	@Column(name = "role",length = 50)
 	private String role;
-	@Column(name = "createdby")
+	@Column(name = "createdby",length = 50)
 	private String createdBy;
-	@Column(name = "modifiedby")
+	@Column(name = "modifiedby",length = 50)
 	private String updatedBy;
 	
 	
