@@ -427,7 +427,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public UserVO getUserById(Long usersId) {
+	public UserVO getUserById(Long usersId) throws Exception {
 		String methodName = "getUserById()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		if (ObjectUtils.isEmpty(usersId)) {
@@ -721,7 +721,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public List<ScreenNamesVO> getAllScreenNames() {
 
-		return screenNamesRepo.findAll();
+		return screenNamesRepo.findAllByOrderByIdDesc();
 	}
 
 	@Override

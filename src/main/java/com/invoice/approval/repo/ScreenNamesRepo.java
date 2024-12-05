@@ -18,6 +18,9 @@ public interface ScreenNamesRepo extends JpaRepository<ScreenNamesVO, Long> {
 
 	boolean existsByScreenCode(String screenCode);
 
+	@Query("SELECT s FROM ScreenNamesVO s ORDER BY s.id DESC")
+	List<ScreenNamesVO> findAllByOrderByIdDesc();
+
 
 
 }

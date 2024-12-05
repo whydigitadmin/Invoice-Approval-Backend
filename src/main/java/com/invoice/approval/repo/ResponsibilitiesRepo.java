@@ -14,10 +14,10 @@ public interface ResponsibilitiesRepo extends JpaRepository<ResponsibilityVO, Lo
 	@Query(value="select a.id,a.responsibility from ResponsibilityVO a where a.active=true")
 	Set<Object[]> findActive();
 
-	@Query(value="select a from ResponsibilityVO a ")
+	@Query(value="select a from ResponsibilityVO a  order by a.id desc")
 	List<ResponsibilityVO> findAllResponsibility();
 
-	@Query(value="select a from ResponsibilityVO a where a.active=true ")
+	@Query(value="select a from ResponsibilityVO a where a.active=true order by a.id desc")
 	List<ResponsibilityVO> findAllActiveResponsibility();
 
 	boolean existsByResponsibility(String responsibility);

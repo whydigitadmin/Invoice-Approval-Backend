@@ -37,7 +37,7 @@ public interface AuthService {
 
 	public RefreshTokenDTO getRefreshToken(String userName, String tokenId) throws ApplicationException;
 			
-	public UserVO getUserById(Long userId);
+	public UserVO getUserById(Long userId) throws Exception;
 
 	public UserVO getUserByUserName(String userName);
 	
