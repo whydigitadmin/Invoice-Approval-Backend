@@ -187,7 +187,8 @@ public class AuthServiceImpl implements AuthService {
 
 				UserLoginRolesVO loginRolesVO = new UserLoginRolesVO();
 				loginRolesVO.setRole(accessDTO.getRole());
-				loginRolesVO.setRoleId(accessDTO.getRoleId());
+				RolesVO roles1VO= rolesRepo.findByRole(accessDTO.getRole());
+				loginRolesVO.setRoleId(roles1VO.getId());
 				loginRolesVO.setStartDate(accessDTO.getStartDate());
 				loginRolesVO.setEndDate(accessDTO.getEndDate());
 				loginRolesVO.setUserVO(userVO);
@@ -532,7 +533,8 @@ public class AuthServiceImpl implements AuthService {
 			for (RolesResponsibilityDTO rolesResponsibilityDTO : rolesDTO.getRolesResponsibilityDTO()) {
 				RolesResponsibilityVO rolesResponsibilityVO = new RolesResponsibilityVO();
 				rolesResponsibilityVO.setResponsibility(rolesResponsibilityDTO.getResponsibility().toUpperCase());
-				rolesResponsibilityVO.setResponsibilityId(rolesResponsibilityDTO.getResponsibilityId());
+				ResponsibilityVO responsibilityVO= responsibilityRepo.findByResponsibility(rolesResponsibilityDTO.getResponsibility());
+				rolesResponsibilityVO.setResponsibilityId(responsibilityVO.getId());
 				rolesResponsibilityVO.setRolesVO(rolesVO);
 				rolesResponsibilityVOList.add(rolesResponsibilityVO);
 			}

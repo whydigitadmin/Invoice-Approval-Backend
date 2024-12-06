@@ -18,4 +18,6 @@ public interface RolesRepo extends JpaRepository<RolesVO, Long> {
 
 	boolean existsByRole(String role);
 
+	RolesVO findByRole(String role);
+
 }

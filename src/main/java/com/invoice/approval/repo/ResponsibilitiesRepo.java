@@ -22,5 +22,7 @@ public interface ResponsibilitiesRepo extends JpaRepository<ResponsibilityVO, Lo
 
 	boolean existsByResponsibility(String responsibility);
 
+	ResponsibilityVO findByResponsibility(String responsibility);
+
 
 }
