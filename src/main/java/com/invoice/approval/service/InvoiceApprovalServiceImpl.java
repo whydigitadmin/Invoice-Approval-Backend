@@ -37,12 +37,17 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		Set<Object[]>details= new HashSet<>();
 		if(userType.equals("approve1"))
 		{
-			details=gstInvoiceHdrRepo.getPendingDetailsApprove1(userName);
+			details=gstInvoiceHdrRepo.getPendingDetailsApprove1slab1(userName);
 			
 		}
-		else
+		else if(userType.equals("approve2"))
 		{
-			details=gstInvoiceHdrRepo.getPendingDetailsApprove2(userName);
+			details=gstInvoiceHdrRepo.getPendingDetailsApprove2slab1(userName);
+			
+		}
+		else if(userType.equals("approve3"))
+		{
+			details=gstInvoiceHdrRepo.getPendingDetailsApprove1slab2(userName);
 			
 		}
 		
@@ -59,7 +64,7 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 			
 			details=gstInvoiceHdrRepo.getInvDetailsApprove1(userName);
 		}
-		else
+		else if(userType.equals("approve2"))
 		{
 			
 			details=gstInvoiceHdrRepo.getInvDetailsApprove2(userName);
@@ -138,8 +143,8 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 				gstInvoiceHdrVO.setApprove1Name(createdby);
 				gstInvoiceHdrVO.setApprove1On(LocalDateTime.now());
 			}
-		}else
-		{
+		}else if(userType.equals("approve2"))
+		{ 
 			if(approval.equals("1"))
 			{
 				gstInvoiceHdrVO.setApprove2("T");
@@ -152,6 +157,20 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 				gstInvoiceHdrVO.setApprove2On(LocalDateTime.now());
 			}
 			
+		}
+		else
+		{
+			if(approval.equals("1"))
+			{
+				gstInvoiceHdrVO.setApprove1("T");
+				gstInvoiceHdrVO.setApprove1Name(createdby);
+				gstInvoiceHdrVO.setApprove1On(LocalDateTime.now());
+			}
+			else {
+				gstInvoiceHdrVO.setApprove1("F");
+				gstInvoiceHdrVO.setApprove1Name(createdby);
+				gstInvoiceHdrVO.setApprove1On(LocalDateTime.now());
+			}
 		}
 		
 		return gstInvoiceHdrRepo.save(gstInvoiceHdrVO);

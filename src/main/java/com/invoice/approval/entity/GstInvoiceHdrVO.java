@@ -52,5 +52,15 @@ public class GstInvoiceHdrVO {
 
     @Column(name = "APPROVE3ON")
     private LocalDateTime approve3On;
-
+    
+    @Column(name = "eligislab")
+    private int eligiSlab;
+    
+    @Column(name = "slabremarks", length = 30)
+    private String slabRemarks;
+    
+    @Column(name = "exceeddays", length = 1)
+    private String exceedDays;
+    
+    
 }
