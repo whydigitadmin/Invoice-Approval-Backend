@@ -62,5 +62,8 @@ public class GstInvoiceHdrVO {
     @Column(name = "exceeddays", length = 1)
     private String exceedDays;
     
+    @Column(name = "invproceed", length = 1)
+    private String invProceed;
+    
     
 }

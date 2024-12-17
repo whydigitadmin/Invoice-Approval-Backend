@@ -69,6 +69,11 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 			
 			details=gstInvoiceHdrRepo.getInvDetailsApprove2(userName);
 		}
+		else if(userType.equals("approve3"))
+		{
+			details=gstInvoiceHdrRepo.getInvDetailsApprove3(userName);
+			
+		}
 		
 		return approveDetails(details);
 	}
@@ -91,7 +96,10 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 			dtl.put("totalInvAmtLc", det[8] != null ? df.format(new BigDecimal(det[8].toString())) : "");
 			dtl.put("creditDays", det[9] != null ? Integer.parseInt(det[9].toString()) : 0);
 			dtl.put("creditLimit", det[10] != null ? df.format(new BigDecimal(det[10].toString())) : "");
-			
+			dtl.put("slabRemarks", det[11] != null ? det[11].toString() : "");
+			dtl.put("exceedDays", det[12] != null ? det[12].toString() : "");
+			dtl.put("eligiSlab", det[13] != null ? Integer.parseInt(det[13].toString()) : 0);
+			dtl.put("unApproveAmt", det[14] != null ? df.format(new BigDecimal(det[14].toString())) : "");
 			report.add(dtl);
 		}
 		return report;
@@ -118,8 +126,9 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 			dtl.put("totalInvAmtLc", det[8] != null ? df.format(new BigDecimal(det[8].toString())) : "");
 			dtl.put("creditDays", det[9] != null ? Integer.parseInt(det[9].toString()) : 0);
 			dtl.put("creditLimit", det[10] != null ? df.format(new BigDecimal(det[10].toString())) : "");
-			dtl.put("approve1on", det[15] != null ? det[15].toString() : "");
-			dtl.put("approve2on", det[17] != null ? det[17].toString() : "");
+			dtl.put("approve1on", det[16] != null ? det[16].toString() : "");
+			dtl.put("approve2on", det[18] != null ? det[18].toString() : "");
+			dtl.put("approve3on", det[19] != null ? det[19].toString() : "");
 			
 			report.add(dtl);
 		}
@@ -137,11 +146,13 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 				gstInvoiceHdrVO.setApprove1("T");
 				gstInvoiceHdrVO.setApprove1Name(createdby);
 				gstInvoiceHdrVO.setApprove1On(LocalDateTime.now());
+				
 			}
 			else {
 				gstInvoiceHdrVO.setApprove1("F");
 				gstInvoiceHdrVO.setApprove1Name(createdby);
 				gstInvoiceHdrVO.setApprove1On(LocalDateTime.now());
+				
 			}
 		}else if(userType.equals("approve2"))
 		{ 
@@ -150,11 +161,13 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 				gstInvoiceHdrVO.setApprove2("T");
 				gstInvoiceHdrVO.setApprove2Name(createdby);
 				gstInvoiceHdrVO.setApprove2On(LocalDateTime.now());
+				gstInvoiceHdrVO.setInvProceed("T");
 			}
 			else {
 				gstInvoiceHdrVO.setApprove2("F");
 				gstInvoiceHdrVO.setApprove2Name(createdby);
 				gstInvoiceHdrVO.setApprove2On(LocalDateTime.now());
+				gstInvoiceHdrVO.setInvProceed("F");
 			}
 			
 		}
@@ -165,11 +178,13 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 				gstInvoiceHdrVO.setApprove1("T");
 				gstInvoiceHdrVO.setApprove1Name(createdby);
 				gstInvoiceHdrVO.setApprove1On(LocalDateTime.now());
+				
 			}
 			else {
 				gstInvoiceHdrVO.setApprove1("F");
 				gstInvoiceHdrVO.setApprove1Name(createdby);
 				gstInvoiceHdrVO.setApprove1On(LocalDateTime.now());
+				
 			}
 		}
 		
@@ -184,6 +199,7 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		    gstInvoiceHdrVO.setApprove3(approval.equals("1") ? "T" : "F");
 		    gstInvoiceHdrVO.setApprove3Name(createdby);
 		    gstInvoiceHdrVO.setApprove3On(LocalDateTime.now());
+		    gstInvoiceHdrVO.setInvProceed(approval.equals("1") ? "T" : "F");
 		} else {
 		    switch (gstInvoiceHdrVO.getApprove3()) {
 		        case "T":
