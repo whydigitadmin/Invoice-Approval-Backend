@@ -1,6 +1,7 @@
 package com.invoice.approval.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,118 @@ public class InvoiceApprovalController extends BaseController {
 	}
 	
 	
+	@GetMapping("/getMIS")
+	public ResponseEntity<ResponseDTO> getMIS(@RequestParam String branchName,String status,@RequestParam String fromDate,@RequestParam String toDate) {
+		String methodName = "getMIS()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> misDetails = new ArrayList<Map<String, Object>>();
+		try {
+			misDetails = invoiceApprovalService.getMIS(branchName,status,fromDate,toDate);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "MIS  found Successfullly");
+			responseObjectsMap.put("misDetails", misDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "MIS Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	@GetMapping("/getAPAgeingInternal")
+	public ResponseEntity<ResponseDTO>getAPAgeingInternal (@RequestParam String sbcode,@RequestParam String div,@RequestParam String ptype,@RequestParam String pbranchname,@RequestParam String asondt,@RequestParam String slab1,@RequestParam String slab2,@RequestParam String slab3,@RequestParam String slab4,@RequestParam String slab5,@RequestParam String slab6) {
+		String methodName = "getAPAgeingInternal()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> apAgeingDetails = new ArrayList<Map<String, Object>>();
+		try {
+			apAgeingDetails = invoiceApprovalService.getAPAgeingInternal(sbcode,div,ptype,pbranchname,asondt,slab1,slab2,slab3,slab4,slab5,slab6);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AP Ageing  found Successfullly");
+			responseObjectsMap.put("apAgeingDetails", apAgeingDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AP Ageing Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getAllAPParties")
+	public ResponseEntity<ResponseDTO> getAllAPParties() {
+		String methodName = "getAllAPParties()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> partyDetails = new ArrayList<Map<String, Object>>();
+		try {
+			partyDetails = invoiceApprovalService.getAllAPParties();
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AP Party  found Successfullly");
+			responseObjectsMap.put("partyDetails", partyDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AP Party Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+
+	
+	
+	@GetMapping("/getAllCreditParties")
+	public ResponseEntity<ResponseDTO> getAllCreditParties() {
+		String methodName = "getAllCreditParties()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> partyDetails = new ArrayList<Map<String, Object>>();
+		try {
+			partyDetails = invoiceApprovalService.getAllCreditParties();
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Party  found Successfullly");
+			responseObjectsMap.put("partyDetails", partyDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Party Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 	
 	@GetMapping("/getInvDetailsApprove1")
 	public ResponseEntity<ResponseDTO> getInvDetailsApprove1(@RequestParam String userType,@RequestParam String userName) {

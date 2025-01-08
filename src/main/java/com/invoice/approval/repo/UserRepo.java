@@ -17,7 +17,9 @@ public interface UserRepo extends JpaRepository<UserVO, Long> {
 	@Query(value = "select u from UserVO u where u.id =?1")
 	UserVO getUserById(Long usersId);
 	
-	@Query(nativeQuery=true,value="SELECT a.username, a.branchcode from vg_userbranch a WHERE a.username=?1")
+	@Query(nativeQuery=true,value="SELECT distinct a.username, a.branchcode,a.branchname from vg_userbranch a WHERE a.username=?1\r\n"
+			+ "union\r\n"
+			+ "select username,'ALL','ALL' from axusers where allindia = 'T' and username =?1")
 	Set<Object[]> getBranchCodeDetails(String userName);
 
 	boolean existsByUserName(String userName);

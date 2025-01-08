@@ -71,6 +71,7 @@ public class UserServiceImpl implements UserService {
 			Map<String, Object> map = new HashMap<>();
 			map.put("username", ch[0].toString());
 			map.put("branchCode", ch[1].toString());
+			map.put("branchName", ch[2].toString());
 			List1.add(map);
 		}
 		return List1;
