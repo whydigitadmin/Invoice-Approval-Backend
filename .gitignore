@@ -32,3 +32,15 @@ build/
 
 ### VS Code ###
 .vscode/
+/hs_err_pid11980.log
+/hs_err_pid23392.log
+/hs_err_pid25184.log
+/hs_err_pid25672.log
+/hs_err_pid27816.log
+/hs_err_pid29192.log
+/hs_err_pid33496.log
+/hs_err_pid43044.log
+/hs_err_pid4840.log
+/replay_pid11980.log
+/replay_pid25184.log
+/replay_pid27816.log
