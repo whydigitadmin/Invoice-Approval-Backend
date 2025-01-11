@@ -37,6 +37,12 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 	Set<Object[]> getAllCreditParties();
 	
 	
+	@Query(nativeQuery = true,value = "select a.docid,a.docdt,partyname,partycode,b.docid vchno,b.docdate vchdt,totinvamtlc from gst_invoicehdr a,accountshdr b \r\n"
+			+ "where a.docid = b.refno and a.branchcode in ( select branchcode from vg_userbranch where username = ?1) "
+			+ " and a.branchcode = ?2  \r\n"
+			+ "order by 1 ")
+	Set<Object[]> getInvoices(String userName,String branchCode);
+	
 	
 	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname from gst_invoicehdr a,mg_partyhdr b \r\n"
 			+ "where  a.partycode = b.party_code and approve1 = 'T' and approve1name is not null and ( approve1name=?1 or 'admin'=?1 ) "

@@ -303,6 +303,33 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		    return report;
 	}
 
+	public List<Map<String, Object>> getInvoices(String userName,String branchCode) {
+		// TODO Auto-generated method stub
+		 List<Map<String, Object>> report = new ArrayList<>();
+		 Set<Object[]>details= new HashSet<>();
+		 details=gstInvoiceHdrRepo.getInvoices(userName,branchCode);
+		    
+		    for (Object[] det : details) {
+		        
+		        DecimalFormat df = new DecimalFormat("0.00");
+		        Map<String, Object> dtl = new HashMap<>();
+		        
+		        // Ensure the values are extracted based on the correct index in the Object[] (det)
+		        dtl.put("docid", det[0] != null ? det[0].toString() : "");
+		        dtl.put("docdt", det[1] != null ? det[1].toString() : "");
+		        dtl.put("partyName", det[2] != null ? det[2].toString() : "");
+		        dtl.put("partyCode", det[3] != null ? det[3].toString() : "");
+		        dtl.put("vchno", det[4] != null ? det[4].toString() : "");
+		        dtl.put("vchdt", det[5] != null ? det[5].toString() : "");
+		        dtl.put("totinvamtLc", det[6] != null ? df.format(new BigDecimal(det[6].toString())) : "0.00");    
+		        
+		        report.add(dtl);
+		    }
+		    
+		    return report;
+	}
+	
+	
 
 
 	

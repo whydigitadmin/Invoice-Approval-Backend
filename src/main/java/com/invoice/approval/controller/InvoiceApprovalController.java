@@ -175,6 +175,37 @@ public class InvoiceApprovalController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	
+	
+	
+	@GetMapping("/getInvoices")
+	public ResponseEntity<ResponseDTO> getInvoices(@RequestParam String userName,String branchCode) {
+		String methodName = "getInvoices()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> invDetails = new ArrayList<Map<String, Object>>();
+		try {
+			invDetails = invoiceApprovalService.getInvoices(userName,branchCode);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Invoice  found Successfullly");
+			responseObjectsMap.put("invDetails", invDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Invoice Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
 	@GetMapping("/getInvDetailsApprove1")
 	public ResponseEntity<ResponseDTO> getInvDetailsApprove1(@RequestParam String userType,@RequestParam String userName) {
 		String methodName = "getInvDetailsApprove1()";
