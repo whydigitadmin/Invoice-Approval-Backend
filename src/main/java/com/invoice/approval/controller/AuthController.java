@@ -100,7 +100,7 @@ public class AuthController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	@GetMapping("/logout")
+	@PostMapping("/logout")
 	public ResponseEntity<ResponseDTO> logout(@RequestParam String userName) {
 		String methodName = "logout()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);

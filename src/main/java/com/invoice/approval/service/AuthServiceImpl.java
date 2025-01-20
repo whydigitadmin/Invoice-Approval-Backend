@@ -97,7 +97,6 @@ public class AuthServiceImpl implements AuthService {
 	@Autowired
 	UserLoginRolesRepo loginRolesRepo;
 
-
 //	@Override
 //	public void signup(SignUpFormDTO signUpRequest) {
 //		String methodName = "signup()";
@@ -187,7 +186,7 @@ public class AuthServiceImpl implements AuthService {
 
 				UserLoginRolesVO loginRolesVO = new UserLoginRolesVO();
 				loginRolesVO.setRole(accessDTO.getRole());
-				RolesVO roles1VO= rolesRepo.findByRole(accessDTO.getRole());
+				RolesVO roles1VO = rolesRepo.findByRole(accessDTO.getRole());
 				loginRolesVO.setRoleId(roles1VO.getId());
 				loginRolesVO.setStartDate(accessDTO.getStartDate());
 				loginRolesVO.setEndDate(accessDTO.getEndDate());
@@ -214,10 +213,14 @@ public class AuthServiceImpl implements AuthService {
 			if (userVO.getActive() == "In-Active") {
 				throw new ApplicationException("Your account is In-Active, Please Contact Administrator");
 			}
-			if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
-				updateUserLoginInformation(userVO, request);
+			if (!userVO.isLoginStatus()) {
+				if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
+					updateUserLoginInformation(userVO, request);
+				} else {
+					throw new ApplicationContextException(UserConstants.ERRROR_MSG_PASSWORD_MISMATCH);
+				}
 			} else {
-				throw new ApplicationContextException(UserConstants.ERRROR_MSG_PASSWORD_MISMATCH);
+				throw new ApplicationException("User Already Logged In Another Device");
 			}
 		} else {
 			throw new ApplicationContextException(
@@ -533,7 +536,8 @@ public class AuthServiceImpl implements AuthService {
 			for (RolesResponsibilityDTO rolesResponsibilityDTO : rolesDTO.getRolesResponsibilityDTO()) {
 				RolesResponsibilityVO rolesResponsibilityVO = new RolesResponsibilityVO();
 				rolesResponsibilityVO.setResponsibility(rolesResponsibilityDTO.getResponsibility().toUpperCase());
-				ResponsibilityVO responsibilityVO= responsibilityRepo.findByResponsibility(rolesResponsibilityDTO.getResponsibility());
+				ResponsibilityVO responsibilityVO = responsibilityRepo
+						.findByResponsibility(rolesResponsibilityDTO.getResponsibility());
 				rolesResponsibilityVO.setResponsibilityId(responsibilityVO.getId());
 				rolesResponsibilityVO.setRolesVO(rolesVO);
 				rolesResponsibilityVOList.add(rolesResponsibilityVO);
