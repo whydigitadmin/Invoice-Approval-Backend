@@ -1,6 +1,5 @@
 package com.invoice.approval.dto;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,8 +14,6 @@ public class EmployeeExpensesDTO {
 	private Long id;
 	private String empCode;
 	private String empName;
-	private BigDecimal totamt;
 	private String createdBy;
-	  
-
+	private List<EmployeeExpensesAttachmentDTO> employeeExpensesAttachmentDTO;
 }

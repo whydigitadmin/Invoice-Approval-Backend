@@ -29,7 +29,7 @@ public class EmployeeExpensesAttachmentVO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empexpdtlgen")
-	@SequenceGenerator(name = "empexpattachgen", sequenceName = "empexpdtlgseq", initialValue = 1000000001, allocationSize = 1)
+	@SequenceGenerator(name = "empexpdtlgen", sequenceName = "empexpdtlgseq", initialValue = 1000000001, allocationSize = 1)
 	@Column(name = "gst_expempdtlid")
 	private Long id;
 	
@@ -43,8 +43,8 @@ public class EmployeeExpensesAttachmentVO {
 	    @Column(name = "expdate")
 	    private LocalDate expDate;
 	    
-		@Column(name = "empcde",length = 10)
-		private String empCde;
+		@Column(name = "empcode",length = 10)
+		private String empCode;
 		
 		@Column(name = "empname",length = 100)
 		private String empName;
@@ -53,12 +53,12 @@ public class EmployeeExpensesAttachmentVO {
 		@Column(name = "amount",precision = 10,scale = 2)
 		private BigDecimal amount;
 	    
-	@Column(name = "filename")
-	private String fileName;
+		@Column(name = "filename")
+		private String fileName;
 	
-	@Lob
-    @Column(name = "attachment", columnDefinition="BLOB")
-    private byte[] attachment;
+		@Lob
+		@Column(name = "attachment", columnDefinition="BLOB")
+		private byte[] attachment;
 	
 	@ManyToOne
 	@JoinColumn(name = "gst_expemphdrid")

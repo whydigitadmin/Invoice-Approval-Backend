@@ -15,7 +15,7 @@ import com.invoice.approval.exception.ApplicationException;
 public interface EmployeeExpenseService {
 	
 
-	Map<String, Object> createUpdateEmployeeExpenses(EmployeeExpensesDTO employeeExpensesDTO) throws IOException;
+	Map<String, Object> createUpdateEmployeeExpenses(EmployeeExpensesDTO employeeExpensesDTO) throws IOException, ApplicationException;
 
 	void saveExpenseImages(List<MultipartFile> file, Long expenseId) throws IOException, ApplicationException;
 	
