@@ -98,4 +98,16 @@ public class EmployeeExpenseServiceImpl implements EmployeeExpenseService {
 
 	}
 
+	@Override
+	public EmployeeExpensesVO getEmployeeExpenseVOById(Long id) {
+		EmployeeExpensesVO employeeExpensesVO= employeeExpensesRepo.findById(id).get();
+		return employeeExpensesVO;
+	}
+
+	@Override
+	public List<EmployeeExpensesVO> getAllEmployeeExpenseVO() {
+		List<EmployeeExpensesVO> employeeExpensesVO= employeeExpensesRepo.findAll();
+		return employeeExpensesVO;
+	}
+
 }
