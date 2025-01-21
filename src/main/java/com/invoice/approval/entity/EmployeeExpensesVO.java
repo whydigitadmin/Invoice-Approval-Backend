@@ -23,26 +23,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="gst_empexpense")
+@Table(name="gst_expemphdr")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeExpensesVO {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empexpensegen")
-	@SequenceGenerator(name = "empexpensegen", sequenceName = "empexpenseseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name = "gst_empexpenseid")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empexphdrgen")
+	@SequenceGenerator(name = "empexphdrgen", sequenceName = "empexphdrseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "gst_expemphdrid")
 	private Long id;
 	
-	@Column(name = "expensecategory", length = 50)
-	private String expenseCategory;
-	
-	@Column(name = "expensename",length = 50)
-	private String expenseName;
-	
-	@Column(name = "expensedate")
-	private LocalDate expenseDate;
+
 	
 	@Column(name = "createdby",length = 50)
 	private String createdBy;
@@ -53,17 +46,15 @@ public class EmployeeExpensesVO {
 	@Column(name = "empcode",length = 10)
 	private String empCode;
 	
-	@Column(name = "employee",length = 100)
-	private String employee;
+	@Column(name = "empname",length = 100)
+	private String empName;
 	
-	@Column(name = "active")
-	private String active="T";
 	
 	@Column(name = "cancel")
 	private String cancel="F";
 	
-	@Column(name = "expenseamount",precision = 10,scale = 2)
-	private BigDecimal expenseAmount;
+	@Column(name = "totamt",precision = 10,scale = 2)
+	private BigDecimal totamt;
 	
 	@OneToMany(mappedBy = "employeeExpensesVO",cascade = CascadeType.ALL)
 	@JsonManagedReference
