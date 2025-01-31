@@ -303,11 +303,11 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		    return report;
 	}
 
-	public List<Map<String, Object>> getInvoices(String userName,String branchCode) {
+	public List<Map<String, Object>> getInvoices(String userName,String branchName) {
 		// TODO Auto-generated method stub
 		 List<Map<String, Object>> report = new ArrayList<>();
 		 Set<Object[]>details= new HashSet<>();
-		 details=gstInvoiceHdrRepo.getInvoices(userName,branchCode);
+		 details=gstInvoiceHdrRepo.getInvoices(userName,branchName);
 		    
 		    for (Object[] det : details) {
 		        

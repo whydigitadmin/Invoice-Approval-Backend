@@ -179,7 +179,7 @@ public class InvoiceApprovalController extends BaseController {
 	
 	
 	@GetMapping("/getInvoices")
-	public ResponseEntity<ResponseDTO> getInvoices(@RequestParam String userName,String branchCode) {
+	public ResponseEntity<ResponseDTO> getInvoices(@RequestParam String userName,String branchName) {
 		String methodName = "getInvoices()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -187,7 +187,7 @@ public class InvoiceApprovalController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<Map<String, Object>> invDetails = new ArrayList<Map<String, Object>>();
 		try {
-			invDetails = invoiceApprovalService.getInvoices(userName,branchCode);
+			invDetails = invoiceApprovalService.getInvoices(userName,branchName);
 
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

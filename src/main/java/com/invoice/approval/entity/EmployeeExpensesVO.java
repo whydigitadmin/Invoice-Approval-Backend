@@ -2,6 +2,7 @@ package com.invoice.approval.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -50,8 +51,22 @@ public class EmployeeExpensesVO {
 	private String empName;
 	
 	
-	@Column(name = "cancel")
-	private String cancel="F";
+	@Column(name = "approve1")
+	private String approve1="F";
+	
+	
+	
+	@Column(name = "approve1name")
+	private String approve1Name;
+	
+	@Column(name = "approve1on")
+	private LocalDateTime approve1On;
+	
+	@Column(name = "visitfrom")
+	private String visitFrom;
+	
+	@Column(name = "visitto")
+	private String visitTo;
 	
 	@Column(name = "totamt",precision = 10,scale = 2)
 	private BigDecimal totamt;

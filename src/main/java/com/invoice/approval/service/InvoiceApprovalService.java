@@ -29,7 +29,7 @@ public interface InvoiceApprovalService {
 	
 	List<Map<String, Object>> getAllAPParties();
 	
-	List<Map<String, Object>> getInvoices(String userName,String branchCode);
+	List<Map<String, Object>> getInvoices(String userName,String branchName);
 	
 	List<Map<String, Object>> getAPAgeingInternal(String sbcode,String div,String ptype,String pbranchname,String asondt,String slab1,String slab2,String slab3,String slab4,String slab5,String slab6);
 

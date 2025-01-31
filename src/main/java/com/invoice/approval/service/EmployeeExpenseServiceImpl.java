@@ -1,7 +1,8 @@
 package com.invoice.approval.service;
 
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.math.BigDecimal;import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.invoice.approval.dto.EmployeeExpensesDTO;
+import com.invoice.approval.entity.CRPreAppVO;
 import com.invoice.approval.entity.EmployeeExpensesAttachmentVO;
 import com.invoice.approval.entity.EmployeeExpensesVO;
 import com.invoice.approval.exception.ApplicationException;
@@ -72,6 +74,8 @@ public class EmployeeExpenseServiceImpl implements EmployeeExpenseService {
     	AtomicReference<BigDecimal> totAmount = new AtomicReference<>(BigDecimal.ZERO);
         employeeExpensesVO.setEmpCode(employeeExpensesDTO.getEmpCode());
         employeeExpensesVO.setEmpName(employeeExpensesDTO.getEmpName());
+        employeeExpensesVO.setVisitFrom(employeeExpensesDTO.getVisitFrom());
+        employeeExpensesVO.setVisitTo(employeeExpensesDTO.getVisitTo());
         List<EmployeeExpensesAttachmentVO>employeeExpensesAttachmentVOs=employeeExpensesDTO.getEmployeeExpensesAttachmentDTO()
         		.stream()
         		.map(employeeAttachmentDTO -> {
@@ -135,4 +139,29 @@ public class EmployeeExpenseServiceImpl implements EmployeeExpenseService {
     public List<EmployeeExpensesVO> getAllEmployeeExpenseVO() {
         return employeeExpensesRepo.findAll();
     }
+    
+    @Override
+	public EmployeeExpensesVO updateApprove1(Long id, String approval, String createdby,String userType) {
+    	EmployeeExpensesVO expampAppvo= employeeExpensesRepo.findByExpEmpId(id);
+		if(userType.equals("approve3"))
+		{
+			if(approval.equals("1"))
+			{
+				expampAppvo.setApprove1("T");
+				expampAppvo.setApprove1Name(createdby);
+				expampAppvo.setApprove1On(LocalDateTime.now());
+			}
+			else
+			{
+				expampAppvo.setApprove1("F");
+				expampAppvo.setApprove1Name(createdby);
+				expampAppvo.setApprove1On(LocalDateTime.now());
+			}
+		}
+		
+		return employeeExpensesRepo.save(expampAppvo);
+	}
+
+
+
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.invoice.approval.dto.EmployeeExpensesDTO;
+import com.invoice.approval.entity.CRPreAppVO;
 import com.invoice.approval.entity.EmployeeExpensesVO;
 import com.invoice.approval.exception.ApplicationException;
 
@@ -22,5 +23,9 @@ public interface EmployeeExpenseService {
 	EmployeeExpensesVO getEmployeeExpenseVOById(Long id);
 
 	List<EmployeeExpensesVO> getAllEmployeeExpenseVO();
+	
+	EmployeeExpensesVO updateApprove1(Long id,String approval,String createdby,String userType);
+
+	
 
 }

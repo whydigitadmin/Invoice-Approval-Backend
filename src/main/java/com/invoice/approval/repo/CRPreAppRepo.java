@@ -22,13 +22,13 @@ public interface CRPreAppRepo  extends JpaRepository<CRPreAppVO, Long> {
 	@Query(nativeQuery = true,value = "select gst_precreditId ,branchname,cramt,crremarks,invamt,partycode,partyname,profoma,ptype,reason,vchdt,\r\n"
 			+ "vchno,osbcd,totdue,ddays,c.category,c.controllingoffice,c.creditlimit,c.creditdays,c.salespersonname from gst_precredit a ,vw_currentos b,mg_partyhdr c\r\n"
 			+ "            where  approve1 = 'F' and approve1name is null and a.partycode = b.subledgercode(+) and a.partycode = c.party_code\r\n"
-			+ "            AND a.branchname in (select branchcode from vg_userbranch where (userName = ?1 or 'admin'= ?1 ))  order by a.createdon desc")
+			+ "            AND a.branchname in (select branchname from vg_userbranch where (userName = ?1 or 'admin'= ?1 ))  order by a.createdon desc")
 	Set<Object[]> getCRPendingDetailsApprove1slab1(String userName);
 	
 	@Query(nativeQuery = true,value = "select gst_precreditId ,branchname,cramt,crremarks,invamt,partycode,partyname,profoma,ptype,reason,vchdt, \r\n"
 			+ "            vchno,osbcd,totdue,ddays,c.category,c.controllingoffice,c.creditlimit,c.creditdays,c.salespersonname from gst_precredit a ,vw_currentos b,mg_partyhdr c \r\n"
 			+ "            where   approve1name is not null and a.partycode = b.subledgercode(+) and a.partycode = c.party_code \r\n"
-			+ "            AND a.branchname in (select branchcode from vg_userbranch where (userName = ?1 or 'admin'= ?1 ))  order by a.createdon desc")
+			+ "            AND a.branchname in (select branchname from vg_userbranch where (userName = ?1 or 'admin'= ?1 ))  order by a.createdon desc")
 	Set<Object[]> getCRApproveDetailsApprove1slab1(String userName);
 }
 

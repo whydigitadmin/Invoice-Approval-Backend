@@ -23,6 +23,7 @@ import com.invoice.approval.common.UserConstants;
 import com.invoice.approval.dto.EmployeeExpensesDTO;
 import com.invoice.approval.dto.ResponseDTO;
 import com.invoice.approval.entity.EmployeeExpensesVO;
+import com.invoice.approval.entity.GstInvoiceHdrVO;
 import com.invoice.approval.service.EmployeeExpenseService;
 
 @RestController
@@ -125,4 +126,26 @@ public class EmployeeExpensesController extends BaseController {
         LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
         return ResponseEntity.ok().body(responseDTO);
     }
+	
+	
+	@PutMapping("/approval1")
+	public ResponseEntity<ResponseDTO> updateApproval1(@RequestParam Long id,@RequestParam String approval,@RequestParam String createdby,@RequestParam String userType) {
+		String methodName = "updateApproval1()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		EmployeeExpensesVO empexpVO= new EmployeeExpensesVO();
+		try {
+			empexpVO = employeeExpenseService.updateApprove1(id, approval, createdby,userType);
+			responseObjectsMap.put("EmployeeExpensesVO", empexpVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 }

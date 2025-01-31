@@ -61,7 +61,7 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 	public List<Map<String, Object>> getPendingApprovalReport(String userType,String userName) {
 		
 		Set<Object[]>details= new HashSet<>();
-		if(userType.equals("approve1"))
+		if(userType.equals("approve3"))
 		{
 			details=crPreAppRepo.getCRPendingDetailsApprove1slab1(userName);
 			
@@ -75,7 +75,7 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 	public List<Map<String, Object>> getApprovalReport(String userType,String userName) {
 		
 		Set<Object[]>details= new HashSet<>();
-		if(userType.equals("approve1"))
+		if(userType.equals("approve3"))
 		{
 			
 			details=crPreAppRepo.getCRApproveDetailsApprove1slab1(userName);
@@ -174,7 +174,7 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 	@Override
 	public CRPreAppVO updateApprove1(Long id, String approval, String createdby,String userType) {
 		CRPreAppVO crPreAppvo= crPreAppRepo.findByGSTPreCreditrId(id);
-		if(userType.equals("approve1"))
+		if(userType.equals("approve3"))
 		{
 			if(approval.equals("1"))
 			{

@@ -1,5 +1,6 @@
 package com.invoice.approval.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,5 +16,7 @@ public class EmployeeExpensesDTO {
 	private String empCode;
 	private String empName;
 	private String createdBy;
+	private String visitFrom;
+	private String visitTo;
 	private List<EmployeeExpensesAttachmentDTO> employeeExpensesAttachmentDTO;
 }
