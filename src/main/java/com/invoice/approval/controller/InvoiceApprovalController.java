@@ -90,6 +90,35 @@ public class InvoiceApprovalController extends BaseController {
 	}
 	
 	
+	
+	
+	@GetMapping("/getDayBookBranchWise")
+	public ResponseEntity<ResponseDTO> getDayBookBranchWise(@RequestParam String branchName,@RequestParam String fromDate,@RequestParam String toDate) {
+		String methodName = "getDayBookBranchWise()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> dayBookBranchWiseDetails = new ArrayList<Map<String, Object>>();
+		try {
+			dayBookBranchWiseDetails = invoiceApprovalService.getDayBookBranchWise(branchName,fromDate,toDate);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Day Book Data  found Successfullly");
+			responseObjectsMap.put("dayBookBranchWiseDetails", dayBookBranchWiseDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Day Book Data Data receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 	@GetMapping("/getAPAgeingInternal")
 	public ResponseEntity<ResponseDTO>getAPAgeingInternal (@RequestParam String sbcode,@RequestParam String div,@RequestParam String ptype,@RequestParam String pbranchname,@RequestParam String asondt,@RequestParam String slab1,@RequestParam String slab2,@RequestParam String slab3,@RequestParam String slab4,@RequestParam String slab5,@RequestParam String slab6) {
 		String methodName = "getAPAgeingInternal()";

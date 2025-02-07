@@ -26,6 +26,7 @@ public class UserResponseDTO {
 	private String nickName;
 	private boolean loginStatus;
 	private boolean active;
+	private String ppassword;
 	private List<Map<String, Object>> roleVO;
 	
     @Embedded

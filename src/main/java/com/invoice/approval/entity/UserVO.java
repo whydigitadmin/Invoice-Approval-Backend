@@ -44,6 +44,8 @@ public class UserVO {
 	private String employeeName;
 	@Column(name = "password")
 	private String password;
+	@Column(name = "ppassword")
+	private String ppassword;
 	@Column(name = "email")
 	private String email;
 	@Column(name = "employeecode")

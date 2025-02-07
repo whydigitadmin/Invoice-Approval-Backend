@@ -28,6 +28,7 @@ public class SignUpFormDTO {
 	private String email;
 	private String userType;
 	private boolean isActive;
+	private String ppasword;
 	private List<UserLoginRoleAccessDTO> roleAccessDTO;
 
 }

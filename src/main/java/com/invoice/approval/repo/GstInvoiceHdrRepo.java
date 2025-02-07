@@ -13,7 +13,7 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 
 	
 	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,"
-			+ "b.creditdays,b.creditlimit,slabremarks,exceeddays,eligislab,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,osbeyond,excesscredit,category,controllingoffice from gst_invoicehdr a,mg_partyhdr b \r\n"
+			+ "b.creditdays,b.creditlimit,slabremarks,exceeddays,eligislab,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,osbeyond,excesscredit,category,controllingoffice , case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname from gst_invoicehdr a,mg_partyhdr b \r\n"
 			+ "where invproceed = 'F' and approve1 = 'F' and a.partycode = b.party_code and approve1name is null"
 			+ " AND eligislab = 1 AND a.branchcode in (select branchcode from vg_userbranch where (userName =?1 or 'admin'=?1 ))  order by a.createdon desc")
 	Set<Object[]> getPendingDetailsApprove1slab1(String userName);
@@ -44,18 +44,23 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 	Set<Object[]> getInvoices(String userName,String branchName);
 	
 	
-	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname from gst_invoicehdr a,mg_partyhdr b \r\n"
+	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname,slabremarks from gst_invoicehdr a,mg_partyhdr b \r\n"
 			+ "where  a.partycode = b.party_code and approve1 = 'T' and approve1name is not null and ( approve1name=?1 or 'admin'=?1 ) "
-			 + " and eligislab = 1 AND a.branchcode in (select branchcode from vg_userbranch where userName =?1) order by a.createdon desc")
+			 + " and eligislab in (1,2,3) AND a.branchcode in (select distinct branchcode from vg_userbranch where userName = ?1) \r\n"
+			 + "            and (  'ALL' = decode ( ?1 , 'admin','ALL', eligislab) or \r\n"
+			 + "             eligislab = decode ( ?1 , 'admin',0, eligislab)\r\n"
+			 + "             )  \r\n"
+			 + "             AND a.branchcode in (select distinct branchcode from vg_userbranch where userName = ?1)\r\n"
+			 + "             and docdt between  TRUNC(LAST_DAY(ADD_MONTHS(SYSDATE,-1)))+1 and TRUNC(LAST_DAY(SYSDATE))  ")
 	Set<Object[]> getInvDetailsApprove1(String userName);
 	
-	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname from gst_invoicehdr a,mg_partyhdr b \r\n"
+	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname,slabremarks from gst_invoicehdr a,mg_partyhdr b \r\n"
 			+ "where invproceed = 'T' and a.partycode = b.party_code and approve2 = 'T' and approve2name is not null and ( approve2name=?1 or 'admin'=?1 ) \r\n"
 			+ " and eligislab = 1 AND a.branchcode in (select branchcode from vg_userbranch where userName =?1)  order by a.createdon desc")
 	Set<Object[]> getInvDetailsApprove2(String userName);
 	
 	
-	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname from gst_invoicehdr a,mg_partyhdr b \r\n"
+	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname,slabremarks from gst_invoicehdr a,mg_partyhdr b \r\n"
 			+ "where approve1 = 'T' and a.partycode = b.party_code and approve1name is not null  and (approve1name=?1 or 'admin'=?1 ) \r\n"
 			+ " and eligislab in (2,3) AND a.branchcode in (select branchcode from vg_userbranch where userName =?1)  order by a.createdon desc")
 	Set<Object[]> getInvDetailsApprove3(String userName);
@@ -64,6 +69,17 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 	@Query(nativeQuery = true,value = "select branchname from vg_userbranch where username = ?1 order by 1")
 	Set<Object[]> getUserBranch(String userName);
 	
+	
+	@Query(nativeQuery = true,value = "Select a.branchcode,docid vchno,docdate vchdate, refno docid,refdate docdt,m.accountcode,m.accountname \r\n"
+			+ "ledger, b.subledgercode,b.subledgername\r\n"
+			+ ",a.currency, exrate\r\n"
+			+ ", b.bdbamount,b.bcramount,a.remarks\r\n"
+			+ "From accountshdr a, accountsdtl b , mg_account m ,mg_branchhdr d \r\n"
+			+ "where a.accountshdrid = b.accountshdrid and b.accountname = m.mg_accountid and docdate between  \r\n"
+			+ " ?2 and ?3 and a.cancel ='F'\r\n"
+			+ "and a.branchid = d.mg_branchhdrid and (d.branchname = ?1 or 'ALL' = ?1 )  \r\n"
+			+ "Order by 1,2")
+	Set<Object[]> getDayBookBranchWise(String userName,String fromDate,String toDate);
 
 	@Query(nativeQuery = true,value = "select subledgercode,subledgername from mg_subledger a, mg_account b \r\n"
 			+ " where \r\n"

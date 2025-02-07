@@ -179,6 +179,7 @@ public class AuthServiceImpl implements AuthService {
 		userVO.setUserType(signUpFormDTO.getUserType());
 		userVO.setActive(signUpFormDTO.isActive());
 		userVO.setEmployeeName(signUpFormDTO.getEmployeeName());
+		userVO.setPpassword(signUpFormDTO.getPpasword());
 
 		List<UserLoginRolesVO> rolesVO = new ArrayList<>();
 		if (signUpFormDTO.getRoleAccessDTO() != null) {
@@ -213,15 +214,15 @@ public class AuthServiceImpl implements AuthService {
 			if (userVO.getActive() == "In-Active") {
 				throw new ApplicationException("Your account is In-Active, Please Contact Administrator");
 			}
-			if (!userVO.isLoginStatus()) {
+//			if (!userVO.isLoginStatus()) {
 				if (compareEncodedPasswordWithEncryptedPassword(loginRequest.getPassword(), userVO.getPassword())) {
 					updateUserLoginInformation(userVO, request);
 				} else {
 					throw new ApplicationContextException(UserConstants.ERRROR_MSG_PASSWORD_MISMATCH);
 				}
-			} else {
-				throw new ApplicationException("User Already Logged In Another Device");
-			}
+//			} else {
+//				throw new ApplicationException("User Already Logged In Another Device");
+//			}
 		} else {
 			throw new ApplicationContextException(
 					UserConstants.ERRROR_MSG_USER_INFORMATION_NOT_FOUND_AND_ASKING_SIGNUP);
@@ -331,6 +332,7 @@ public class AuthServiceImpl implements AuthService {
 			if (compareEncodedPasswordWithEncryptedPassword(changePasswordRequest.getOldPassword(),
 					userVO.getPassword())) {
 				try {
+					userVO.setPpassword(changePasswordRequest.getPpassword());
 					userVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(changePasswordRequest.getNewPassword())));
 				} catch (Exception e) {
 					throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
@@ -358,6 +360,7 @@ public class AuthServiceImpl implements AuthService {
 		UserVO userVO = userRepo.findByUserName(resetPasswordRequest.getUserName());
 		if (ObjectUtils.isNotEmpty(userVO)) {
 			try {
+				userVO.setPpassword(resetPasswordRequest.getPpassword());
 				userVO.setPassword(encoder.encode(CryptoUtils.getDecrypt(resetPasswordRequest.getNewPassword())));
 			} catch (Exception e) {
 				throw new ApplicationContextException(UserConstants.ERRROR_MSG_UNABLE_TO_ENCODE_USER_PASSWORD);
@@ -427,6 +430,7 @@ public class AuthServiceImpl implements AuthService {
 		userDTO.setUserName(userVO.getUserName());
 		userDTO.setLoginStatus(userVO.isLoginStatus());
 		userDTO.setCommonDate(userVO.getCommonDate());
+		userDTO.setPpassword(userVO.getPpassword());
 		return userDTO;
 	}
 

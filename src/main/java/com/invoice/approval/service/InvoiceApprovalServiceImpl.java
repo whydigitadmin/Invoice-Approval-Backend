@@ -100,11 +100,11 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 			dtl.put("exceedDays", det[12] != null ? det[12].toString() : "");
 			dtl.put("eligiSlab", det[13] != null ? Integer.parseInt(det[13].toString()) : 0);
 			dtl.put("unApproveAmt", det[14] != null ? df.format(new BigDecimal(det[14].toString())) : "");
-			dtl.put("osBeyond", det[24] != null ? df.format(new BigDecimal(det[24].toString())) : "");
-			dtl.put("excessCredit", det[25] != null ? df.format(new BigDecimal(det[25].toString())) : "");
-			dtl.put("category", det[26] != null ? det[26].toString() : "");
-			dtl.put("controllingOffice", det[27] != null ? det[27].toString() : "");
-			dtl.put("salespersonName", det[28] != null ? det[28].toString() : "");
+			dtl.put("osBeyond", det[20] != null ? df.format(new BigDecimal(det[20].toString())) : "");
+			dtl.put("excessCredit", det[21] != null ? df.format(new BigDecimal(det[21].toString())) : "");
+			dtl.put("category", det[22] != null ? det[22].toString() : "");
+			dtl.put("controllingOffice", det[23] != null ? det[23].toString() : "");
+			dtl.put("salespersonName", det[24] != null ? det[24].toString() : "");
 			
 			
 			report.add(dtl);
@@ -143,6 +143,7 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 			dtl.put("category", det[22] != null ? det[22].toString() : "");
 			dtl.put("controllingOffice", det[23] != null ? det[23].toString() : "");
 			dtl.put("salespersonName", det[24] != null ? det[24].toString() : "");
+			dtl.put("slabRemarks", det[25] != null ? det[25].toString() : "");
 			
 			
 			report.add(dtl);
@@ -153,10 +154,46 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 
 	
 	
+	@Override
+	public List<Map<String, Object>> getDayBookBranchWise(String branchName, String fromdate, String todate) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getDayBookBranchWise(branchName, fromdate, todate);
+		return getDayBookBranchWise(details);
+	}
 	
-
-
 	
+	private List<Map<String, Object>> getDayBookBranchWise(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			
+			dtl.put("branchCode", det[0] != null ? det[0].toString() : "");
+			dtl.put("vchNo", det[1] != null ? det[1].toString() : "");
+			dtl.put("vchDate", det[2] != null ? det[2].toString() : "");
+			dtl.put("docId", det[3] != null ? det[3].toString() : "");
+			dtl.put("docDt", det[4] != null ? det[4].toString() : "");
+
+			dtl.put("accountCode", det[5] != null ? det[5].toString() : "");
+			dtl.put("ledger", det[6] != null ? det[6].toString() : "");
+			dtl.put("subledgerCode", det[7] != null ? det[7].toString() : "");
+			dtl.put("subledgerName", det[8] != null ? det[8].toString() : "");
+			dtl.put("curr", det[9] != null ? det[9].toString() : "");
+			
+			dtl.put("exRate", det[10]  != null ? df.format(new BigDecimal(det[10].toString())) : "");
+			dtl.put("bdbAmount", det[11] != null ? df.format(new BigDecimal(det[11].toString())) : "");
+			dtl.put("bcrAmount", det[12] != null ? df.format(new BigDecimal(det[12].toString())) : "");
+			dtl.put("remarks", det[13] != null ? det[13].toString() : "");
+			
+			
+			report.add(dtl);
+		}
+		return report;
+	}
 	
 	@Override
 	public GstInvoiceHdrVO updateApprove1(Long id, String approval, String createdby,String userType) {
@@ -265,13 +302,13 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 	        dtl.put("jobBranch", det[0] != null ? det[0].toString() : "");
 	        
 	        // For other fields (income, expense, etc.), make sure you use the correct index for each one
-	        dtl.put("income", det[1] != null ? df.format(new BigDecimal(det[1].toString())) : "0.00");
-	        dtl.put("expense", det[2] != null ? df.format(new BigDecimal(det[2].toString())) : "0.00");
-	        dtl.put("gp", det[3] != null ? df.format(new BigDecimal(det[3].toString())) : "0.00");
-	        dtl.put("branchGP", det[4] != null ? df.format(new BigDecimal(det[4].toString())) : "0.00");
-	        dtl.put("retainGP", det[5] != null ? df.format(new BigDecimal(det[5].toString())) : "0.00");
-	        dtl.put("issuedGP", det[6] != null ? df.format(new BigDecimal(det[6].toString())) : "0.00");
-	        dtl.put("receivedGP", det[7] != null ? df.format(new BigDecimal(det[7].toString())) : "0.00");
+	        dtl.put("income", det[1] != null ? df.format(new BigDecimal(det[1].toString())) : "");
+	        dtl.put("expense", det[2] != null ? df.format(new BigDecimal(det[2].toString())) : "");
+	        dtl.put("gp", det[3] != null ? df.format(new BigDecimal(det[3].toString())) : "");
+	        dtl.put("branchGP", det[4] != null ? df.format(new BigDecimal(det[4].toString())) : "");
+	        dtl.put("retainGP", det[5] != null ? df.format(new BigDecimal(det[5].toString())) : "");
+	        dtl.put("issuedGP", det[6] != null ? df.format(new BigDecimal(det[6].toString())) : "");
+	        dtl.put("receivedGP", det[7] != null ? df.format(new BigDecimal(det[7].toString())) : "");
 
 	        // Add the map of details for the current row to the report list
 	        report.add(dtl);

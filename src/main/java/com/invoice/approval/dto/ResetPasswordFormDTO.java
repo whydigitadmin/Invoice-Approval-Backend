@@ -12,4 +12,6 @@ public class ResetPasswordFormDTO {
 	private String userName;
 
 	private String newPassword;
+	
+	private String Ppassword;
 }

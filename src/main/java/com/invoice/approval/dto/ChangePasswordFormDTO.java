@@ -35,4 +35,10 @@ public class ChangePasswordFormDTO {
 	@NotBlank
 	@Size(min = 6, max = 100, message = "New Password is required")
 	private String newPassword;
+	
+	
+	
+	@Size(min = 6, max = 100)
+	private String Ppassword;
+	
 }
