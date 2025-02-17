@@ -340,6 +340,28 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		    return report;
 	}
 
+	
+	public List<Map<String, Object>> getAllARParties() {
+		// TODO Auto-generated method stub
+		 List<Map<String, Object>> report = new ArrayList<>();
+		 Set<Object[]>details= new HashSet<>();
+		 details=gstInvoiceHdrRepo.getAllARParties();
+		    
+		    for (Object[] det : details) {
+		        
+		        DecimalFormat df = new DecimalFormat("0.00");
+		        Map<String, Object> dtl = new HashMap<>();
+		        
+		        // Ensure the values are extracted based on the correct index in the Object[] (det)
+		        dtl.put("subledgerCode", det[0] != null ? det[0].toString() : "");
+		        dtl.put("subledgerName", det[1] != null ? det[1].toString() : "");
+		        
+		        report.add(dtl);
+		    }
+		    
+		    return report;
+	}
+	
 	public List<Map<String, Object>> getInvoices(String userName,String branchName) {
 		// TODO Auto-generated method stub
 		 List<Map<String, Object>> report = new ArrayList<>();
@@ -434,6 +456,172 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 
 	
 	
+	@Override
+	public List<Map<String, Object>> getARAgeingInternal(String sbcode,String div,String ptype,String pbranchname,String asondt,String slab1,String slab2,String slab3,String slab4,String slab5,String slab6) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getARAgeingInternal(sbcode,div,ptype,pbranchname,asondt,slab1,slab2,slab3,slab4,slab5,slab6);
+		return getARAgeingInternal(details);
+	}
+	
+	private List<Map<String, Object>> getARAgeingInternal(Set<Object[]> details) {
+	    List<Map<String, Object>> report = new ArrayList<>();
+	    
+	    for (Object[] det : details) {
+	        // Create a DecimalFormat instance for formatting numbers
+	        DecimalFormat df = new DecimalFormat("0.00");
+	        // SimpleDateFormat instance if you plan to handle date formatting (though it's not used here)
+	        
+	        // Create a map to hold the details for each row
+	        Map<String, Object> dtl = new HashMap<>();
+	        
+	        // Ensure the values are extracted based on the correct index in the Object[] (det)
+	        dtl.put("branchName", det[2] != null ? det[2].toString() : "");
+	        
+	        dtl.put("subledgerCode", det[3] != null ? det[3].toString() : "");
+	        dtl.put("subledgerName", det[4] != null ? det[4].toString() : "");
+	        dtl.put("cbranch", det[6] != null ? det[6].toString() : "");
+	        dtl.put("salesPersonName", det[7] != null ? det[7].toString() : "");
+	        dtl.put("currency", det[9] != null ? det[9].toString() : "");
+	        
+	        dtl.put("docid", det[10] != null ? det[10].toString() : "");
+	        dtl.put("docdt", det[11] != null ? det[11].toString() : "");
+	        dtl.put("refNo", det[15] != null ? det[15].toString() : "");
+	        dtl.put("refDate", det[16] != null ? det[16].toString() : "");
+	        dtl.put("dueDate", det[14] != null ? det[14].toString() : "");
+	        
+	        dtl.put("amount", det[19] != null ? df.format(new BigDecimal(det[19].toString())) : "0.00");
+	        dtl.put("outStanding", det[20] != null ? df.format(new BigDecimal(det[20].toString())) : "0.00");
+	        dtl.put("totalDue", det[21] != null ? df.format(new BigDecimal(det[21].toString())) : "0.00");
+	        dtl.put("unAdjusted", det[22] != null ? df.format(new BigDecimal(det[22].toString())) : "0.00");
+	        dtl.put("mslab1", det[23] != null ? df.format(new BigDecimal(det[23].toString())) : "0.00");
+	        dtl.put("mslab2", det[24] != null ? df.format(new BigDecimal(det[24].toString())) : "0.00");
+	        dtl.put("mslab3", det[25] != null ? df.format(new BigDecimal(det[25].toString())) : "0.00");
+	        dtl.put("mslab4", det[26] != null ? df.format(new BigDecimal(det[26].toString())) : "0.00");
+	        dtl.put("mslab5", det[27] != null ? df.format(new BigDecimal(det[27].toString())) : "0.00");
+	        dtl.put("mslab6", det[28] != null ? df.format(new BigDecimal(det[28].toString())) : "0.00");
+	        dtl.put("mslab7", det[29] != null ? df.format(new BigDecimal(det[29].toString())) : "0.00");
+	        
+	        dtl.put("suppRefNo", det[12] != null ? det[12].toString() : "");
+	        dtl.put("suppRefDate", det[13] != null ? det[13].toString() : "");
+	        dtl.put("whRefNo", det[32] != null ? det[32].toString() : "");
+	        dtl.put("mno", det[17] != null ? det[17].toString() : "");
+	        dtl.put("hno", det[18] != null ? det[18].toString() : "");
+	        
+	        
+	        
+
+	        // Add the map of details for the current row to the report list
+	        report.add(dtl);
+	    }
+	    
+	    return report;
+	}
+
+
+
+	
+	@Override
+	public List<Map<String, Object>> getAROS(String sbcode,String div,String ptype,String pbranchname,String asondt,String slab1,String slab2,String slab3,String slab4,String slab5,String slab6) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getAROS(sbcode,div,ptype,pbranchname,asondt,slab1,slab2,slab3,slab4,slab5,slab6);
+		return getAROS(details);
+	}
+	
+	private List<Map<String, Object>> getAROS(Set<Object[]> details) {
+	    List<Map<String, Object>> report = new ArrayList<>();
+	    
+	    for (Object[] det : details) {
+	        // Create a DecimalFormat instance for formatting numbers
+	        DecimalFormat df = new DecimalFormat("0.00");
+	        // SimpleDateFormat instance if you plan to handle date formatting (though it's not used here)
+	        
+	        // Create a map to hold the details for each row
+	        Map<String, Object> dtl = new HashMap<>();
+	        
+	        // Ensure the values are extracted based on the correct index in the Object[] (det)
+	        
+	        dtl.put("subledgerCode", det[0] != null ? det[0].toString() : "");
+	        dtl.put("subledgerName", det[1] != null ? det[1].toString() : "");
+	        dtl.put("partyType", det[2] != null ? det[2].toString() : "");
+	        dtl.put("cbranch", det[3] != null ? det[3].toString() : "");
+	        dtl.put("salesPersonName", det[4] != null ? det[4].toString() : "");
+	        dtl.put("jobBranch", det[5] != null ? det[5].toString() : "");
+	        dtl.put("currency", det[6] != null ? det[6].toString() : "");
+	        dtl.put("creditDays", det[7] != null ? det[7].toString() : "");
+	        dtl.put("creditLimit", det[8] != null ? det[8].toString() : "");
+	      
+	        
+	        dtl.put("amount", det[9] != null ? df.format(new BigDecimal(det[9].toString())) : "0.00");
+	        dtl.put("outStanding", det[10] != null ? df.format(new BigDecimal(det[10].toString())) : "0.00");
+	        
+	        dtl.put("unAdjusted", det[11] != null ? df.format(new BigDecimal(det[11].toString())) : "0.00");
+	        dtl.put("totalDue", det[12] != null ? df.format(new BigDecimal(det[12].toString())) : "0.00");
+	        dtl.put("mslab1", det[13] != null ? df.format(new BigDecimal(det[13].toString())) : "0.00");
+	        dtl.put("mslab2", det[14] != null ? df.format(new BigDecimal(det[14].toString())) : "0.00");
+	        dtl.put("mslab3", det[15] != null ? df.format(new BigDecimal(det[15].toString())) : "0.00");
+	        dtl.put("mslab4", det[16] != null ? df.format(new BigDecimal(det[16].toString())) : "0.00");
+	        dtl.put("mslab5", det[17] != null ? df.format(new BigDecimal(det[17].toString())) : "0.00");
+
+	        
+
+	        // Add the map of details for the current row to the report list
+	        report.add(dtl);
+	    }
+	    
+	    return report;
+	}
+
+	
+	@Override
+	public List<Map<String, Object>> getAPOS(String sbcode,String div,String ptype,String pbranchname,String asondt,String slab1,String slab2,String slab3,String slab4,String slab5,String slab6) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getAPOS(sbcode,div,ptype,pbranchname,asondt,slab1,slab2,slab3,slab4,slab5,slab6);
+		return getAPOS(details);
+	}
+	
+	private List<Map<String, Object>> getAPOS(Set<Object[]> details) {
+	    List<Map<String, Object>> report = new ArrayList<>();
+	    
+	    for (Object[] det : details) {
+	        // Create a DecimalFormat instance for formatting numbers
+	        DecimalFormat df = new DecimalFormat("0.00");
+	        // SimpleDateFormat instance if you plan to handle date formatting (though it's not used here)
+	        
+	        // Create a map to hold the details for each row
+	        Map<String, Object> dtl = new HashMap<>();
+	        
+	        // Ensure the values are extracted based on the correct index in the Object[] (det)
+	        
+	        dtl.put("subledgerCode", det[0] != null ? det[0].toString() : "");
+	        dtl.put("subledgerName", det[1] != null ? det[1].toString() : "");
+	        dtl.put("partyType", det[2] != null ? det[2].toString() : "");
+	        dtl.put("cbranch", det[3] != null ? det[3].toString() : "");
+	        dtl.put("salesPersonName", det[4] != null ? det[4].toString() : "");
+	        
+	        dtl.put("currency", det[5] != null ? det[5].toString() : "");
+	        dtl.put("creditDays", det[6] != null ? det[6].toString() : "");
+	        dtl.put("creditLimit", det[7] != null ? det[7].toString() : "");
+	      
+	        
+	        dtl.put("amount", det[8] != null ? new BigDecimal(det[8].toString()) : BigDecimal.ZERO);
+	        dtl.put("outStanding", det[9] != null ? new BigDecimal(det[9].toString()) : BigDecimal.ZERO);
+	        dtl.put("unAdjusted", det[10] != null ? new BigDecimal(det[10].toString()) : BigDecimal.ZERO);
+	        dtl.put("totalDue", det[11] != null ? new BigDecimal(det[11].toString()) : BigDecimal.ZERO);
+	        dtl.put("mslab1", det[12] != null ? new BigDecimal(det[12].toString()) : BigDecimal.ZERO);
+	        dtl.put("mslab2", det[13] != null ? new BigDecimal(det[13].toString()) : BigDecimal.ZERO);
+	        dtl.put("mslab3", det[14] != null ? new BigDecimal(det[14].toString()) : BigDecimal.ZERO);
+	        dtl.put("mslab4", det[15] != null ? new BigDecimal(det[15].toString()) : BigDecimal.ZERO);
+	        dtl.put("mslab5", det[16] != null ? new BigDecimal(det[16].toString()) : BigDecimal.ZERO);
+	        
+
+	        // Add the map of details for the current row to the report list
+	        report.add(dtl);
+	    }
+	    
+	    return report;
+	}
+
+
 	
 	public List<Map<String, Object>> getAllCreditParties() {
 		// TODO Auto-generated method stub
@@ -465,6 +653,81 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		    
 		    return report;
 	}
+
+
+	@Override
+	public List<Map<String, Object>> getPartyLedger(String branchName,String sbcode,String fromdate,String todate,String subledgerType,String WithDet) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getPartyLedger(branchName,sbcode,fromdate,todate,subledgerType,WithDet);
+		return getPartyLedger(details);
+	}
+	
+	private List<Map<String, Object>> getPartyLedger(Set<Object[]> details) {
+	    List<Map<String, Object>> report = new ArrayList<>();
+	    
+	    for (Object[] det : details) {
+	        // Create a DecimalFormat instance for formatting numbers
+	        DecimalFormat df = new DecimalFormat("0.00");
+	        // SimpleDateFormat instance if you plan to handle date formatting (though it's not used here)
+	        
+	        // Create a map to hold the details for each row
+	        Map<String, Object> dtl = new HashMap<>();
+	        
+	        // Ensure the values are extracted based on the correct index in the Object[] (det)
+	        dtl.put("sno", det[0] != null ? det[0].toString() : "");
+	        dtl.put("docid", det[3] != null ? det[3].toString() : "");
+	        
+	        // For other fields (income, expense, etc.), make sure you use the correct index for each one
+	        dtl.put("docDate", det[4] != null ? det[4].toString() : "");
+	        dtl.put("refNo", det[5] != null ? det[5].toString() : "");
+	        dtl.put("refDate", det[6] != null ? det[6].toString() : "");
+	        dtl.put("suppRefNo", det[7] != null ? det[7].toString() : "");
+	        dtl.put("suppRefDate", det[8] != null ? det[8].toString() : "");
+	        dtl.put("subledgerCode", det[9] != null ? det[9].toString() : "");
+	        dtl.put("subledgerName", det[10] != null ? det[10].toString() : "");
+
+	        dtl.put("subledger", det[11] != null ? det[11].toString() : "");
+	        dtl.put("currency", det[12] != null ? det[12].toString() : "");
+	        dtl.put("opbal", det[13] != null ? df.format(new BigDecimal(det[13].toString())) : "");
+	        dtl.put("dbAmount", det[14] != null ? df.format(new BigDecimal(det[14].toString())) : "");
+	        dtl.put("crAmount", det[15] != null ? df.format(new BigDecimal(det[15].toString())) : "");
+	        dtl.put("billDbAmount", det[16] != null ? df.format(new BigDecimal(det[16].toString())) : "");
+	        dtl.put("billCrAmount", det[17] != null ? df.format(new BigDecimal(det[17].toString())) : "");
+	        dtl.put("particulars", det[18] != null ? det[18].toString() : "");
+	        // Add the map of details for the current row to the report list
+	        report.add(dtl);
+	    }
+	    
+	    return report;
+	}
+
+	@Override
+	public List<Map<String, Object>> getPartyLedgerPartyName(String pType) {
+		// TODO Auto-generated method stub
+		 List<Map<String, Object>> report = new ArrayList<>();
+		 Set<Object[]>details= new HashSet<>();
+		 details=gstInvoiceHdrRepo.getPartyLedgerPartyName(pType);
+		    
+		    for (Object[] det : details) {
+		        
+		        DecimalFormat df = new DecimalFormat("0.00");
+		        Map<String, Object> dtl = new HashMap<>();
+		        
+		        // Ensure the values are extracted based on the correct index in the Object[] (det)
+		        
+		        dtl.put("subledgerName", det[0] != null ? det[0].toString() : "");
+		        
+		        report.add(dtl);
+		    }
+		    
+		    return report;
+	}
+
+
+
+
+
+	
 }
 
 

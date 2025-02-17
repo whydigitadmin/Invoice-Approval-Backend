@@ -50,11 +50,11 @@ public class InvoiceApprovalController extends BaseController {
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
 		}
 		if (StringUtils.isEmpty(errorMsg)) {
-			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Pending Approval Details  found Successfullly");
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Pending PartyOS Details  found Successfullly");
 			responseObjectsMap.put("pendingApprovalDetails", pendingApprovalDetails);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
-			responseDTO = createServiceResponseError(responseObjectsMap, "Pending Approval Details information receive failed",
+			responseDTO = createServiceResponseError(responseObjectsMap, "Pending PartyOS Details information receive failed",
 					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
@@ -145,6 +145,146 @@ public class InvoiceApprovalController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+
+	
+	@GetMapping("/getARAgeingInternal")
+	public ResponseEntity<ResponseDTO>getARAgeingInternal (@RequestParam String sbcode,@RequestParam String div,@RequestParam String ptype,@RequestParam String pbranchname,@RequestParam String asondt,@RequestParam String slab1,@RequestParam String slab2,@RequestParam String slab3,@RequestParam String slab4,@RequestParam String slab5,@RequestParam String slab6) {
+		String methodName = "getARAgeingInternal()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> arAgeingDetails = new ArrayList<Map<String, Object>>();
+		try {
+			arAgeingDetails = invoiceApprovalService.getARAgeingInternal(sbcode,div,ptype,pbranchname,asondt,slab1,slab2,slab3,slab4,slab5,slab6);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AR Ageing  found Successfullly");
+			responseObjectsMap.put("arAgeingDetails", arAgeingDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AR Ageing Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+
+	@GetMapping("/getAROS")
+	public ResponseEntity<ResponseDTO>getAROS(@RequestParam String sbcode,@RequestParam String div,@RequestParam String ptype,@RequestParam String pbranchname,@RequestParam String asondt,@RequestParam String slab1,@RequestParam String slab2,@RequestParam String slab3,@RequestParam String slab4,@RequestParam String slab5,@RequestParam String slab6) {
+		String methodName = "getAROS()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> arOSDetails= new ArrayList<Map<String, Object>>();
+		try {
+			arOSDetails = invoiceApprovalService.getAROS(sbcode,div,ptype,pbranchname,asondt,slab1,slab2,slab3,slab4,slab5,slab6);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AR OS  found Successfullly");
+			responseObjectsMap.put("arOSDetails", arOSDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AR OS Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	@GetMapping("/getAPOS")
+	public ResponseEntity<ResponseDTO>getAPOS(@RequestParam String sbcode,@RequestParam String div,@RequestParam String ptype,@RequestParam String pbranchname,@RequestParam String asondt,@RequestParam String slab1,@RequestParam String slab2,@RequestParam String slab3,@RequestParam String slab4,@RequestParam String slab5,@RequestParam String slab6) {
+		String methodName = "getAPOS()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> apOSDetails= new ArrayList<Map<String, Object>>();
+		try {
+			apOSDetails = invoiceApprovalService.getAPOS(sbcode,div,ptype,pbranchname,asondt,slab1,slab2,slab3,slab4,slab5,slab6);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AP OS  found Successfullly");
+			responseObjectsMap.put("apOSDetails", apOSDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AP OS Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+
+	
+	@GetMapping("/getPartyLedger")
+	public ResponseEntity<ResponseDTO>getPartyLedger(@RequestParam String branchName,@RequestParam String sbcode,@RequestParam String fromdate,@RequestParam String todate,@RequestParam String subledgerType,@RequestParam String WithDet) {
+		String methodName = "getPartyLedger()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> pldetails= new ArrayList<Map<String, Object>>();
+		try {
+			pldetails = invoiceApprovalService.getPartyLedger(branchName,sbcode,fromdate,todate,subledgerType,WithDet);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PL  found Successfullly");
+			responseObjectsMap.put("pldetails", pldetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "PL Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getPartyLedgerPartyName")
+	public ResponseEntity<ResponseDTO>getPartyLedgerPartyName(@RequestParam String pType) {
+		String methodName = "getPartyLedgerPartyName(pType)";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> plParties= new ArrayList<Map<String, Object>>();
+		try {
+			plParties = invoiceApprovalService.getPartyLedgerPartyName(pType);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PL  found Successfullly");
+			responseObjectsMap.put("plParties", plParties);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AP OS Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 	
 	@GetMapping("/getAllAPParties")
 	public ResponseEntity<ResponseDTO> getAllAPParties() {
@@ -175,6 +315,33 @@ public class InvoiceApprovalController extends BaseController {
 
 	
 
+	
+	@GetMapping("/getAllARParties")
+	public ResponseEntity<ResponseDTO> getAllARParties() {
+		String methodName = "getAllARParties()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> partyDetails = new ArrayList<Map<String, Object>>();
+		try {
+			partyDetails = invoiceApprovalService.getAllARParties();
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "AR Party  found Successfullly");
+			responseObjectsMap.put("partyDetails", partyDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "AR Party Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 	
 	
 	@GetMapping("/getAllCreditParties")
