@@ -3,10 +3,12 @@ package com.invoice.approval.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
 import com.invoice.approval.entity.GstInvoiceHdrVO;
+import com.invoice.approval.entity.IRNQRVO;
 import com.invoice.approval.exception.ApplicationException;
 
 @Service
@@ -46,5 +48,48 @@ public interface InvoiceApprovalService {
     List<Map<String, Object>> getPartyLedger(String branchName,String sbcode,String fromdate,String todate,String subledgerType,String WithDet);
 	
 	List<Map<String, Object>> getPartyLedgerPartyName(String pType);
+	
+	List<Map<String, Object>> getLedgerAccountName();
+	
+	List<Map<String, Object>> getGSTR1Parties();
+	
+	List<Map<String, Object>> getGSTR1Filling(String branchName,String sbcode,String fromdate,String todate);
+	
+	List<Map<String, Object>> getProfitAndLoss(String branchName,String fromdate,String todate);
+	
+	List<Map<String, Object>> getTrailBalance(String branchName,String finyr,String fromdate,String todate,String WithDet);
+	
+	List<Map<String, Object>> getLedgerReport(String branchName,String accountName,String fromdate,String todate,String WithDet);
+	
+	List<Map<String, Object>> getAllOpenJobs(String branchName);
+	
+	List<Map<String, Object>> getJobUnApproveDetails(String jobNo);
+	
+	List<Map<String, Object>> getJobIncome(String jobNo);
+	
+	List<Map<String, Object>> getJobExpense(String jobNo);
+	
+	List<Map<String, Object>> getJobCloseddt(String jobNo,String closed);
+	
+    List<Map<String, Object>> getJobCostDetails(String branchName,String jobNo);
+	
+	List<Map<String, Object>> getJobCostSummary(String branchName,String jobNo);
+	
+	List<Map<String, Object>> getIRNDetails(String docNo);
+	
+	List<Map<String, Object>> getIRNDetailsList(String branchCode);
+	
+	List<Map<String, Object>> getIRNGridDetails(String docNo);
+	
+	IRNQRVO getIRNQRbyDocNo(String docNo);
+	
+	List<Map<String, Object>> getIRNJobDetails(String docNo);
+	
+	List<Map<String, Object>> getIRNJobInfo(String jobNo);
+	
+	List<Map<String, Object>> getIRNJobContDetails(String docNo);
+	
+
+	
 	
 }

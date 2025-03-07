@@ -21,6 +21,7 @@ import com.invoice.approval.common.CommonConstant;
 import com.invoice.approval.common.UserConstants;
 import com.invoice.approval.dto.ResponseDTO;
 import com.invoice.approval.entity.GstInvoiceHdrVO;
+import com.invoice.approval.entity.IRNQRVO;
 import com.invoice.approval.service.InvoiceApprovalService;
 
 @RestController
@@ -314,6 +315,569 @@ public class InvoiceApprovalController extends BaseController {
 	}
 
 	
+	
+	@GetMapping("/getGSTR1Parties")
+	public ResponseEntity<ResponseDTO> getGSTR1Parties() {
+		String methodName = "getGSTR1Parties()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> GSTR1PartiesDetails = new ArrayList<Map<String, Object>>();
+		try {
+			GSTR1PartiesDetails = invoiceApprovalService.getGSTR1Parties();
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "GSTR1 Party  found Successfullly");
+			responseObjectsMap.put("GSTR1PartiesDetails", GSTR1PartiesDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "GSTR1 Party Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getGSTR1Filling")
+	public ResponseEntity<ResponseDTO>getGSTR1Filling(@RequestParam String branchName,@RequestParam String sbcode,@RequestParam String fromdate,@RequestParam String todate) {
+		String methodName = "getGSTR1Filling()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> GSTR1details= new ArrayList<Map<String, Object>>();
+		try {
+			GSTR1details = invoiceApprovalService.getGSTR1Filling(branchName,sbcode,fromdate,todate);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "GSTR1 Details  found Successfullly");
+			responseObjectsMap.put("GSTR1details", GSTR1details);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "GSTR1 Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	
+	@GetMapping("/getIRNJobContDetails")
+	public ResponseEntity<ResponseDTO>getIRNJobContDetails(@RequestParam String docNo) {
+		String methodName = "getIRNJobInfo()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> irnjobcontdtls= new ArrayList<Map<String, Object>>();
+		try {
+			irnjobcontdtls = invoiceApprovalService.getIRNJobContDetails(docNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IRN Job Cont Details found Successfullly");
+			responseObjectsMap.put("irnjobcontdtls", irnjobcontdtls);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "IRN Job Cont Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	
+	@GetMapping("/getIRNJobInfo")
+	public ResponseEntity<ResponseDTO>getIRNJobInfo(@RequestParam String jobNo) {
+		String methodName = "getIRNJobInfo()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> irnjobinfodtls= new ArrayList<Map<String, Object>>();
+		try {
+			irnjobinfodtls = invoiceApprovalService.getIRNJobInfo(jobNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IRN Job Info Details found Successfullly");
+			responseObjectsMap.put("irnjobinfodtls", irnjobinfodtls);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "IRN Job Info Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	@GetMapping("/getIRNJobDetails")
+	public ResponseEntity<ResponseDTO>getIRNJobDetails(@RequestParam String docNo) {
+		String methodName = "getIRNJobDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> irnjobdtls= new ArrayList<Map<String, Object>>();
+		try {
+			irnjobdtls = invoiceApprovalService.getIRNJobDetails(docNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IRN Job Details found Successfullly");
+			responseObjectsMap.put("irnjobdtls", irnjobdtls);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "IRN Job Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getIRNQRbyDocNo")
+	public ResponseEntity<ResponseDTO>getIRNQRbyDocNo(@RequestParam String docNo) {
+		String methodName = "getIRNQRbyDocNo()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		IRNQRVO irnVo = new IRNQRVO();
+		try {
+			irnVo = invoiceApprovalService.getIRNQRbyDocNo(docNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IRN QR  found Successfullly");
+			responseObjectsMap.put("irnVo", irnVo);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "IRN QR Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	
+	
+	@GetMapping("/getIRNGridDetails")
+	public ResponseEntity<ResponseDTO>getIRNGridDetails(@RequestParam String docNo) {
+		String methodName = "getIRNGridDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> irngridlistdetails= new ArrayList<Map<String, Object>>();
+		try {
+			irngridlistdetails = invoiceApprovalService.getIRNGridDetails(docNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IRN Grid  found Successfullly");
+			responseObjectsMap.put("irngridlistdetails", irngridlistdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "IRN Grid Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	@GetMapping("/getIRNDetailsList")
+	public ResponseEntity<ResponseDTO>getIRNDetailsList(@RequestParam String branchCode) {
+		String methodName = "getIRNDetailsList()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> irnlistdetails= new ArrayList<Map<String, Object>>();
+		try {
+			irnlistdetails = invoiceApprovalService.getIRNDetailsList(branchCode);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "IRN Details  found Successfullly");
+			responseObjectsMap.put("irnlistdetails", irnlistdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "IRN Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	@GetMapping("/getIRNDetails")
+	public ResponseEntity<ResponseDTO>getIRNDetails(@RequestParam String docNo) {
+		String methodName = "getIRNDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> irndetails= new ArrayList<Map<String, Object>>();
+		try {
+			irndetails = invoiceApprovalService.getIRNDetails(docNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "GSTR1 Details  found Successfullly");
+			responseObjectsMap.put("irndetails", irndetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "GSTR1 Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getProfitAndLoss")
+	public ResponseEntity<ResponseDTO>getProfitAndLoss(@RequestParam String branchName,@RequestParam String fromdate,@RequestParam String todate) {
+		String methodName = "getProfitAndLoss()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> pldetails= new ArrayList<Map<String, Object>>();
+		try {
+			pldetails = invoiceApprovalService.getProfitAndLoss(branchName,fromdate,todate);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PL Details  found Successfullly");
+			responseObjectsMap.put("pldetails", pldetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Pl Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+
+	
+	@GetMapping("/getAllOpenJobs")
+	public ResponseEntity<ResponseDTO>getAllOpenJobs(@RequestParam String branchName) {
+		String methodName = "getAllOpenJobs()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> jobdetails= new ArrayList<Map<String, Object>>();
+		try {
+			jobdetails = invoiceApprovalService.getAllOpenJobs(branchName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Job Details  found Successfullly");
+			responseObjectsMap.put("jobdetails", jobdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Job Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+
+	@GetMapping("/getJobCostDetails")
+	public ResponseEntity<ResponseDTO>getJobCostDetails(@RequestParam String branchName,String jobNo) {
+		String methodName = "getJobCostDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> jobdetails= new ArrayList<Map<String, Object>>();
+		try {
+			jobdetails = invoiceApprovalService.getJobCostDetails(branchName,jobNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Job Details  found Successfullly");
+			responseObjectsMap.put("jobdetails", jobdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Job Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+
+	@GetMapping("/getJobCostSummary")
+	public ResponseEntity<ResponseDTO>getJobCostSummary(@RequestParam String branchName,String jobNo) {
+		String methodName = "getJobCostSummary()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> jobsumamarydetails= new ArrayList<Map<String, Object>>();
+		try {
+			jobsumamarydetails = invoiceApprovalService.getJobCostSummary(branchName,jobNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Job Summary Details  found Successfullly");
+			responseObjectsMap.put("jobsumamarydetails", jobsumamarydetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Job Summary Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+
+	
+	@GetMapping("/getJobUnApproveDetails")
+	public ResponseEntity<ResponseDTO>getJobUnApproveDetails(@RequestParam String jobNo) {
+		String methodName = "getJobUnApproveDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> jobdetails= new ArrayList<Map<String, Object>>();
+		try {
+			jobdetails = invoiceApprovalService.getJobUnApproveDetails(jobNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Un Approve Job Details  found Successfullly");
+			responseObjectsMap.put("jobdetails", jobdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Un Approve Job Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	
+	@GetMapping("/getJobCloseddt")
+	public ResponseEntity<ResponseDTO>getJobCloseddt(@RequestParam String jobNo,String closed) {
+		String methodName = "getJobCloseddt()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> jobcloseddtdetails= new ArrayList<Map<String, Object>>();
+		try {
+			jobcloseddtdetails = invoiceApprovalService.getJobCloseddt(jobNo,closed);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Job Closed Date Details  found Successfullly");
+			responseObjectsMap.put("jobcloseddtdetails", jobcloseddtdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Job Closed Date Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	@GetMapping("/getJobIncome")
+	public ResponseEntity<ResponseDTO>getJobIncome(@RequestParam String jobNo) {
+		String methodName = "getJobIncome()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> jobincomedetails= new ArrayList<Map<String, Object>>();
+		try {
+			jobincomedetails = invoiceApprovalService.getJobIncome(jobNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Job Income Details  found Successfullly");
+			responseObjectsMap.put("jobincomedetails", jobincomedetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Job Income Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+
+	
+	@GetMapping("/getJobExpense")
+	public ResponseEntity<ResponseDTO>getJobExpense(@RequestParam String jobNo) {
+		String methodName = "getJobExpense()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> jobexpensedetails= new ArrayList<Map<String, Object>>();
+		try {
+			jobexpensedetails = invoiceApprovalService.getJobExpense(jobNo);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Job Expense Details  found Successfullly");
+			responseObjectsMap.put("jobexpensedetails", jobexpensedetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Job Expense Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	@GetMapping("/getTrailBalance")
+	public ResponseEntity<ResponseDTO>getTrailBalance(@RequestParam String branchName,@RequestParam String finyr,@RequestParam String fromdate,@RequestParam String todate,@RequestParam String WithDet) {
+		String methodName = "getTrailBalance()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> tbdetails= new ArrayList<Map<String, Object>>();
+		try {
+			tbdetails = invoiceApprovalService.getTrailBalance(branchName,finyr,fromdate,todate,WithDet);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "TB Details  found Successfullly");
+			responseObjectsMap.put("tbdetails", tbdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "TB Details Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	@GetMapping("/getLedgerReport")
+	public ResponseEntity<ResponseDTO>getLedgerReport(@RequestParam String branchName,@RequestParam String accountName,@RequestParam String fromdate,@RequestParam String todate,@RequestParam String WithDet) {
+		String methodName = "getLedgerReport()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> lrdetails= new ArrayList<Map<String, Object>>();
+		try {
+			lrdetails = invoiceApprovalService.getLedgerReport(branchName,accountName,fromdate,todate,WithDet);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Ledger Report  found Successfullly");
+			responseObjectsMap.put("lrdetails", lrdetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Ledger Report Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getLedgerAccountName")
+	public ResponseEntity<ResponseDTO> getLedgerAccountName() {
+		String methodName = "getLedgerAccountName()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> accDetail = new ArrayList<Map<String, Object>>();
+		try {
+			accDetail = invoiceApprovalService.getLedgerAccountName();
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "ACcount Name  found Successfullly");
+			responseObjectsMap.put("accDetail", accDetail);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Account Name information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 	
 	@GetMapping("/getAllARParties")
