@@ -21,6 +21,69 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 	@Query(value = "select a from GstInvoiceHdrVO a where a.gstInvoiceHdrId=?1")
 	GstInvoiceHdrVO findByGstInvoiceHdrId(Long id);
 	
+	
+	
+	@Query(nativeQuery = true,value = "select sum(invunapprove)invunapprove,sum(invapprove)invapprove,sum(cnunapprove)cnunapprove,sum(cnapprove)cnapprove from (\r\n"
+			+ "select sum(invunapprove)invunapprove,sum(invapprove)invapprove,0 cnunapprove,0 cnapprove  from (\r\n"
+			+ "select case when approve1 = 'F' then count(*) else 0 end invunapprove,\r\n"
+			+ "case when approve1 = 'T' then count(*)else 0  end invapprove from gst_invoicehdr a,mg_partyhdr b \r\n"
+			+ "            where a.partycode = b.party_code  and eligchk = 'F' and a.cancel = 'F'  \r\n"
+			+ "                                    and to_date(a.createdon) between TRUNC(SYSDATE, 'MM') and \r\n"
+			+ "ADD_MONTHS(TRUNC(SYSDATE, 'MM'), +1)-1\r\n"
+			+ "           AND eligislab = 1 AND a.branchcode in (select branchcode from vg_userbranch where (userName =?1 or 'admin'=?1 ))\r\n"
+			+ "           group by approve1)   \r\n"
+			+ "union\r\n"
+			+ "select 0 invunapprove,0 invapprove ,sum(cnunapprove)cnunapprove,sum(cnapprove)cnapprove  from (\r\n"
+			+ "select case when approve1 = 'F' then count(*) else 0 end cnunapprove,\r\n"
+			+ "case when approve1 = 'T' then count(*)else 0  end cnapprove from gst_precredit a ,vw_currentos b,mg_partyhdr c\r\n"
+			+ "                       where  a.partycode = b.subledgercode(+) and a.partycode = c.party_code and a.cancel = 'F' \r\n"
+			+ "                        AND a.branchname in (select branchname from vg_userbranch where (userName = ?1 or 'admin'= ?1 )) \r\n"
+			+ "                        and TO_DATE(a.createdon, 'DD-MM-YYYY HH:MI:SS AM') BETWEEN TRUNC(SYSDATE, 'MM') AND ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1) - 1 group by approve1)\r\n"
+			+ ")")
+	Set<Object[]> getApprove1Db(String userName);
+	
+	
+	@Query(nativeQuery = true,value = "select branchcode,sum(invunapprove)invunapprove,sum(invapprove)invapprove,sum(cnunapprove)cnunapprove,sum(cnapprove)cnapprove from (\r\n"
+			+ "            select branchcode,sum(invunapprove)invunapprove,sum(invapprove)invapprove,0 cnunapprove,0 cnapprove  from (\r\n"
+			+ "            select a.branchcode,case when approve1 = 'F' then count(*) else 0 end invunapprove,\r\n"
+			+ "            case when approve1 = 'T' then count(*)else 0  end invapprove from gst_invoicehdr a,mg_partyhdr b \r\n"
+			+ "                        where a.partycode = b.party_code   \r\n"
+			+ "                                                and to_date(a.createdon) between TRUNC(SYSDATE, 'MM') and \r\n"
+			+ "            ADD_MONTHS(TRUNC(SYSDATE, 'MM'), +1)-1\r\n"
+			+ "                       AND eligislab = 1 AND a.branchcode in (select branchcode from vg_userbranch where (userName =?1 or 'admin'=?1 ))\r\n"
+			+ "                       and eligchk = 'F' and a.cancel = 'F'\r\n"
+			+ "                       group by a.branchcode,approve1\r\n"
+			+ "                       )group by branchcode   \r\n"
+			+ "            union\r\n"
+			+ "            select branchcode,0 invunapprove,0 invapprove ,sum(cnunapprove)cnunapprove,sum(cnapprove)cnapprove  from (\r\n"
+			+ "            select d.branchcode,case when approve1 = 'F' then count(*) else 0 end cnunapprove,\r\n"
+			+ "            case when approve1 = 'T' then count(*)else 0  end cnapprove from gst_precredit a ,vw_currentos b,mg_partyhdr c,mg_branchhdr d\r\n"
+			+ "                                   where  a.partycode = b.subledgercode(+) and a.partycode = c.party_code and a.cancel = 'F'\r\n"
+			+ "                                   and a.branchname = d.branchname \r\n"
+			+ "                                    AND a.branchname in (select branchname from vg_userbranch where (userName = ?1 or 'admin'= ?1 )) \r\n"
+			+ "                                    and TO_DATE(a.createdon, 'DD-MM-YYYY HH?MI?SS AM') BETWEEN TRUNC(SYSDATE, 'MM') AND ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1) - 1 group by d.branchcode,approve1                                    \r\n"
+			+ "                                    )\r\n"
+			+ "                                    group by branchcode\r\n"
+			+ "            )group by branchcode\r\n"
+			+ "            order by branchcode")
+	Set<Object[]> getApprove1TblDb(String userName);
+	
+	
+	@Query(nativeQuery = true,value = "select partyname,cnunapprove,cnapprove from ( select a.partyname,case when approve1 = 'F' then count(*) else 0 end cnunapprove,\r\n"
+			+ "            case when approve1 = 'T' then count(*)else 0  end cnapprove from gst_precredit a ,vw_currentos b,mg_partyhdr c\r\n"
+			+ "                                   where  a.partycode = b.subledgercode(+) and a.partycode = c.party_code and a.cancel = 'F'\r\n"
+			+ "                                    AND a.branchname in (select branchname from vg_userbranch where (userName = ?1 or 'admin'= ?1 )) \r\n"
+			+ "                                    and TO_DATE(a.createdon, 'DD-MM-YYYY HH:MI:SS AM') BETWEEN TRUNC(SYSDATE, 'MM') AND ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1) - 1 group by a.partyname,approve1 "
+			+ "                               order by 2 desc ) where cnunapprove > 0 ")
+	Set<Object[]> getApprove1ChartDb(String userName);
+	
+	
+	@Query(nativeQuery = true,value = "select b.party_name,b.party_code,b.onyear,b.category,b.creditlimit,b.creditdays,b.salespersonname,a.ctrloffice,a.totdue from vw_currentos a,mg_partyhdr b where a.subledgercode = b.party_code\r\n"
+			+ "and party_name = ?1 ")
+	Set<Object[]> getHaiCustomerDetails(String pName);
+	
+	
+	
 	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,slabremarks,decode(exceeddays,'91','90P',exceeddays)exceeddays,eligislab,unapproveamt,approve1,approve1name,approve1on,approve2,approve2name,approve2on,approve3,approve3name,approve3on,osbeyond,excesscredit,category,controllingoffice, case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname \r\n"
 			+ "from gst_invoicehdr a,mg_partyhdr b \r\n"
 			+ "where invproceed = 'F' and eligislab = 1 and approve1 = 'T' and a.partycode = b.party_code and  approve2='F' and approve2name is null and a.branchcode in (select branchcode from vg_userbranch where (userName =?1 or 'admin'=?1 )) order by a.createdon desc")

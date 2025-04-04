@@ -2,16 +2,21 @@ package com.invoice.approval.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.invoice.approval.dto.CreatedUpdatedDate;
 
 import lombok.AllArgsConstructor;
@@ -49,6 +54,15 @@ public class CRPreAppVO {
 
 	    @Column(name = "crremarks", length = 100)
 	    private String crRemarks;
+	    
+	    @Column(name = "description", length = 200)
+	    private String description;
+
+	    @Column(name = "plimpact", length = 10)
+	    private String plImpact;
+
+	    @Column(name = "documentsrequired", length = 400)
+	    private String documentsRequired;
 
 	    @Column(name = "partyname", length = 200)
 	    private String partyName;
@@ -80,6 +94,25 @@ public class CRPreAppVO {
 
 	    @Column(name = "APPROVE1ON")
 	    private LocalDateTime approve1On;
+	    
+		@Column(name = "approve2", length = 1)
+	    private String approve2="F";	
+		
+
+	    @Column(name = "APPROVE2NAME", length = 30)
+	    private String approve2Name;
+
+	    @Column(name = "APPROVE2ON")
+	    private LocalDateTime approve2On;
+	    
+	    
+//	    @Lob
+//		@Column(name = "attachment", columnDefinition="BLOB")
+//		private byte[] attachment;
+	    
+	    @JsonManagedReference
+	    @OneToMany(mappedBy = "CrPreAppVO",cascade = CascadeType.ALL)
+		private List<CRPreAppAttachmentVO> crPreAppAttachmentVO;
 	
 		@Column(name = "createdby")
 		private String createdBy;

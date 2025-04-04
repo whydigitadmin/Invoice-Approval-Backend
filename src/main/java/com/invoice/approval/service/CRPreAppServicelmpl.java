@@ -1,5 +1,6 @@
 package com.invoice.approval.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -12,13 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.validation.Valid;
+import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.invoice.approval.dto.CRPreAppDTO;
+import com.invoice.approval.entity.CRPreAppAttachmentVO;
 import com.invoice.approval.entity.CRPreAppVO;
 import com.invoice.approval.exception.ApplicationException;
 import com.invoice.approval.repo.CRPreAppRepo;
@@ -61,7 +64,12 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 	public List<Map<String, Object>> getPendingApprovalReport(String userType,String userName) {
 		
 		Set<Object[]>details= new HashSet<>();
-		if(userType.equals("approve3"))
+		if(userType.equals("approve1"))
+		{
+			details=crPreAppRepo.getCRPendingDetailsApprove1slab1(userName);
+			
+		}
+		if(userName.equals("admin"))
 		{
 			details=crPreAppRepo.getCRPendingDetailsApprove1slab1(userName);
 			
@@ -75,16 +83,43 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 	public List<Map<String, Object>> getApprovalReport(String userType,String userName) {
 		
 		Set<Object[]>details= new HashSet<>();
-		if(userType.equals("approve3"))
+		if(userType.equals("approve1"))
 		{
 			
 			details=crPreAppRepo.getCRApproveDetailsApprove1slab1(userName);
 		}
-		
+		if(userName.equals("admin"))
+		{
+			details=crPreAppRepo.getCRApproveDetailsApprove1slab1(userName);
+			
+		}
 		
 		return approveDetails(details);
 	}
 
+	@Override
+	public List<Map<String, Object>> getApprovalReport2(String userType,String userName) {
+		
+		Set<Object[]>details= new HashSet<>();
+		if(userType.equals("approve2"))
+		{
+			
+			details=crPreAppRepo.getCRApproveDetailsApprove2slab1(userName);
+		}
+		
+		if(userName.equals("admin"))
+		{
+			details=crPreAppRepo.getCRApproveDetailsApprove2slab1(userName);
+			
+		}
+		return approveDetails(details);
+	}
+
+	
+	
+	
+	
+	
 	
 	private List<Map<String, Object>> pendingDetails(Set<Object[]> details) {
 		List<Map<String,Object>>report=new ArrayList<>();
@@ -113,6 +148,9 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 			dtl.put("creditLimit", det[17] != null ? det[17].toString() : "");
 			dtl.put("creditDays", det[18] != null ? det[18].toString() : "");
 			dtl.put("salesPersonName", det[19] != null ? det[19].toString() : "");
+			dtl.put("description", det[20] != null ? det[20].toString() : "");
+			dtl.put("plImpact", det[21] != null ? det[21].toString() : "");
+			dtl.put("documentsRequired", det[22] != null ? det[22].toString() : "");
 			
 			report.add(dtl);
 		}
@@ -147,6 +185,9 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 			dtl.put("creditLimit", det[17] != null ? det[17].toString() : "");
 			dtl.put("creditDays", det[18] != null ? det[18].toString() : "");
 			dtl.put("salesPersonName", det[19] != null ? det[19].toString() : "");
+			dtl.put("description", det[20] != null ? det[20].toString() : "");
+			dtl.put("plImpact", det[21] != null ? det[21].toString() : "");
+			dtl.put("documentsRequired", det[22] != null ? det[22].toString() : "");
 			
 			report.add(dtl);
 		}
@@ -167,6 +208,9 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 		crPreAppVO.setCrAmt(crPreAppDTO.getCrAmt());
 		crPreAppVO.setReason(crPreAppDTO.getReason());
 		crPreAppVO.setPtype(crPreAppDTO.getPtype());
+		crPreAppVO.setDescription(crPreAppDTO.getDescription());
+		crPreAppVO.setPlImpact(crPreAppDTO.getPlImpact());
+		crPreAppVO.setDocumentsRequired(crPreAppDTO.getDocumentsRequired());
 		return crPreAppVO;
 	}
 
@@ -174,7 +218,7 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 	@Override
 	public CRPreAppVO updateApprove1(Long id, String approval, String createdby,String userType) {
 		CRPreAppVO crPreAppvo= crPreAppRepo.findByGSTPreCreditrId(id);
-		if(userType.equals("approve3"))
+		if(userType.equals("approve1"))
 		{
 			if(approval.equals("1"))
 			{
@@ -193,5 +237,123 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 		
 		return crPreAppRepo.save(crPreAppvo);
 	}
+
+	
+	@Override
+	public CRPreAppVO updateApprove2(Long id, String approval, String createdby,String userType) {
+		CRPreAppVO crPreAppvo= crPreAppRepo.findByGSTPreCreditrId(id);
+		if(userType.equals("approve2"))
+		{
+			if(approval.equals("2"))
+			{
+				crPreAppvo.setApprove2("T");
+				crPreAppvo.setApprove2Name(createdby);
+				crPreAppvo.setApprove2On(LocalDateTime.now());
+				
+			}
+			else {
+				crPreAppvo.setApprove2("F");
+				crPreAppvo.setApprove2Name(createdby);
+				crPreAppvo.setApprove2On(LocalDateTime.now());
+				
+			}
+		}
+		
+		return crPreAppRepo.save(crPreAppvo);
+	}
+
+	
+	@Override
+	public List<Map<String, Object>> getPendingApprovalReport2(String userType,String userName) {
+		
+		Set<Object[]>details= new HashSet<>();
+		if(userType.equals("approve2"))
+		{
+			details=crPreAppRepo.getCRPendingDetailsApprove2slab1(userName);
+			
+		}
+		if(userName.equals("admin"))
+		{
+			details=crPreAppRepo.getCRPendingDetailsApprove2slab1(userName);
+			
+		}
+		return pendingDetails(details);
+	}
+
+	
+	
+	@Override
+    public void saveUploadFiles(List<MultipartFile> file, Long id) throws ApplicationException, IOException {
+        final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+        List<CRPreAppAttachmentVO> appAttachmentVO = new ArrayList<CRPreAppAttachmentVO>();
+        // Fetch the expense and attachments
+       
+        CRPreAppVO crPreAppVO = crPreAppRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("CN Approval not found with ID: " + id));
+
+        for(MultipartFile files:file)
+        {
+        if (crPreAppVO ==null) {
+            throw new ApplicationException("Mismatch between the number of files provided and the existing records in the database.");
+        }
+
+        // Iterate over both files and attachments
+       
+
+            // Update attachment details
+            String fileName = files.getOriginalFilename();
+            CRPreAppAttachmentVO appAttachmentVO1 = new CRPreAppAttachmentVO();
+            
+            appAttachmentVO1.setAttachment(files.getBytes());
+            appAttachmentVO1.setCrPreAppVO(crPreAppVO);
+            appAttachmentVO.add(appAttachmentVO1);
+            
+            
+        // Save all updated attachments in bulk
+            
+        }
+        
+        crPreAppVO.setCrPreAppAttachmentVO(appAttachmentVO);
+        
+        crPreAppRepo.save(crPreAppVO);
+        
+    }
+
+	@Override
+	public CRPreAppVO getfindByGSTPreCreditrId(Long id) {
+		// TODO Auto-generated method stub
+		return crPreAppRepo.findByGSTPreCreditrId(id);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getCRReasons() {
+		Set<Object[]>details= new HashSet<>();
+		details=crPreAppRepo.getCRReasons();
+		return getCRReasons(details);
+	}
+	
+	private List<Map<String, Object>> getCRReasons(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("gst_cnreasonId",det[0]);
+			dtl.put("crReason", det[1] != null ? det[1].toString() : "");
+			dtl.put("description", det[2] != null ? det[2].toString() : "");
+			dtl.put("documentsRequired", det[3] != null ? det[3].toString() : "");
+			dtl.put("plImpact", det[4] != null ? det[4].toString() : "");
+			
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+
+	
+	  
+
 
 }

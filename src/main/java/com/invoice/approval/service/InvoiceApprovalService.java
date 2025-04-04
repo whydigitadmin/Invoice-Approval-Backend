@@ -1,12 +1,16 @@
 package com.invoice.approval.service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.poi.EncryptedDocumentException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.invoice.approval.entity.ExpenseUploadVO;
 import com.invoice.approval.entity.GstInvoiceHdrVO;
 import com.invoice.approval.entity.IRNQRVO;
 import com.invoice.approval.exception.ApplicationException;
@@ -34,6 +38,14 @@ public interface InvoiceApprovalService {
 	List<Map<String, Object>> getAllARParties();
 	
 	List<Map<String, Object>> getInvoices(String userName,String branchName);
+	
+	List<Map<String, Object>> getApprove1Db(String userName);
+	
+	List<Map<String, Object>> getApprove1TblDb(String userName);
+	
+	List<Map<String, Object>> getApprove1ChartDb(String userName);
+	
+	List<Map<String, Object>> getHaiCustomerDetails(String pName);
 	
 	List<Map<String, Object>> getDayBookBranchWise(String branchName, String fromdate, String todate);
 	
@@ -88,6 +100,13 @@ public interface InvoiceApprovalService {
 	List<Map<String, Object>> getIRNJobInfo(String jobNo);
 	
 	List<Map<String, Object>> getIRNJobContDetails(String docNo);
+	
+	List<ExpenseUploadVO> ExcelUploadforExpense(MultipartFile file,String CreatedBy) throws ApplicationException, EncryptedDocumentException, IOException;
+
+	int getTotalRows();
+
+	int getSuccessfulUploads();
+	
 	
 
 	

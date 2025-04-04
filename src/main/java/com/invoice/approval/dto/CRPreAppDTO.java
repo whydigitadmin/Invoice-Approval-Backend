@@ -30,6 +30,12 @@ public class CRPreAppDTO {
 	    
 	    private String vchNo;
 	    
+	    private String description;
+	    
+	    private String plImpact;
+	    
+	    private String documentsRequired;
+	    
 	    private LocalDate vchDt;
 	    
 	    private Double crAmt;

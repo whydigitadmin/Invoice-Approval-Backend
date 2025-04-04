@@ -1,7 +1,6 @@
 package com.invoice.approval.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,14 +11,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.invoice.approval.common.CommonConstant;
 import com.invoice.approval.common.UserConstants;
 import com.invoice.approval.dto.ResponseDTO;
+import com.invoice.approval.entity.ExpenseUploadVO;
 import com.invoice.approval.entity.GstInvoiceHdrVO;
 import com.invoice.approval.entity.IRNQRVO;
 import com.invoice.approval.service.InvoiceApprovalService;
@@ -315,6 +317,118 @@ public class InvoiceApprovalController extends BaseController {
 	}
 
 	
+	
+	@GetMapping("/getApprove1Db")
+	public ResponseEntity<ResponseDTO> getApprove1Db(@RequestParam String userName) {
+		String methodName = "getApprove1Db()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> getApprove1Db = new ArrayList<Map<String, Object>>();
+		try {
+			getApprove1Db = invoiceApprovalService.getApprove1Db(userName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Approve1 DB  found Successfullly");
+			responseObjectsMap.put("getApprove1Db", getApprove1Db);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Approve1 DB Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	@GetMapping("/getApprove1TblDb")
+	public ResponseEntity<ResponseDTO> getApprove1TblDb(@RequestParam String userName) {
+		String methodName = "getApprove1TblDb()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> getApprove1TblDb = new ArrayList<Map<String, Object>>();
+		try {
+			getApprove1TblDb = invoiceApprovalService.getApprove1TblDb(userName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Approve1 TBL DB  found Successfullly");
+			responseObjectsMap.put("getApprove1TblDb", getApprove1TblDb);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Approve1 TBL DB Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	@GetMapping("/getHaiCustomerDetails")
+	public ResponseEntity<ResponseDTO> getHaiCustomerDetails(@RequestParam String pName) {
+		String methodName = "getHaiCustomerDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> gethaiCustomerDetails = new ArrayList<Map<String, Object>>();
+		try {
+			gethaiCustomerDetails = invoiceApprovalService.getHaiCustomerDetails(pName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "HAI Customer Details found Successfullly");
+			responseObjectsMap.put("gethaiCustomerDetails", gethaiCustomerDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "HAI Customer Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+
+	@GetMapping("/getApprove1ChartDb")
+	public ResponseEntity<ResponseDTO> getApprove1ChartDb(@RequestParam String userName) {
+		String methodName = "getApprove1CharDb()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> getApprove1ChartDb = new ArrayList<Map<String, Object>>();
+		try {
+			getApprove1ChartDb = invoiceApprovalService.getApprove1ChartDb(userName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Approve1 Chart DB  found Successfullly");
+			responseObjectsMap.put("getApprove1ChartDb", getApprove1ChartDb);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Approve1 Chart DB Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 	
 	@GetMapping("/getGSTR1Parties")
 	public ResponseEntity<ResponseDTO> getGSTR1Parties() {
@@ -1067,6 +1181,50 @@ public class InvoiceApprovalController extends BaseController {
 	}
 	
 	
+	
+	@PostMapping("/excelUploadForExpense")
+	public ResponseEntity<ResponseDTO> excelUploadForCCoa(@RequestParam MultipartFile files,
+			@RequestParam(required = false) String createdBy) {
+
+		int totalRows = 0;
+		int successfulUploads = 0;
+		String methodName = "excelUploadForCCoa()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+
+		ResponseDTO responseDTO;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+
+		List<ExpenseUploadVO> uploadResult = new ArrayList<>();
+		try {
+			// Call the service method and get the result
+			 uploadResult = invoiceApprovalService.ExcelUploadforExpense(files, createdBy);
+
+			totalRows = invoiceApprovalService.getTotalRows(); // Get total rows processed
+			successfulUploads = invoiceApprovalService.getSuccessfulUploads();
+			responseObjectsMap.put("statusFlag", "Ok");
+			responseObjectsMap.put("status", true);
+			responseObjectsMap.put("totalRows", totalRows);
+			responseObjectsMap.put("successfulUploads", successfulUploads);
+			responseObjectsMap.put("message", "Excel Upload For CCoa successful"); 
+//			// Populate success response
+//			responseObjectsMap.put("statusFlag", "Ok");
+//			responseObjectsMap.put("status", true);
+//			responseObjectsMap.put("uploadResult", uploadResult);
+			responseDTO = createServiceResponse(responseObjectsMap);
+
+		} catch (Exception e) {
+			String errorMsg = e.getMessage();
+			LOGGER.error(CommonConstant.EXCEPTION, methodName, e);
+			responseObjectsMap.put("statusFlag", "Error");
+			responseObjectsMap.put("status", false);
+			responseObjectsMap.put("errorMessage", errorMsg);
+
+			responseDTO = createServiceResponseError(responseObjectsMap, "Excel Upload For CCoa Failed", errorMsg);
+		}
+
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 	
 
 }

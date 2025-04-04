@@ -3,6 +3,7 @@ package com.invoice.approval.service;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,16 +14,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.invoice.approval.entity.ExpenseUploadVO;
 import com.invoice.approval.entity.GstInvoiceHdrVO;
 import com.invoice.approval.entity.IRNQRVO;
 import com.invoice.approval.exception.ApplicationException;
+import com.invoice.approval.repo.ExpenseUploadRepo;
 import com.invoice.approval.repo.GstInvoiceHdrRepo;
 import com.invoice.approval.repo.IRNQRRepo;
+
+import io.jsonwebtoken.io.IOException;
 
 @Service
 public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
@@ -34,6 +48,9 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 	
 	@Autowired
 	IRNQRRepo irnqrRepo;
+	
+	@Autowired
+	ExpenseUploadRepo expenseUploadRepo;
 	
 	
 	@Override
@@ -241,6 +258,137 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		}
 		return report;
 	}
+	
+	
+	@Override
+	public List<Map<String, Object>> getApprove1Db(String userName) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getApprove1Db(userName);
+		return getApprove1Db(details);
+	}
+	
+	
+	private List<Map<String, Object>> getApprove1Db(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("invUnApprove", det[0] != null ? det[0].toString() : "");
+			dtl.put("invApprove", det[1] != null ? det[1].toString() : "");
+			dtl.put("cnUnApprove", det[2] != null ? det[2].toString() : "");
+			dtl.put("cnApprove", det[3] != null ? det[3].toString() : "");
+			
+		
+
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+	
+
+	@Override
+	public List<Map<String, Object>> getApprove1TblDb(String userName) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getApprove1TblDb(userName);
+		return getApprove1TblDb(details);
+	}
+	
+	private List<Map<String, Object>> getApprove1TblDb(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("branchCode", det[0] != null ? det[0].toString() : "");
+			dtl.put("invUnApprove", det[1] != null ? det[1].toString() : "");
+			dtl.put("invApprove", det[2] != null ? det[2].toString() : "");
+			dtl.put("cnUnApprove", det[3] != null ? det[3].toString() : "");
+			dtl.put("cnApprove", det[4] != null ? det[4].toString() : "");
+			
+		
+
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+	
+	
+	
+	
+	@Override
+	public List<Map<String, Object>> getHaiCustomerDetails(String pName) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getHaiCustomerDetails(pName);
+		return getHaiCustomerDetails(details);
+	}
+	
+	private List<Map<String, Object>> getHaiCustomerDetails(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("partyName", det[0] != null ? det[0].toString() : "");
+			dtl.put("partyCode", det[1] != null ? det[1].toString() : "");
+			dtl.put("onYear", det[2] != null ? det[2].toString() : "");
+			dtl.put("category", det[3] != null ? det[3].toString() : "");
+			dtl.put("creditLimit", det[4] != null ? det[4].toString() : "");
+			dtl.put("creditDays", det[5] != null ? det[5].toString() : "");
+			dtl.put("salesPersonName", det[6] != null ? det[6].toString() : "");
+			dtl.put("ctrlOffice", det[7] != null ? det[7].toString() : "");
+			dtl.put("totDue", det[8] != null ? new BigDecimal(det[8].toString()) : BigDecimal.ZERO);
+
+			
+		
+
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+
+	
+
+	@Override
+	public List<Map<String, Object>> getApprove1ChartDb(String userName) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getApprove1ChartDb(userName);
+		return getApprove1ChartDb(details);
+	}
+	
+	private List<Map<String, Object>> getApprove1ChartDb(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("partyName", det[0] != null ? det[0].toString() : "");
+			dtl.put("cnUnApprove", det[1] != null ? det[1].toString() : "");
+			dtl.put("cnApprove", det[2] != null ? det[2].toString() : "");
+			
+		
+
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+	
 	
 	@Override
 	public List<Map<String, Object>> getIRNJobContDetails(String docNo) {
@@ -1509,7 +1657,156 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		return irnQR;
 	}
 
+	private int totalRows = 0;
+	private int successfulUploads = 0;
 	
+	@Override
+	public int getTotalRows() {
+		return totalRows;
+	}
+
+	@Override
+	public int getSuccessfulUploads() {
+		return successfulUploads;
+	}
+		
+	
+	
+	@Override
+	public List<ExpenseUploadVO> ExcelUploadforExpense(MultipartFile file, String CreatedBy) throws ApplicationException, EncryptedDocumentException, java.io.IOException {
+		
+		totalRows = 0;
+		successfulUploads = 0;
+		List<ExpenseUploadVO> expupload= new ArrayList<>();
+		
+
+		
+			try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+				Sheet sheet = workbook.getSheetAt(0);
+				
+
+				List<String> errorMessages = new ArrayList<>();
+
+				for (Row row : sheet) {
+					if (row.getRowNum() == 0 ) {
+						continue; // Skip header and empty rows
+					}
+					totalRows++;
+
+					try {
+						
+						// ✅ Trim and Parse cell values
+						String category = getStringCellValue(row.getCell(0));
+						String description = getStringCellValue(row.getCell(1));
+						BigDecimal rate = parseInteger(getStringCellValue(row.getCell(2)));
+						
+
+						
+
+						// ✅ Create and add CCoaVO object
+						ExpenseUploadVO expVO = new ExpenseUploadVO();
+						expVO.setCategory(category);
+						expVO.setDescription(description);
+						expVO.setRate(rate);
+						expVO.setCreatedBy(CreatedBy);
+						
+						
+						expupload.add(expVO);
+						successfulUploads++;
+						
+					} catch (Exception e) {
+						String errorMessage = "Row " + (row.getRowNum() + 1) + ": " + e.getMessage();
+						errorMessages.add(errorMessage);
+					}
+				}
+
+				// ✅ If any errors occurred, throw exception with details
+				if (!errorMessages.isEmpty()) {
+					throw new ApplicationException("Excel upload failed. " + String.join(", ", errorMessages)
+							+ ". Please Make Correction for above Lines and Re-Upload the Exccel Sheet");
+				}
+
+			} catch (IOException e) {
+				throw new ApplicationException(
+						"Failed to process file: " + file.getOriginalFilename() + " - " + e.getMessage());
+			}
+
+		// ✅ Save records and flush to ensure immediate persistence
+		if (!expupload.isEmpty()) {
+			expenseUploadRepo.saveAll(expupload);
+			expenseUploadRepo.flush(); // Forces the database to persist data immediately
+		}
+
+		return expupload;
+	}
+	
+	private BigDecimal parseInteger(String stringCellValue) {
+		try {
+			// Remove any potential decimal points
+			return new BigDecimal(stringCellValue);
+		} catch (NumberFormatException e) {
+			System.err.println("Error parsing integer: " + stringCellValue); // Debugging output
+			return null;
+		}
+	}
+
+	
+	private String getStringCellValue(Cell cell) {
+		if (cell == null) {
+			return "";
+		}
+
+		switch (cell.getCellType()) {
+		case STRING:
+			return cell.getStringCellValue().trim(); // Trim spaces
+		case NUMERIC:
+			if (DateUtil.isCellDateFormatted(cell)) {
+				// Handle date
+				return new SimpleDateFormat("dd/MM/yyyy").format(cell.getDateCellValue());
+			} else {
+				// Check if the numeric value is an integer
+				double numericValue = cell.getNumericCellValue();
+				if (numericValue == (int) numericValue) {
+					return String.valueOf((int) numericValue); // Return as integer
+				} else {
+					return BigDecimal.valueOf(numericValue).toPlainString(); // Return as double
+				}
+			}
+		case BOOLEAN:
+			return String.valueOf(cell.getBooleanCellValue());
+		case FORMULA:
+			return cell.getCellFormula();
+		default:
+			return "";
+		}
+	}
+	
+	private LocalDate parseDate(String stringCellValue) {
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			return LocalDate.parse(stringCellValue, formatter);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private boolean isRowEmpty(Row row) {
+		for (Cell cell : row) {
+			if (cell.getCellType() != CellType.BLANK) {
+				return false;
+			}
+		}
+		return true;
+	}
+  
+  private Double parseDouble(String stringCellValue) {
+		try {
+			return Double.parseDouble(stringCellValue);
+		} catch (NumberFormatException e) {
+			System.err.println("Error parsing double: " + stringCellValue); // Debugging output
+			return null;
+		}
+	}
 }
 
 
