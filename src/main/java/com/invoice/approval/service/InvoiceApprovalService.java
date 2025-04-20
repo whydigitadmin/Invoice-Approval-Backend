@@ -45,7 +45,17 @@ public interface InvoiceApprovalService {
 	
 	List<Map<String, Object>> getApprove1ChartDb(String userName);
 	
-	List<Map<String, Object>> getHaiCustomerDetails(String pName);
+	List<Map<String, Object>> getHaiCustomerRankDetails(String pName,String pType);
+	
+	List<Map<String, Object>> getHaiCustomerYearProfit(String pName,String pType);
+	
+	List<Map<String, Object>> getHaiCustomerDetails(String pName,String pType);
+	
+	List<Map<String, Object>> getHaiBranchCustomerDetails(String pName,String pType);
+	
+	List<Map<String, Object>> getHaiProductSummary(String product);
+	
+	List<Map<String, Object>> getHaiInvCustomerDetails(String pName,String pType);
 	
 	List<Map<String, Object>> getDayBookBranchWise(String branchName, String fromdate, String todate);
 	

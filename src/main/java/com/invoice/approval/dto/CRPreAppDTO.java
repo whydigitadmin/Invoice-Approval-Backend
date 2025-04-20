@@ -42,6 +42,10 @@ public class CRPreAppDTO {
 	    
 	    private Double invAmt;
 	    
+	    private Double totChargeAmtLc;
+	    
+	    private Double totTaxAmtLc;
+	    
 	    private String reason;
 	    
 	    private String createdBy;

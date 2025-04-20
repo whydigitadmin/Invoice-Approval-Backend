@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.invoice.approval.common.CommonConstant;
 import com.invoice.approval.common.UserConstants;
+import com.invoice.approval.dto.EmployeeExpensesAttachmentDTO;
 import com.invoice.approval.dto.EmployeeExpensesDTO;
 import com.invoice.approval.dto.ResponseDTO;
 import com.invoice.approval.entity.EmployeeExpensesVO;
@@ -139,6 +140,26 @@ public class EmployeeExpensesController extends BaseController {
 		try {
 			empexpVO = employeeExpenseService.updateApprove1(id, approval, createdby,userType);
 			responseObjectsMap.put("EmployeeExpensesVO", empexpVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	// Approve Expenses
+	@PutMapping("/approveExp")
+	public ResponseEntity<ResponseDTO> approveExp(@RequestBody List<EmployeeExpensesAttachmentDTO> attachmentDTO) {
+		String methodName = "approveExp()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			 employeeExpenseService.updateApproval(attachmentDTO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

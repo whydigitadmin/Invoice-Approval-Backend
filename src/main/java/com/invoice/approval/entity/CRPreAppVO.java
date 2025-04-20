@@ -81,6 +81,12 @@ public class CRPreAppVO {
 
 	    @Column(name = "cramt", precision = 15, scale = 2)
 	    private Double crAmt;
+	    
+	    @Column(name = "totchargeamtlc", precision = 15, scale = 2)
+	    private Double totChargeAmtLc;
+	    
+	    @Column(name = "tottaxamtlc", precision = 15, scale = 2)
+	    private Double totTaxAmtLc;
 
 	    @Column(name = "reason", length = 200)
 	    private String reason;

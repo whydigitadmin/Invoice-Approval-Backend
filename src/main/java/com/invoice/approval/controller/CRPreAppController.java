@@ -279,5 +279,28 @@ public class CRPreAppController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	
+	@PutMapping("/approval2")
+	public ResponseEntity<ResponseDTO> updateApproval2(@RequestParam Long id,@RequestParam String approval,@RequestParam String createdby,@RequestParam String userType) {
+		String methodName = "updateApproval2()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		CRPreAppVO crPreAppvo= new CRPreAppVO();
+		try {
+			crPreAppvo = crePreAppService.updateApprove2(id, approval, createdby,userType);
+			responseObjectsMap.put("CRPreAppVO", crPreAppvo);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
 
 }

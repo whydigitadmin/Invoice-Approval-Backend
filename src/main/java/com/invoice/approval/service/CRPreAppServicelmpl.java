@@ -205,6 +205,8 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 		crPreAppVO.setVchNo(crPreAppDTO.getVchNo());
 		crPreAppVO.setVchDt(crPreAppDTO.getVchDt());
 		crPreAppVO.setInvAmt(crPreAppDTO.getInvAmt());
+		crPreAppVO.setTotChargeAmtLc(crPreAppDTO.getTotChargeAmtLc());
+		crPreAppVO.setTotTaxAmtLc(crPreAppDTO.getTotTaxAmtLc());
 		crPreAppVO.setCrAmt(crPreAppDTO.getCrAmt());
 		crPreAppVO.setReason(crPreAppDTO.getReason());
 		crPreAppVO.setPtype(crPreAppDTO.getPtype());

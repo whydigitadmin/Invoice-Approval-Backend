@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.invoice.approval.dto.EmployeeExpensesAttachmentDTO;
 import com.invoice.approval.dto.EmployeeExpensesDTO;
 import com.invoice.approval.entity.CRPreAppVO;
 import com.invoice.approval.entity.EmployeeExpensesAttachmentVO;
@@ -36,6 +38,8 @@ public class EmployeeExpenseServiceImpl implements EmployeeExpenseService {
 
     @Autowired
     EmployeeExpensesAttachmentRepo employeeExpensesAttachmentRepo;
+    
+    
 
     @Override
     public Map<String, Object> createUpdateEmployeeExpenses(EmployeeExpensesDTO employeeExpensesDTO) throws IOException {
@@ -160,6 +164,23 @@ public class EmployeeExpenseServiceImpl implements EmployeeExpenseService {
 		}
 		
 		return employeeExpensesRepo.save(expampAppvo);
+	}
+
+	@Override
+	public Map<String, Object> updateApproval(List<EmployeeExpensesAttachmentDTO> attachmentDTO) throws IOException, ApplicationException {
+		
+		for(EmployeeExpensesAttachmentDTO dto:attachmentDTO)
+		{
+			EmployeeExpensesAttachmentVO attachmentVO= employeeExpensesAttachmentRepo.getDetails(dto.getId());
+			attachmentVO.setApprove("T");
+			attachmentVO.setApproveAmount(dto.getApprovedAmount());
+			employeeExpensesAttachmentRepo.save(attachmentVO);
+		}
+		Map<String,Object>mp= new HashMap<>();
+		mp.put("Message", "Approved SuccessFully");
+		return mp;
+	
+	
 	}
 
 

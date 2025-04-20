@@ -13,9 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EmployeeExpensesAttachmentDTO {
 	
+	private Long id;
 	    private String category;
 	    private String expense;
 	    private LocalDate expDate;
 		private BigDecimal amount;
+		private BigDecimal approvedAmount;
 
 }

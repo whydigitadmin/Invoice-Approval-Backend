@@ -374,8 +374,151 @@ public class InvoiceApprovalController extends BaseController {
 	}
 	
 	
+	
+	@GetMapping("/getHaiProductSummary")
+	public ResponseEntity<ResponseDTO> getHaiProductSummary(@RequestParam String product) {
+		String methodName = "getHaiInvCustomerDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> gethaiProductSummary = new ArrayList<Map<String, Object>>();
+		try {
+			gethaiProductSummary = invoiceApprovalService.getHaiProductSummary(product);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "HAI Product Summary found Successfullly");
+			responseObjectsMap.put("gethaiProductSummary", gethaiProductSummary);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "HAI Product Summary information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	
+	
+	@GetMapping("/getHaiCustomerYearProfit")
+	public ResponseEntity<ResponseDTO> getHaiCustomerYearProfit(@RequestParam String pName,String pType) {
+		String methodName = "getHaiCustomerYearProfit()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> gethaiCustomerYearProfit = new ArrayList<Map<String, Object>>();
+		try {
+			gethaiCustomerYearProfit = invoiceApprovalService.getHaiCustomerYearProfit(pName,pType);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "HAI Year Profit Details found Successfullly");
+			responseObjectsMap.put("gethaiCustomerYearProfit", gethaiCustomerYearProfit);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "HAI Year Profit Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	@GetMapping("/getHaiInvCustomerDetails")
+	public ResponseEntity<ResponseDTO> getHaiInvCustomerDetails(@RequestParam String pName,String pType) {
+		String methodName = "getHaiInvCustomerDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> gethaiInvCustomerDetails = new ArrayList<Map<String, Object>>();
+		try {
+			gethaiInvCustomerDetails = invoiceApprovalService.getHaiInvCustomerDetails(pName,pType);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "HAI Inv Customer Details found Successfullly");
+			responseObjectsMap.put("gethaiInvCustomerDetails", gethaiInvCustomerDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "HAI Inv Customer Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	
+	@GetMapping("/getHaiCustomerRankDetails")
+	public ResponseEntity<ResponseDTO> getHaiCustomerRankDetails(@RequestParam String pName,@RequestParam String pType) {
+		String methodName = "getHaiCustomerRankDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> gethaiCustomerRankDetails = new ArrayList<Map<String, Object>>();
+		try {
+			gethaiCustomerRankDetails = invoiceApprovalService.getHaiCustomerRankDetails(pName,pType);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "HAI Customer Rank Details found Successfullly");
+			responseObjectsMap.put("gethaiCustomerRankDetails", gethaiCustomerRankDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "HAI Branch Customer Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	@GetMapping("/getHaiBranchCustomerDetails")
+	public ResponseEntity<ResponseDTO> getHaiBranchCustomerDetails(@RequestParam String pName,@RequestParam String pType) {
+		String methodName = "getHaiBranchCustomerDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> gethaiBranchCustomerDetails = new ArrayList<Map<String, Object>>();
+		try {
+			gethaiBranchCustomerDetails = invoiceApprovalService.getHaiBranchCustomerDetails(pName,pType);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "HAI Branch Customer Details found Successfullly");
+			responseObjectsMap.put("gethaiBranchCustomerDetails", gethaiBranchCustomerDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "HAI Branch Customer Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
 	@GetMapping("/getHaiCustomerDetails")
-	public ResponseEntity<ResponseDTO> getHaiCustomerDetails(@RequestParam String pName) {
+	public ResponseEntity<ResponseDTO> getHaiCustomerDetails(@RequestParam String pName,@RequestParam String pType) {
 		String methodName = "getHaiCustomerDetails()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -383,7 +526,7 @@ public class InvoiceApprovalController extends BaseController {
 		ResponseDTO responseDTO = null;
 		List<Map<String, Object>> gethaiCustomerDetails = new ArrayList<Map<String, Object>>();
 		try {
-			gethaiCustomerDetails = invoiceApprovalService.getHaiCustomerDetails(pName);
+			gethaiCustomerDetails = invoiceApprovalService.getHaiCustomerDetails(pName,pType);
 
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

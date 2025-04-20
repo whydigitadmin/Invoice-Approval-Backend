@@ -290,6 +290,80 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		return report;
 	}
 	
+	
+	
+	
+	@Override
+	public List<Map<String, Object>> getHaiCustomerYearProfit(String pName,String pType) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getHaiCustomerYearProfit(pName,pType);
+		return getHaiCustomerYearProfit(details);
+	}
+	
+	private List<Map<String, Object>> getHaiCustomerYearProfit(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("customer", det[0] != null ? det[0].toString() : "");
+			dtl.put("apr", det[1] != null ? new BigDecimal(det[1].toString()) : BigDecimal.ZERO);
+			dtl.put("may", det[2] != null ? new BigDecimal(det[2].toString()) : BigDecimal.ZERO);
+			dtl.put("jun", det[3] != null ? new BigDecimal(det[3].toString()) : BigDecimal.ZERO);
+			dtl.put("jul", det[4] != null ? new BigDecimal(det[4].toString()) : BigDecimal.ZERO);
+			dtl.put("aug", det[5] != null ? new BigDecimal(det[5].toString()) : BigDecimal.ZERO);
+			dtl.put("sep", det[6] != null ? new BigDecimal(det[6].toString()) : BigDecimal.ZERO);
+			dtl.put("oct", det[7] != null ? new BigDecimal(det[7].toString()) : BigDecimal.ZERO);
+			dtl.put("nov", det[8] != null ? new BigDecimal(det[8].toString()) : BigDecimal.ZERO);
+			dtl.put("dec", det[9] != null ? new BigDecimal(det[9].toString()) : BigDecimal.ZERO);
+			dtl.put("jan", det[10] != null ? new BigDecimal(det[10].toString()) : BigDecimal.ZERO);
+			dtl.put("feb", det[11] != null ? new BigDecimal(det[11].toString()) : BigDecimal.ZERO);
+			dtl.put("mar", det[12] != null ? new BigDecimal(det[12].toString()) : BigDecimal.ZERO);
+			
+		
+
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+
+	
+	
+	
+	
+	@Override
+	public List<Map<String, Object>> getHaiProductSummary(String product) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getHaiProductSummary(product);
+		return getHaiProductSummary(details);
+	}
+	
+	private List<Map<String, Object>> getHaiProductSummary(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("jobs", det[0] != null ? new BigDecimal(det[0].toString()) : BigDecimal.ZERO);
+			dtl.put("openJobs", det[1] != null? new BigDecimal(det[1].toString()) : BigDecimal.ZERO);
+			dtl.put("closedJobs", det[2] != null? new BigDecimal(det[2].toString()) : BigDecimal.ZERO);
+			dtl.put("partyName", det[3] != null ? det[3].toString() : "");
+			
+		
+
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+
 
 	@Override
 	public List<Map<String, Object>> getApprove1TblDb(String userName) {
@@ -323,11 +397,106 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 	
 	
 	
+	@Override
+	public List<Map<String, Object>> getHaiBranchCustomerDetails(String pName,String pType) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getHaiBranchCustomerDetails(pName,pType);
+		return getHaiBranchCustomerDetails(details);
+	}
+	
+	private List<Map<String, Object>> getHaiBranchCustomerDetails(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("partyName", det[0] != null ? det[0].toString() : "");
+			dtl.put("partyCode", det[1] != null ? det[1].toString() : "");
+			dtl.put("onYear", det[2] != null ? det[2].toString() : "");
+			dtl.put("category", det[3] != null ? det[3].toString() : "");
+			dtl.put("creditLimit", det[4] != null ? new BigDecimal(det[4].toString()) : BigDecimal.ZERO);
+			dtl.put("creditDays", det[5] != null ? det[5].toString() : "");
+			dtl.put("salesPersonName", det[6] != null ? det[6].toString() : "");
+			dtl.put("ctrlOffice", det[7] != null ? det[7].toString() : "");
+			dtl.put("totDue", det[8] != null ? new BigDecimal(det[8].toString()) : BigDecimal.ZERO);
+			dtl.put("branchCode", det[9] != null ? det[9].toString() : "");
+			
+		
+
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+	
+	
+
+	@Override
+	public List<Map<String, Object>> getHaiInvCustomerDetails(String pName,String pType) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getHaiInvCustomerDetails(pName,pType);
+		return getHaiInvCustomerDetails(details);
+	}
+	
+	private List<Map<String, Object>> getHaiInvCustomerDetails(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("screen", det[0] != null ? det[0].toString() : "");
+			dtl.put("crdOn", det[1] != null ? dateFormat.format((Date) det[1]) : "");
+			dtl.put("amt", det[2] != null ? det[2].toString() : "");
+			dtl.put("partyCode", det[2] != null ? det[3].toString() : "");
+			
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+
+	
+	
 	
 	@Override
-	public List<Map<String, Object>> getHaiCustomerDetails(String pName) {
+	public List<Map<String, Object>> getHaiCustomerRankDetails(String pName,String pType) {
 		Set<Object[]>details= new HashSet<>();
-		details=gstInvoiceHdrRepo.getHaiCustomerDetails(pName);
+		details=gstInvoiceHdrRepo.getHaiCustomerRankDetails(pName,pType);
+		return getHaiCustomerRankDetails(details);
+	}
+	
+	private List<Map<String, Object>> getHaiCustomerRankDetails(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("customer", det[0] != null ? det[0].toString() : "");
+			dtl.put("month", det[1] != null ? det[1].toString() : "");
+			dtl.put("totJob", det[2] != null ? det[2].toString() : "");
+			dtl.put("income", det[3] != null ? new BigDecimal(det[3].toString()) : BigDecimal.ZERO);
+			dtl.put("profit", det[4] != null ? new BigDecimal(det[4].toString()) : BigDecimal.ZERO);
+			dtl.put("r", det[5] != null ? new BigDecimal(det[5].toString()) : BigDecimal.ZERO);
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+
+	
+	@Override
+	public List<Map<String, Object>> getHaiCustomerDetails(String pName,String pType) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getHaiCustomerDetails(pName,pType);
 		return getHaiCustomerDetails(details);
 	}
 	
@@ -344,7 +513,7 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 			dtl.put("partyCode", det[1] != null ? det[1].toString() : "");
 			dtl.put("onYear", det[2] != null ? det[2].toString() : "");
 			dtl.put("category", det[3] != null ? det[3].toString() : "");
-			dtl.put("creditLimit", det[4] != null ? det[4].toString() : "");
+			dtl.put("creditLimit", det[4] != null ? new BigDecimal(det[4].toString()) : BigDecimal.ZERO);
 			dtl.put("creditDays", det[5] != null ? det[5].toString() : "");
 			dtl.put("salesPersonName", det[6] != null ? det[6].toString() : "");
 			dtl.put("ctrlOffice", det[7] != null ? det[7].toString() : "");
@@ -676,6 +845,8 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		        dtl.put("vchno", det[4] != null ? det[4].toString() : "");
 		        dtl.put("vchdt", det[5] != null ? det[5].toString() : "");
 		        dtl.put("totinvamtLc", det[6] != null ? df.format(new BigDecimal(det[6].toString())) : "0.00");    
+		        dtl.put("totChargeAmtLc", det[7] != null ? df.format(new BigDecimal(det[7].toString())) : "0.00");
+		        dtl.put("totTaxAmtLc", det[8] != null ? df.format(new BigDecimal(det[8].toString())) : "0.00");
 		        
 		        report.add(dtl);
 		    }
@@ -685,6 +856,8 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 	
 	
 
+	
+	
 
 	
 	@Override

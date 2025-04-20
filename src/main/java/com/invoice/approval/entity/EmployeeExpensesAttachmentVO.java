@@ -34,6 +34,9 @@ public class EmployeeExpensesAttachmentVO {
 	private Long id;
 	
 	
+	 @Column(name = "approve", length = 1)
+	    private String approve = "F";
+	
 	 @Column(name = "category", length = 50)
 	    private String category;
 	    
@@ -52,6 +55,9 @@ public class EmployeeExpensesAttachmentVO {
 
 		@Column(name = "amount",precision = 10,scale = 2)
 		private BigDecimal amount;
+		
+		@Column(name = "approveamount",precision = 10,scale = 2)
+		private BigDecimal approveAmount;
 	    
 		@Column(name = "filename")
 		private String fileName;
