@@ -158,7 +158,7 @@ public class CRPreAppController extends BaseController {
 	
 	
 	@GetMapping("/getfindByGSTPreCreditrId")
-    public ResponseEntity<ResponseDTO> getExpenseById(@RequestParam(required = true) Long id) {
+    public ResponseEntity<ResponseDTO> getfindByGSTPreCreditrId(@RequestParam(required = true) Long id) {
         String methodName = "getfindByGSTPreCreditrId()";
         LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
         String errorMsg = null;
