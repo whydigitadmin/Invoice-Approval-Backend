@@ -86,6 +86,57 @@ public class TicketController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	
+	@PutMapping("/updateNote")
+	public ResponseEntity<ResponseDTO> updateNote(@RequestParam Long id,@RequestParam String createdby) {
+		String methodName = "updateNote()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		TicketVO ticketVO= new TicketVO();
+		try {
+			ticketVO = ticketService.updateNote(id, createdby);
+			responseObjectsMap.put("ticketVO", ticketVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	@GetMapping("/getUserActiveStatus")
+	public ResponseEntity<ResponseDTO> getUserActiveStatus(@RequestParam String userName) {
+		String methodName = "getUserActiveStatus()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> getUserActiveStatus = new ArrayList<Map<String, Object>>();
+		try {
+			getUserActiveStatus = ticketService.getUserActiveStatus(userName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "User Details  found Successfullly");
+			responseObjectsMap.put("getUserActiveStatus", getUserActiveStatus);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "User Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
 	@GetMapping("/getTicketReport")
 	public ResponseEntity<ResponseDTO> getTicketReport(@RequestParam String userName) {
 		String methodName = "getPendingDetails()";
@@ -113,6 +164,63 @@ public class TicketController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	
+	
+	
+	@GetMapping("/getAdminNote")
+	public ResponseEntity<ResponseDTO> getAdminNote(@RequestParam String userName) {
+		String methodName = "getAdminNote()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> pendingApprovalDetails = new ArrayList<Map<String, Object>>();
+		try {
+			pendingApprovalDetails = ticketService.getAdminNote(userName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Admin Notificaiton Details  found Successfullly");
+			responseObjectsMap.put("pendingApprovalDetails", pendingApprovalDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Admin Notificaiton information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	
+	@GetMapping("/getUserNote")
+	public ResponseEntity<ResponseDTO> getUserNote(@RequestParam String userName) {
+		String methodName = "getUserNote()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> pendingApprovalDetails = new ArrayList<Map<String, Object>>();
+		try {
+			pendingApprovalDetails = ticketService.getUserNote(userName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "User Notificaiton Details  found Successfullly");
+			responseObjectsMap.put("pendingApprovalDetails", pendingApprovalDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "User Notificaiton information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 	
 	@PutMapping("/uploadfile")
 	public ResponseEntity<ResponseDTO> uploadfile(@RequestParam("files") List<MultipartFile> file,@RequestParam Long id) {

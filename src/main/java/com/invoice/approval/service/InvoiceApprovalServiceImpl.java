@@ -292,6 +292,60 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 	
 	
 	
+	@Override
+	public List<Map<String, Object>> getJobFullDetails(String jobNo) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getJobFullDetails(jobNo);
+		return getJobFullDetails(details);
+	}
+	
+	private List<Map<String, Object>> getJobFullDetails(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("product", det[0] != null ? det[0].toString() : "");
+			dtl.put("jobno", det[1] != null ? det[1].toString() : "");
+			dtl.put("jobdt", det[2] != null ? det[2].toString() : "");
+			dtl.put("mno", det[3] != null ? det[3].toString() : "");
+			dtl.put("mdt", det[4] != null ? det[4].toString() : "");
+			dtl.put("hno", det[5] != null ? det[5].toString() : "");
+			dtl.put("hdt", det[6] != null ? det[6].toString() : "");
+			dtl.put("freight", det[7] != null ? det[7].toString() : "");
+			dtl.put("direct", det[8] != null ? det[8].toString() : "");
+			dtl.put("customer", det[9] != null ? det[9].toString() : "");
+			dtl.put("category", det[10] != null ? det[10].toString() : "");
+			dtl.put("salesperson", det[11] != null ? det[11].toString() : "");
+			dtl.put("cbranch", det[12] != null ? det[12].toString() : "");
+			dtl.put("partner", det[13] != null ? det[13].toString() : "");
+			dtl.put("carrier", det[14] != null ? det[14].toString() : "");
+			dtl.put("mchwt", det[15] != null ? det[15].toString() : "");
+			dtl.put("hpkgs", det[16] != null ? det[16].toString() : "");
+			dtl.put("hgrwt", det[17] != null ? det[17].toString() : "");
+			dtl.put("hchwt", det[18] != null ? det[18].toString() : "");
+			dtl.put("teus", det[19] != null ? det[19].toString() : "");
+			dtl.put("cbm", det[20] != null ? det[20].toString() : "");
+			dtl.put("mpol", det[21] != null ? det[21].toString() : "");
+			dtl.put("hpod", det[22] != null ? det[22].toString() : "");
+			dtl.put("mpolcountry", det[23] != null ? det[23].toString() : "");
+			dtl.put("hpodcountry", det[24] != null ? det[24].toString() : "");
+			dtl.put("opsclosedon", det[25] != null ? det[25].toString() : "");
+			dtl.put("closeddt", det[26] != null ? det[26].toString() : "");
+
+			
+			
+		
+
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+	
 	
 	@Override
 	public List<Map<String, Object>> getHaiCustomerYearProfit(String pName,String pType) {
@@ -1156,12 +1210,11 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 
 	        dtl.put("subledger", det[11] != null ? det[11].toString() : "");
 	        dtl.put("currency", det[12] != null ? det[12].toString() : "");
-	        dtl.put("opbal", det[13] != null ? df.format(new BigDecimal(det[13].toString())) : "");
-	        dtl.put("dbAmount", det[14] != null ? df.format(new BigDecimal(det[14].toString())) : "");
-	        dtl.put("crAmount", det[15] != null ? df.format(new BigDecimal(det[15].toString())) : "");
-	        dtl.put("billDbAmount", det[16] != null ? df.format(new BigDecimal(det[16].toString())) : "");
-	        dtl.put("billCrAmount", det[17] != null ? df.format(new BigDecimal(det[17].toString())) : "");
-	        dtl.put("particulars", det[18] != null ? det[18].toString() : "");
+	        dtl.put("dbAmount", det[13] != null ? df.format(new BigDecimal(det[13].toString())) : "");
+	        dtl.put("crAmount", det[14] != null ? df.format(new BigDecimal(det[14].toString())) : "");
+	        dtl.put("billDbAmount", det[15] != null ? df.format(new BigDecimal(det[15].toString())) : "");
+	        dtl.put("billCrAmount", det[16] != null ? df.format(new BigDecimal(det[16].toString())) : "");
+	        dtl.put("particulars", det[17] != null ? det[17].toString() : "");
 	        // Add the map of details for the current row to the report list
 	        report.add(dtl);
 	    }

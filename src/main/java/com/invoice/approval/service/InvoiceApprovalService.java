@@ -55,6 +55,8 @@ public interface InvoiceApprovalService {
 	
 	List<Map<String, Object>> getHaiProductSummary(String product);
 	
+	List<Map<String, Object>> getJobFullDetails(String jobNo);
+	
 	List<Map<String, Object>> getHaiInvCustomerDetails(String pName,String pType);
 	
 	List<Map<String, Object>> getDayBookBranchWise(String branchName, String fromdate, String todate);

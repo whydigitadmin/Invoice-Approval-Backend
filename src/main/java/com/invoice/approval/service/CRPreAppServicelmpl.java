@@ -151,6 +151,7 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 			dtl.put("description", det[20] != null ? det[20].toString() : "");
 			dtl.put("plImpact", det[21] != null ? det[21].toString() : "");
 			dtl.put("documentsRequired", det[22] != null ? det[22].toString() : "");
+			dtl.put("totchargeamtlc", det[23] != null ? df.format(new BigDecimal(det[23].toString())) : "");
 			
 			report.add(dtl);
 		}
@@ -188,6 +189,15 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 			dtl.put("description", det[20] != null ? det[20].toString() : "");
 			dtl.put("plImpact", det[21] != null ? det[21].toString() : "");
 			dtl.put("documentsRequired", det[22] != null ? det[22].toString() : "");
+			dtl.put("approve1name", det[23] != null ? det[23].toString() : "");
+			dtl.put("approve1on", det[24] != null ? dateFormat.format((Date) det[24]) : "");
+			dtl.put("approve2name", det[25] != null ? det[25].toString() : "");
+			dtl.put("approve2on", det[26] != null ? dateFormat.format((Date) det[26]) : "");
+			dtl.put("approve1", det[27] != null ? det[27].toString() : "");
+			dtl.put("approve2", det[28] != null ? det[28].toString() : "");
+			dtl.put("rejectremarks", det[29] != null ? det[29].toString() : "");
+			dtl.put("totchargeamtlc", det[30] != null ? df.format(new BigDecimal(det[30].toString())) : "");
+			
 			
 			report.add(dtl);
 		}
@@ -218,7 +228,7 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 
 
 	@Override
-	public CRPreAppVO updateApprove1(Long id, String approval, String createdby,String userType) {
+	public CRPreAppVO updateApprove1(Long id, String approval, String createdby,String userType,String remarks) {
 		CRPreAppVO crPreAppvo= crPreAppRepo.findByGSTPreCreditrId(id);
 		if(userType.equals("approve1"))
 		{
@@ -233,6 +243,7 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 				crPreAppvo.setApprove1("F");
 				crPreAppvo.setApprove1Name(createdby);
 				crPreAppvo.setApprove1On(LocalDateTime.now());
+				crPreAppvo.setRejectremarks(remarks);;
 				
 			}
 		}
@@ -242,7 +253,7 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 
 	
 	@Override
-	public CRPreAppVO updateApprove2(Long id, String approval, String createdby,String userType) {
+	public CRPreAppVO updateApprove2(Long id, String approval, String createdby,String userType,String remarks) {
 		CRPreAppVO crPreAppvo= crPreAppRepo.findByGSTPreCreditrId(id);
 		if(userType.equals("approve2"))
 		{
@@ -257,6 +268,7 @@ public class CRPreAppServicelmpl  implements CRPreAppService{
 				crPreAppvo.setApprove2("F");
 				crPreAppvo.setApprove2Name(createdby);
 				crPreAppvo.setApprove2On(LocalDateTime.now());
+				crPreAppvo.setRejectremarks(remarks);
 				
 			}
 		}

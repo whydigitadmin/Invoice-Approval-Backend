@@ -22,5 +22,7 @@ public class CRReasonDTO {
 	    private String plimpact;
 	    
 	    private String documentRequired;
+	    
+	    private String rejectremarks;
 
 }

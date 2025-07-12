@@ -57,7 +57,12 @@ public class TicketVO {
 
 	@Column(name = "solvedon")
 	private String solvedOn;
+	
+	@Column(name = "adminnote")
+	private String adminNote="F";
 
+	@Column(name = "usernote")
+	private String userNote = "F";
 	@JsonManagedReference
 	@OneToMany(mappedBy = "ticketVO", cascade = CascadeType.ALL)
 	private List<TicketAttachmentVO> ticketAttachmentVO;

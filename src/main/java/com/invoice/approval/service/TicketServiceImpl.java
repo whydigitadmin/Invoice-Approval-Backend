@@ -86,6 +86,29 @@ public class TicketServiceImpl implements TicketService {
 		return ticketRepo.save(ticketVO);
 	}
 
+	
+	
+	@Override
+	public TicketVO updateNote(Long id, String createdby) {
+		TicketVO ticketVO = ticketRepo.findById(id).get();
+		if (ticketVO != null) {
+			
+				if (createdby.equals("admin")) {
+					
+					
+					ticketVO.setAdminNote("T");
+					
+			}
+				else
+				{
+					ticketVO.setUserNote("T");
+				}
+				
+		}
+
+		return ticketRepo.save(ticketVO);
+	}
+	
 	private List<Map<String, Object>> pendingDetails(Set<Object[]> details) {
 		List<Map<String, Object>> report = new ArrayList<>();
 		for (Object[] det : details) {
@@ -104,6 +127,7 @@ public class TicketServiceImpl implements TicketService {
 		}
 		return report;
 	}
+	
 
 	@Override
 	public List<Map<String, Object>> getTicketReport(String userName) {
@@ -114,6 +138,97 @@ public class TicketServiceImpl implements TicketService {
 		return pendingDetails(details);
 	}
 
+	
+	
+	private List<Map<String, Object>> getAdminNote(Set<Object[]> details) {
+		List<Map<String, Object>> report = new ArrayList<>();
+		for (Object[] det : details) {
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Map<String, Object> dtl = new HashMap<>();
+			dtl.put("gst_ticketId", det[0]);
+			dtl.put("title", det[1] != null ? det[1].toString() : "");
+			dtl.put("description", det[2] != null ? det[2].toString() : "");
+			dtl.put("status", det[3] != null ? det[3].toString() : "");
+			dtl.put("assignTo", det[4] != null ? det[4].toString() : "");
+			dtl.put("solvedOn", det[5] != null ? det[5].toString().split(" ")[0] : "");
+			dtl.put("sovledBy", det[6] != null ? det[6].toString() : "");
+			dtl.put("createdOn", det[7] != null ? det[7].toString().split(" ")[0] : "");
+			dtl.put("adminNote", det[8] != null ? det[8].toString() : "");
+			dtl.put("userNote", det[9] != null ? det[9].toString() : "");
+			dtl.put("createdBy", det[10] != null ? det[10].toString() : "");
+			report.add(dtl);
+		}
+		return report;
+	}
+	
+
+	@Override
+	public List<Map<String, Object>> getAdminNote(String userName) {
+		Set<Object[]> details = new HashSet<>();
+
+		details = ticketRepo.getAdminNote(userName);
+
+		return getAdminNote(details);
+	}
+	
+	
+	
+	private List<Map<String, Object>> getUserActiveStatus(Set<Object[]> details) {
+		List<Map<String, Object>> report = new ArrayList<>();
+		for (Object[] det : details) {
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Map<String, Object> dtl = new HashMap<>();
+			dtl.put("is_active", det[0]);	
+			report.add(dtl);
+		}
+		return report;
+	}
+	
+
+	@Override
+	public List<Map<String, Object>> getUserActiveStatus(String userName) {
+		Set<Object[]> details = new HashSet<>();
+
+		details = ticketRepo.getUserActiveStatus(userName);
+
+		return getUserActiveStatus(details);
+	}
+
+	
+	
+	private List<Map<String, Object>> getUserNote(Set<Object[]> details) {
+		List<Map<String, Object>> report = new ArrayList<>();
+		for (Object[] det : details) {
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Map<String, Object> dtl = new HashMap<>();
+			dtl.put("gst_ticketId", det[0]);
+			dtl.put("title", det[1] != null ? det[1].toString() : "");
+			dtl.put("description", det[2] != null ? det[2].toString() : "");
+			dtl.put("status", det[3] != null ? det[3].toString() : "");
+			dtl.put("assignTo", det[4] != null ? det[4].toString() : "");
+			dtl.put("solvedOn", det[5] != null ? det[5].toString().split(" ")[0] : "");
+			dtl.put("sovledBy", det[6] != null ? det[6].toString() : "");
+			dtl.put("createdOn", det[7] != null ? det[7].toString().split(" ")[0] : "");
+			dtl.put("adminNote", det[8] != null ? det[8].toString() : "");
+			dtl.put("userNote", det[9] != null ? det[9].toString() : "");
+			report.add(dtl);
+		}
+		return report;
+	}
+	
+
+	@Override
+	public List<Map<String, Object>> getUserNote(String userName) {
+		Set<Object[]> details = new HashSet<>();
+
+		details = ticketRepo.getUserNote(userName);
+
+		return getUserNote(details);
+	}
+	
 	@Override
 	public TicketVO getfindByTicketId(Long id) {
 		return ticketRepo.findById(id).get();

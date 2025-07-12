@@ -260,7 +260,7 @@ public class CRPreAppController extends BaseController {
 	
 	
 	@PutMapping("/approval1")
-	public ResponseEntity<ResponseDTO> updateApproval1(@RequestParam Long id,@RequestParam String approval,@RequestParam String createdby,@RequestParam String userType) {
+	public ResponseEntity<ResponseDTO> updateApproval1(@RequestParam Long id,@RequestParam String approval,@RequestParam String createdby,@RequestParam String userType,@RequestParam String remarks) {
 		String methodName = "updateApproval1()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -268,7 +268,7 @@ public class CRPreAppController extends BaseController {
 		ResponseDTO responseDTO = null;
 		CRPreAppVO crPreAppvo= new CRPreAppVO();
 		try {
-			crPreAppvo = crePreAppService.updateApprove1(id, approval, createdby,userType);
+			crPreAppvo = crePreAppService.updateApprove1(id, approval, createdby,userType,remarks);
 			responseObjectsMap.put("CRPreAppVO", crPreAppvo);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
@@ -282,7 +282,7 @@ public class CRPreAppController extends BaseController {
 	
 	
 	@PutMapping("/approval2")
-	public ResponseEntity<ResponseDTO> updateApproval2(@RequestParam Long id,@RequestParam String approval,@RequestParam String createdby,@RequestParam String userType) {
+	public ResponseEntity<ResponseDTO> updateApproval2(@RequestParam Long id,@RequestParam String approval,@RequestParam String createdby,@RequestParam String userType,@RequestParam String remarks) {
 		String methodName = "updateApproval2()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -290,7 +290,7 @@ public class CRPreAppController extends BaseController {
 		ResponseDTO responseDTO = null;
 		CRPreAppVO crPreAppvo= new CRPreAppVO();
 		try {
-			crPreAppvo = crePreAppService.updateApprove2(id, approval, createdby,userType);
+			crPreAppvo = crePreAppService.updateApprove2(id, approval, createdby,userType,remarks);
 			responseObjectsMap.put("CRPreAppVO", crPreAppvo);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {

@@ -45,4 +45,6 @@ public class CRReason {
     @Column(name = "documentsrequired", length = 200)
     private String documentsRequired;
 
+    @Column(name = "rejectremarks", length = 200)
+    private String rejectremarks;
 }

@@ -21,6 +21,8 @@ public class TicketDTO {
 	private String assignTo;
 	private String solvedOn;
 	private String solvedBy;
+	private String userNote;
+	private String adminNote;
 	
 
 }

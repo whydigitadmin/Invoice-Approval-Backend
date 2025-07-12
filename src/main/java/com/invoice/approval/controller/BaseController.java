@@ -110,12 +110,5 @@ public class BaseController {
 		return responseDTO;
 	}
 
-//	public String getErrorMessage(Exception exception, String methodName) {
-//		LOGGER.error(CommonConstant.ERR_MSG_FORMAT, methodName, exception.getMessage());
-//		String errorMsg = CommonConstant.SERVICE_UNAVAILABLE;
-//		if (exception instanceof ApplicationException || exception instanceof BadCredentialsException || exception instanceof ParseException) {
-//			errorMsg = exception.getMessage();
-//		}
-//		return errorMsg;
-//	}
+
 }

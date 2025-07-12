@@ -63,6 +63,9 @@ public class CRPreAppVO {
 
 	    @Column(name = "documentsrequired", length = 400)
 	    private String documentsRequired;
+	    
+	    @Column(name = "rejectremarks", length = 200)
+	    private String rejectremarks;
 
 	    @Column(name = "partyname", length = 200)
 	    private String partyName;
@@ -90,6 +93,9 @@ public class CRPreAppVO {
 
 	    @Column(name = "reason", length = 200)
 	    private String reason;
+	    
+	    
+	    
 	    
 		@Column(name = "approve1", length = 1)
 	    private String approve1="F";	

@@ -21,13 +21,19 @@ public interface TicketService {
 	
 	TicketVO updateApprove1(Long id, String approval, String createdby, String status,String solvedon);
 	
-	
+	TicketVO updateNote(Long id, String createdby);
 	
 	TicketVO getfindByTicketId(Long id);
 	
 	void saveUploadFiles(List<MultipartFile> files, Long id) throws ApplicationException, IOException;
 
 	List<Map<String, Object>> getTicketReport(String userName);
+	
+	List<Map<String, Object>> getAdminNote(String userName);
+	
+	List<Map<String, Object>> getUserNote(String userName);
+	
+	List<Map<String, Object>> getUserActiveStatus(String userName);
 }
 
 

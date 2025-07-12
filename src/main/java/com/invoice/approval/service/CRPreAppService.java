@@ -17,9 +17,9 @@ public interface CRPreAppService {
 
 	public Map<String, Object> updateCreateCRPreApp(CRPreAppDTO crPreAppDTO) throws ApplicationException;
 
-	CRPreAppVO updateApprove1(Long id, String approval, String createdby, String userType);
+	CRPreAppVO updateApprove1(Long id, String approval, String createdby, String userType,String rejectremarks);
 
-	CRPreAppVO updateApprove2(Long id, String approval, String createdby, String userType);
+	CRPreAppVO updateApprove2(Long id, String approval, String createdby, String userType,String rejectremarks);
 
 	List<Map<String, Object>> getPendingApprovalReport(String userType, String userName);
 
