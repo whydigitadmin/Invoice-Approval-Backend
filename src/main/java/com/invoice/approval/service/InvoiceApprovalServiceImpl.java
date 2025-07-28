@@ -226,6 +226,41 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 		return report;
 	}
 	
+	@Override
+	public List<Map<String, Object>> getCurrentOS(String utper) {
+		Set<Object[]>details= new HashSet<>();
+		details=gstInvoiceHdrRepo.getCurrentOS(utper);
+		return getCurrentOS(details);
+	}
+	
+	
+	private List<Map<String, Object>> getCurrentOS(Set<Object[]> details) {
+		List<Map<String,Object>>report=new ArrayList<>();
+		for(Object[]det:details)
+		{
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			
+			Map<String, Object> dtl= new HashMap<>();
+			dtl.put("subledgercode", det[0] != null ? det[0].toString() : "");
+			dtl.put("subledgername", det[1] != null ? det[1].toString() : "");
+			dtl.put("creditdays", det[2] != null ? det[2].toString() : "");
+			dtl.put("creditlimit", det[3] != null ? det[3].toString() : "");
+			dtl.put("category", det[4] != null ? det[4].toString() : "");
+			dtl.put("ctrloffice", det[5] != null ? det[5].toString() : "");
+			dtl.put("totdue", det[6] != null ? new BigDecimal(det[6].toString()) : BigDecimal.ZERO);
+			dtl.put("creditutipct", det[7] != null ? new BigDecimal(det[7].toString()) : BigDecimal.ZERO);
+			dtl.put("salesperson", det[8] != null ? det[8].toString() : "");
+			
+		
+
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+
 
 	@Override
 	public List<Map<String, Object>> getIRNJobInfo(String jobNo) {

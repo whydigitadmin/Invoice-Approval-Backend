@@ -21,6 +21,14 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 	@Query(value = "select a from GstInvoiceHdrVO a where a.gstInvoiceHdrId=?1")
 	GstInvoiceHdrVO findByGstInvoiceHdrId(Long id);
 	
+	@Query(nativeQuery = true,value = "select subledgercode,subledgername,creditdays,creditlimit,category,ctrloffice,\r\n"
+			+ "  totdue, creditutipct,salesperson from\r\n"
+			+ "(select subledgercode,subledgername,creditdays,creditlimit,category,ctrloffice,totdue,decode(ddays,91,'90+',ddays)ddays,\r\n"
+			+ "ROUND((totdue / NULLIF(creditlimit, 0)) * 100, 2) AS creditutipct,salesperson  from vw_currentos)\r\n"
+			+ "where (creditutipct >= ?1 or  0 = ?1)\r\n"
+			+ "order by 7 desc")
+	Set<Object[]> getCurrentOS(String UtPer);
+	
 	
 	@Query(nativeQuery = true,value = "select product,jobno,jobdt,mno,mdt,hno,hdt,freight,direct,customer,category,salesperson,cbranch,partner,carrier,mchwt,hpkgs,hgrwt,hchwt,\r\n"
 			+ "ft20+(ft40)*2+(ft45)*2 teus,cbm,mpol,hpod,mpolcountry,hpodcountry,opsclosedon,closeddt from vw_gstjobs where jobno = ?1")

@@ -24,6 +24,8 @@ public interface InvoiceApprovalService {
 	
 	List<Map<String,Object>>getUserBranch(String userName);
 	
+	List<Map<String,Object>>getCurrentOS(String utPer);
+	
 	List<Map<String,Object>>getAllCreditParties();
 		
 	GstInvoiceHdrVO updateApprove1(Long id,String approval,String createdby,String userType);

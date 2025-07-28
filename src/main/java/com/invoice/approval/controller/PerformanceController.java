@@ -21,6 +21,7 @@ import com.invoice.approval.common.CommonConstant;
 import com.invoice.approval.common.UserConstants;
 import com.invoice.approval.dto.PerformanceGoalsDTO;
 import com.invoice.approval.dto.ResponseDTO;
+import com.invoice.approval.entity.POVO;
 import com.invoice.approval.entity.PerformanceGoalsDtlVO;
 import com.invoice.approval.entity.PerformanceGoalsVO;
 import com.invoice.approval.repo.PerformanceGoalsDtlRepo;
@@ -51,6 +52,55 @@ public class PerformanceController extends BaseController {
 			Map<String, Object> performanceGoalsVO = performanceGoalsService.createUpdatePerformanceGoals(preGoalsDTO);
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, performanceGoalsVO.get("message"));
 			responseObjectsMap.put("performanceGoalsVO", performanceGoalsVO.get("preGoalsVO"));
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
+	
+	@GetMapping("/getReportingUserName")
+	public ResponseEntity<ResponseDTO> getReportingUserName(@RequestParam String username) {
+	    String methodName = "getReportingUserName()";
+	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+	    String errorMsg = null;
+	    Map<String, Object> responseObjectsMap = new HashMap<>();
+	    ResponseDTO responseDTO = null;
+	    List<Map<String, Object>> getReportingUserName= null;
+	    try {
+	        // Don't cast! Just receive as Object or correct type
+	    	getReportingUserName = performanceGoalsService.getReportingUserName(username);
+
+	        responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Reporting Person Details found Successfully");
+	        responseObjectsMap.put("getReportingUserName", getReportingUserName);
+	        responseDTO = createServiceResponse(responseObjectsMap);
+	    } catch (Exception e) {
+	        errorMsg = e.getMessage();
+	        LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+	        responseDTO = createServiceResponseError(responseObjectsMap,
+	                "Pre Goals Details information receive failed", errorMsg);
+	    }
+
+	    LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+	    return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	@GetMapping("/getAll")
+	public ResponseEntity<ResponseDTO> getAll( ) {
+		String methodName = "getAll()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<PerformanceGoalsVO> performanceVO = new ArrayList<>();
+		try {
+			performanceVO = performanceGoalsService.findAll();
+			responseObjectsMap.put("performanceVO", performanceVO);
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.invoice.approval.dto.PerformanceGoalsDTO;
+import com.invoice.approval.entity.POVO;
 import com.invoice.approval.entity.PerformanceGoalsVO;
 import com.invoice.approval.exception.ApplicationException;
 
@@ -18,6 +19,8 @@ public interface PerformanceGoalsServices {
 	// throws IOException, ApplicationException;
 
 	void saveExpenseImages(List<MultipartFile> file, Long expenseId) throws IOException, ApplicationException;
+	
+	List<PerformanceGoalsVO> findAll();
 
 	PerformanceGoalsVO getPerformanceGoalsVOById(Long id);
 	
@@ -26,6 +29,8 @@ public interface PerformanceGoalsServices {
 	List<Map<String, Object>> getPerformanceGoalsbyreportingto(String reportingto);
 
 	List<Map<String, Object>> getPerformanceGoalsbyUserName(String userName);
+	
+	List<Map<String, Object>> getReportingUserName(String userName);
 
 	List<PerformanceGoalsVO> getAllPerformanceGoalsVO();
 

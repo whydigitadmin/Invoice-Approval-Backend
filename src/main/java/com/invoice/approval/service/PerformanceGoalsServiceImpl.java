@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.invoice.approval.dto.PerformanceGoalsDTO;
 import com.invoice.approval.dto.PerformanceGoalsDtlDTO;
 import com.invoice.approval.dto.PreGoalsDtlDTO;
+import com.invoice.approval.entity.POVO;
 import com.invoice.approval.entity.PerformanceGoalsDtlVO;
 import com.invoice.approval.entity.PerformanceGoalsVO;
 import com.invoice.approval.exception.ApplicationException;
@@ -118,6 +119,7 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsServices {
 			performanceGoalsDetailsVO.setAppraiserrating(performanceGoalsDetailsDTO.getAppraiserrating());
 			performanceGoalsDetailsVO.setAppraiserrating(performanceGoalsDetailsDTO.getAppraiserrating());
 			performanceGoalsDetailsVO.setPerformanceself(performanceGoalsDetailsDTO.getPerformanceself());
+			performanceGoalsDetailsVO.setApprjustification(performanceGoalsDetailsDTO.getApprjustification());
 
 			performanceGoalsDetailsVO.setPerformanceGoalsVO(performanceGoalsVO);
 			preGoalsDetailsVOs.add(performanceGoalsDetailsVO);
@@ -200,7 +202,7 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsServices {
 			performanceGoalsDetailsVO.setSelfrating(performanceGoalsDetailsDTO.getSelfrating());
 			performanceGoalsDetailsVO.setAppraiserrating(performanceGoalsDetailsDTO.getAppraiserrating());
 			performanceGoalsDetailsVO.setPerformanceself(performanceGoalsDetailsDTO.getPerformanceself());
-
+			performanceGoalsDetailsVO.setApprjustification(performanceGoalsDetailsDTO.getApprjustification());
 			performanceGoalsDetailsVO.setPerformanceGoalsVO(performanceGoalsVO);
 			performanceGoalsDetailsVOs.add(performanceGoalsDetailsVO);
 			
@@ -216,6 +218,12 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsServices {
 	public PerformanceGoalsVO getPerformanceGoalsVOById(Long id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public List<PerformanceGoalsVO> findAll() {
+		
+		return performanceGoalsRepo.findAll();
 	}
 	
 	public List<Map<String, Object>> getPerformanceGoalsVOListById(Long id) {
@@ -255,6 +263,30 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsServices {
 
 	}
 	
+	
+	
+	@Override
+	public List<Map<String, Object>> getReportingUserName(String username) {
+		Set<Object[]> details = performanceGoalsRepo.getReportingUserName(username);
+		return getReportingUserName(details);
+	}
+
+	private List<Map<String, Object>> getReportingUserName(Set<Object[]> details) {
+		List<Map<String, Object>> report = new ArrayList<>();
+		for (Object[] det : details) {
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Map<String, Object> dtl = new HashMap<>();
+			
+			dtl.put("reportingto", det[0] != null ? det[0].toString() : "");
+			dtl.put("reportingcode", det[1] != null ? det[1].toString() : "");
+			
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+
 	
 	@Override
 	public List<Map<String, Object>> getPerformanceGoalsbyreportingto(String reportingto) {
