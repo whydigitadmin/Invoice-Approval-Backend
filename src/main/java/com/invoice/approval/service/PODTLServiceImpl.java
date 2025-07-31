@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Service;
 
 import com.invoice.approval.dto.PODTO;
 import com.invoice.approval.dto.PODTLDTO;
+import com.invoice.approval.entity.DocTypeMappingDetailsVO;
 import com.invoice.approval.entity.PODTLVO;
 import com.invoice.approval.entity.POVO;
+import com.invoice.approval.repo.DocTypeMappingDetailsRepo;
 import com.invoice.approval.repo.PODTLRepo;
 import com.invoice.approval.repo.POVORepo;
 
@@ -26,11 +29,17 @@ public class PODTLServiceImpl implements PODTLService {
 
 	@Autowired
 	PODTLRepo detailRepo;
+	
+	@Autowired
+	DocTypeMappingDetailsRepo docTypeMappingDetailsRepo;
 
 	@Override
+	@Transactional
 	public Map<String, Object> createPO(PODTO poDto) {
 		String message;
 		POVO poVO = null;
+		String screenCode="PO";
+		DocTypeMappingDetailsVO docTypeMappingDetailsVO= docTypeMappingDetailsRepo.findByBranchAndFinYearAndScreenCode(poDto.getBranchname(),poDto.getFinYear(),screenCode);
 
 		// Check if ID is null for create or update operation
 		if (ObjectUtils.isEmpty(poDto.getId())) {
@@ -40,6 +49,9 @@ public class PODTLServiceImpl implements PODTLService {
 			poVO.setModifiedBy(poDto.getCreatedBy());
 
 			message = "PO created successfully";
+			int getLastNo=docTypeMappingDetailsVO.getLastNo()+1;
+			docTypeMappingDetailsVO.setLastNo(getLastNo);
+			docTypeMappingDetailsRepo.save(docTypeMappingDetailsVO);
 		} else {
 			// Update operation
 			poVO = povoRepo.findById(poDto.getId()).orElseThrow(

@@ -18,6 +18,7 @@ public class PODTO {
 	private String poid;
 
 	private String podt;
+	private int finYear;
 	
 	private String entity;
 	private String branchname;

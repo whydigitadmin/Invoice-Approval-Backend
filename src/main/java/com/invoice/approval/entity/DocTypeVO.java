@@ -1,7 +1,6 @@
 package com.invoice.approval.entity;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,19 +8,16 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.invoice.approval.dto.CreatedUpdatedDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "GST_DocumentType")
+@Table(name="documenttype")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class DocumentTypeVO {
+public class DocTypeVO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "documenttypegen")
@@ -29,28 +25,37 @@ public class DocumentTypeVO {
 	@Column(name = "documenttypeid")
 	private Long id;
 	
-	@Column(name = "screencode",length =10)
+	@Column(name="screencode")
 	private String screenCode;
 	
-	@Column(name = "screenname",length =150)
+	@Column(name="screenname")
 	private String screenName;
 	
-	@Column(name = "description",length =150)
-	private String description;
-	
-	@Column(name = "doccode",length =25)
+	@Column(name="doccode")
 	private String docCode;
 	
-	@Column(name = "createdby",length =25)
-	private String createdBy;
+	@Column(name="orgid")
+	private String orgId;
 	
-	@Column(name = "modifiedby",length =25)
-	private String updatedBy;
+	@Column(name="doccodepos")
+	private int docCodePos;
 	
+	@Column(name="branchcodepos")
+	private int branchCodePos;
+	
+	@Column(name="finyearpos")
+	private int finYearPos;
+	
+	@Column(name="seqpos")
+	private int seqPos;
+	
+	@Column(name="seqdigit")
+	private int seqDigit;
 
-		
-	@Embedded
-	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
+    @Column(name="codepattern",nullable = false)
+    private String codePattern; // e.g. ${companyCode}-${department}-${seq}
+
 }
+
 
 

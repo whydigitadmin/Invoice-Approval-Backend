@@ -108,6 +108,9 @@ public class POVO {
 
 	@Column(name = "billamount", length = 30)
 	private float billamount;
+	
+	@Column(name="finyr")
+	private int finYear;
 
 	
 

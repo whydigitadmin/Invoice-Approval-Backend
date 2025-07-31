@@ -35,7 +35,7 @@ public class SecurityConfig {
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security",
 						"/api/party/**", "/swagger-ui.html", "/swagger-ui/*", "/api/auth/signup", "/api/auth/login",
 						"/api/auth/logout", "/api/auth/getRefreshToken","/api/employeemaster/**" ,"/api/PO/**" , "/api/mail/**", "/api/auth/**", "/api/InvoiceApproval/**","/api/performancegoals/**", "/api/pregoals/**","/api/HeaderDetail/**","/api/TTInvoiceApproval/**","/api/Ticket/**","/api/WHInvoiceApproval/**","/api/crpreapp/**","/api/expense/**",
-						"/api/user/getBranchCodeByUser")
+						"/api/user/getBranchCodeByUser","/api/master/**")
 
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
