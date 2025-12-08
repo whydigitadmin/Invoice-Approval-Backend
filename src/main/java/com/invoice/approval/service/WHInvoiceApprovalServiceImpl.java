@@ -38,6 +38,27 @@ public class WHInvoiceApprovalServiceImpl implements WHInvoiceApprovalService {
 			details=whInvoiceHdrRepo.getPendingDetailsApprove1slab1(userName);
 			
 		}
+		else if(userType.equals("approve2"))
+		{
+			details=whInvoiceHdrRepo.getPendingDetailsApprove1slab2(userName);
+			
+		}
+	
+		
+		return pendingDetails(details);
+	}
+	
+	
+	@Override
+	public List<Map<String, Object>> getAdminPendingDetailsApprove1slab(String userName) {
+		
+		Set<Object[]>details= new HashSet<>();
+		if(userName.equals("admin"))
+		{
+			details=whInvoiceHdrRepo.getAdminPendingDetailsApprove1slab(userName);
+			
+		}
+
 	
 		
 		return pendingDetails(details);
@@ -52,10 +73,17 @@ public class WHInvoiceApprovalServiceImpl implements WHInvoiceApprovalService {
 			
 			details=whInvoiceHdrRepo.getWHInvDetailsApprove1(userName);
 		}
+		else if(userType.equals("approve2"))
+		{
+			
+			details=whInvoiceHdrRepo.getPendingDetailsApprove1slab2(userName);
+		}
 		
 		
 		return approveDetails(details);
 	}
+	
+
 	
 	private List<Map<String, Object>> pendingDetails(Set<Object[]> details) {
 		List<Map<String,Object>>report=new ArrayList<>();
@@ -73,17 +101,17 @@ public class WHInvoiceApprovalServiceImpl implements WHInvoiceApprovalService {
 			dtl.put("partyCode", det[6] != null ? det[6].toString() : "");
 			dtl.put("outStanding", det[7] != null ? df.format(new BigDecimal(det[7].toString())) : "");
 			dtl.put("totalInvAmtLc", det[8] != null ? df.format(new BigDecimal(det[8].toString())) : "");
-			dtl.put("creditDays", det[9] != null ? Integer.parseInt(det[9].toString()) : 0);
+			dtl.put("creditDays", det[0] != null ? df.format(new BigDecimal(det[9].toString())) : "");
 			dtl.put("creditLimit", det[10] != null ? df.format(new BigDecimal(det[10].toString())) : "");
 			dtl.put("slabRemarks", det[11] != null ? det[11].toString() : "");
 			dtl.put("exceedDays", det[12] != null ? det[12].toString() : "");
-			dtl.put("eligiSlab", det[13] != null ? Integer.parseInt(det[13].toString()) : 0);
+			dtl.put("eligiSlab", det[13] != null ? df.format(new BigDecimal(det[13].toString())) : "");
 			dtl.put("unApproveAmt", det[14] != null ? df.format(new BigDecimal(det[14].toString())) : "");
-			dtl.put("osBeyond", det[20] != null ? df.format(new BigDecimal(det[20].toString())) : "");
-			dtl.put("excessCredit", det[21] != null ? df.format(new BigDecimal(det[21].toString())) : "");
-			dtl.put("category", det[22] != null ? det[22].toString() : "");
-			dtl.put("controllingOffice", det[23] != null ? det[23].toString() : "");
-			dtl.put("salespersonName", det[24] != null ? det[24].toString() : "");
+			dtl.put("osBeyond", det[15] != null ? df.format(new BigDecimal(det[15].toString())) : "");
+			dtl.put("excessCredit", det[16] != null ? df.format(new BigDecimal(det[16].toString())) : "");
+			dtl.put("category", det[17] != null ? det[17].toString() : "");
+			dtl.put("controllingOffice", det[18] != null ? det[18].toString() : "");
+			dtl.put("salespersonName", det[19] != null ? det[19].toString() : "");
 			
 			
 			report.add(dtl);

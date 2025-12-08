@@ -50,7 +50,7 @@ public class EmployeeMasterVO {
 	   @Column(name = "employee", length = 50)
 	    private String employee;
 
-	   
+
 	   @Column(name = "code", length = 50)
 	    private String code;
 	   
@@ -74,6 +74,34 @@ public class EmployeeMasterVO {
 	   
 	   @Column(name = "reportingtocode", length = 50)
 	    private String reportingtocode;
+	   
+	   @Column(name = "mailid", length = 200)
+	    private String mailid;
+	   
+	   @Column(name = "subdepartment", length = 200)
+	    private String subdepartment;
+	   
+	   @Column(name = "vertical", length = 10)
+	    private String vertical;
+	   
+	   @Column(name = "costcenter", length = 200)
+	    private String costcenter;
+	   
+	   @Column(name = "branchhead", length = 200)
+	    private String branchhead;
+	   
+	   @Column(name = "regionalhead", length = 200)
+	    private String regionalhead;
+	   
+	   @Column(name = "verticalhead", length = 200)
+	    private String verticalhead;
+	   
+	   @Column(name = "corpteam", length = 200)
+	    private String corpteam;
+	   
+	   @Column(name = "mobile")
+	    private String mobile;
+	   
 	   
 	   @Column(name = "active", length = 50)
 	    private String active;

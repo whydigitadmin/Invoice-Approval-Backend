@@ -22,6 +22,8 @@ public interface InvoiceApprovalService {
 	
 	List<Map<String,Object>>getApprovalReport(String userType,String userName);
 	
+	List<Map<String,Object>>getadminPendingApprovalReport(String userName);
+	
 	List<Map<String,Object>>getUserBranch(String userName);
 	
 	List<Map<String,Object>>getCurrentOS(String utPer);

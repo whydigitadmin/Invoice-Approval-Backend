@@ -68,7 +68,7 @@ public class EmployeeMasterServiceImpl implements EmployeeMasterService {
 	    empMasVO.setEmployee(empMasDTO.getEmployee());
 	    empMasVO.setCode(empMasDTO.getCode());
 	    empMasVO.setDob(empMasDTO.getDob());
-	    empMasVO.setDoj(empMasDTO.getDoj());
+	    empMasVO.setDoj(empMasDTO.getDoj());	    
 	    empMasVO.setDepartment(empMasDTO.getDepartment());
 	    empMasVO.setDesignation(empMasDTO.getDesignation());
 	    empMasVO.setLvl(empMasDTO.getLvl());
@@ -76,7 +76,17 @@ public class EmployeeMasterServiceImpl implements EmployeeMasterService {
 	    empMasVO.setReportingtocode(empMasDTO.getReportingtocode());
 	    empMasVO.setActive(empMasDTO.getActive());
 	    empMasVO.setAttachment(empMasDTO.getAttachment());
+	    empMasVO.setMailid(empMasDTO.getMailid());
+	    empMasVO.setMobile(empMasDTO.getMobile());
+	    empMasVO.setSubdepartment(empMasDTO.getSubdepartment());
+	    empMasVO.setVertical(empMasDTO.getVertical());
+	    empMasVO.setCostcenter(empMasDTO.getCostcenter());
+	    empMasVO.setBranchhead(empMasDTO.getBranchhead());
+	    empMasVO.setRegionalhead(empMasDTO.getRegionalhead());
+	    empMasVO.setVerticalhead(empMasDTO.getVerticalhead());
+	    empMasVO.setCorpteam(empMasDTO.getCorpteam());
 	    return empMasVO;
+	    
 	}
 
 
@@ -115,6 +125,12 @@ public class EmployeeMasterServiceImpl implements EmployeeMasterService {
 	            try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
 	                Sheet sheet = workbook.getSheetAt(0);
 	                Row headerRow = sheet.getRow(0);
+	                
+	                // 🆕 ADD DEBUG LOGGING
+	                System.out.println("=== EXCEL UPLOAD DEBUG ===");
+	                System.out.println("File: " + file.getOriginalFilename());
+	                System.out.println("Sheet name: " + sheet.getSheetName());
+	                System.out.println("Number of rows: " + sheet.getPhysicalNumberOfRows());
 
 	                if (!isHeaderValid(headerRow)) {
 	                    throw new ApplicationException("Invalid Excel format. Please refer to the sample file.");
@@ -137,6 +153,15 @@ public class EmployeeMasterServiceImpl implements EmployeeMasterService {
 	                        String reportingTo = getStringCellValue(row.getCell(8));
 	                        String reportingToCode = getStringCellValue(row.getCell(9));
 	                        String active = getStringCellValue(row.getCell(10));
+	                        String mailid = getStringCellValue(row.getCell(11));
+	                        String mobile = getStringCellValue(row.getCell(12));
+	                        String subdepartment = getStringCellValue(row.getCell(13));
+	                        String vertical = getStringCellValue(row.getCell(14));
+	                        String costcenter = getStringCellValue(row.getCell(15));
+	                        String branchhead = getStringCellValue(row.getCell(16));
+	                        String regionalhead = getStringCellValue(row.getCell(17));
+	                        String verticalhead = getStringCellValue(row.getCell(18));
+	                        String corpteam = getStringCellValue(row.getCell(19));
 
 	                       // ✅ Check for duplicate employee code
 	if (empMasRepo.existsByCode(code)) {
@@ -157,6 +182,16 @@ public class EmployeeMasterServiceImpl implements EmployeeMasterService {
 	                        dataVO.setActive(active);
 	                        dataVO.setCreatedBy(createdBy);
 	                        dataVO.setUpdatedBy(createdBy);
+	                        dataVO.setMailid(mailid);
+	                        dataVO.setMobile(mobile);
+	                        dataVO.setSubdepartment(subdepartment);
+	                        dataVO.setVertical(vertical);
+	                        dataVO.setCostcenter(costcenter);
+	                        dataVO.setBranchhead(branchhead);
+	                        dataVO.setRegionalhead(regionalhead);
+	                        dataVO.setVerticalhead(verticalhead);
+	                        dataVO.setCorpteam(corpteam);
+	                        
 
 	                        dataToSave.add(dataVO);
 
@@ -203,7 +238,18 @@ public class EmployeeMasterServiceImpl implements EmployeeMasterService {
 	            && "lvl".equalsIgnoreCase(getStringCellValue(headerRow.getCell(7)))
 	            && "reportingto".equalsIgnoreCase(getStringCellValue(headerRow.getCell(8)))
 	            && "reportingtocode".equalsIgnoreCase(getStringCellValue(headerRow.getCell(9)))
-	            && "active".equalsIgnoreCase(getStringCellValue(headerRow.getCell(10)));
+	            && "active".equalsIgnoreCase(getStringCellValue(headerRow.getCell(10)))
+	        && "mailid".equalsIgnoreCase(getStringCellValue(headerRow.getCell(11)))
+	        && "mobile".equalsIgnoreCase(getStringCellValue(headerRow.getCell(12)))
+	        
+	        && "subdepartment".equalsIgnoreCase(getStringCellValue(headerRow.getCell(13)))
+	        && "vertical".equalsIgnoreCase(getStringCellValue(headerRow.getCell(14)))
+	        && "costcenter".equalsIgnoreCase(getStringCellValue(headerRow.getCell(15)))
+	        && "branchhead".equalsIgnoreCase(getStringCellValue(headerRow.getCell(16)))
+	        && "regionalhead".equalsIgnoreCase(getStringCellValue(headerRow.getCell(17)))
+	        && "verticalhead".equalsIgnoreCase(getStringCellValue(headerRow.getCell(18)))
+	        && "corpteam".equalsIgnoreCase(getStringCellValue(headerRow.getCell(19)));
+	        
 	    }
 
 	    private boolean isRowEmpty(Row row) {

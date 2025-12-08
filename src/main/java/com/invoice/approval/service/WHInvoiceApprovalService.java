@@ -10,6 +10,8 @@ public interface WHInvoiceApprovalService {
 List<Map<String,Object>>getPendingApprovalReport(String userType,String userName);
 	
 	List<Map<String,Object>>getApprovalReport(String userType,String userName);
+
+	List<Map<String,Object>>getAdminPendingDetailsApprove1slab(String userName);
 	
 	List<Map<String,Object>>getUserBranch(String userName);
 	

@@ -52,6 +52,24 @@ public class TTInvoiceApprovalServiceImpl implements TTInvoiceApprovalService {
 		return pendingDetails(details);
 	}
 	
+	
+	
+
+	@Override
+	public List<Map<String, Object>> getAdminPendingDetailsApprove1slab1(String userType,String userName) {
+		
+		Set<Object[]>details= new HashSet<>();
+		if(userName.equals("admin"))
+		{
+			details=ttInvoiceHdrRepo.getAdminPendingDetailsApprove1slab1(userName);
+			
+		}
+
+	
+		
+		return pendingDetails(details);
+	}
+	
 	@Override
 	public List<Map<String, Object>> getApprovalReport(String userType,String userName) {
 		

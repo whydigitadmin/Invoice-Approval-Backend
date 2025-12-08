@@ -57,6 +57,37 @@ public static final Logger LOGGER = LoggerFactory.getLogger(TTInvoiceApprovalCon
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
+	
+	
+	
+
+	@GetMapping("/getAdminPendingDetails")
+	public ResponseEntity<ResponseDTO> getAdminPendingDetails(@RequestParam String userName) {
+		String methodName = "getAdminPendingDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> getAdminPendingDetails = new ArrayList<Map<String, Object>>();
+		try {
+			getAdminPendingDetails = whinvoiceApprovalService.getAdminPendingDetailsApprove1slab(userName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Pending PartyOS Details  found Successfullly");
+			responseObjectsMap.put("getAdminPendingDetails", getAdminPendingDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Pending PartyOS Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+	
 
 	
 	@PutMapping("/approval1")

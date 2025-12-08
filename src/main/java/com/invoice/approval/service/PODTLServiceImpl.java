@@ -88,7 +88,7 @@ public class PODTLServiceImpl implements PODTLService {
 		poVO.setApprovedby(poDto.getApprovedby());
 		poVO.setApprovedon(poDto.getApprovedon());
 		poVO.setEntity(poDto.getEntity());
-		
+		poVO.setFinYear(poDto.getFinYear());		
 		poVO.setBcurr(poDto.getBcurr());
 		poVO.setExrate(poDto.getExrate());	
 		poVO.setShippingaddress(poDto.getShippingaddress());

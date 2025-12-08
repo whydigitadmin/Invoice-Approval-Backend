@@ -90,6 +90,32 @@ public class PerformanceController extends BaseController {
 	}
 
 	
+	@GetMapping("/getDisplayEmpName")
+	public ResponseEntity<ResponseDTO> getDisplayEmpName(@RequestParam String username) {
+	    String methodName = "getReportingUserName()";
+	    LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+	    String errorMsg = null;
+	    Map<String, Object> responseObjectsMap = new HashMap<>();
+	    ResponseDTO responseDTO = null;
+	    List<Map<String, Object>> getDisplayEmpName= null;
+	    try {
+	        // Don't cast! Just receive as Object or correct type
+	    	getDisplayEmpName = performanceGoalsService.getDisplayEmpName(username);
+
+	        responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Reporting Person Details found Successfully");
+	        responseObjectsMap.put("getDisplayEmpName", getDisplayEmpName);
+	        responseDTO = createServiceResponse(responseObjectsMap);
+	    } catch (Exception e) {
+	        errorMsg = e.getMessage();
+	        LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+	        responseDTO = createServiceResponseError(responseObjectsMap,
+	                "Pre Goals Details information receive failed", errorMsg);
+	    }
+
+	    LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+	    return ResponseEntity.ok().body(responseDTO);
+	}
+	
 	@GetMapping("/getAll")
 	public ResponseEntity<ResponseDTO> getAll( ) {
 		String methodName = "getAll()";

@@ -72,10 +72,29 @@ public class InvoiceApprovalServiceImpl implements InvoiceApprovalService {
 			details=gstInvoiceHdrRepo.getPendingDetailsApprove1slab2(userName);
 			
 		}
+		else if(userName.equals("admin"))
+		{
+			details=gstInvoiceHdrRepo.getadminPendingDetailsApprove1slab2(userName);
+		}
 		
 		return pendingDetails(details);
 	}
 
+	
+	
+	@Override
+	public List<Map<String, Object>> getadminPendingApprovalReport(String userName) {
+		
+		Set<Object[]>details= new HashSet<>();
+		
+		if(userName.equals("admin"))
+		{
+			details=gstInvoiceHdrRepo.getadminPendingDetailsApprove1slab2(userName);
+		}
+		
+		return pendingDetails(details);
+	}
+	
 	
 	@Override
 	public List<Map<String, Object>> getApprovalReport(String userType,String userName) {

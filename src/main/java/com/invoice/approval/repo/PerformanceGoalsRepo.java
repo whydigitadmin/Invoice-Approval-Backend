@@ -33,6 +33,18 @@ public interface PerformanceGoalsRepo extends JpaRepository<PerformanceGoalsVO, 
 		@Query(nativeQuery = true,value = "select reportingto,reportingtocode from MG_EMPLOYEEMASTER where lower( code ) = lower( ?1 )")
 		Set<Object[]> getReportingUserName(String userName);
 		
+		@Query(nativeQuery = true,value = "select employee,code from mg_employeemaster where lower(code) = lower(?1)\r\n"
+				+ "union\r\n"
+				+ "select employee,code from mg_employeemaster where lower(reportingtocode) = lower(?1)\r\n"
+				+ "union\r\n"
+				+ "select employee,code from mg_employeemaster where lower(regionalhead) =( select  lower(employee) from mg_employeemaster where lower(code) = lower(?1))\r\n"
+				+ "union\r\n"
+				+ "select employee,code from mg_employeemaster where lower(verticalhead)  in ( select distinct lower(reportingto) from mg_employeemaster where lower(reportingtocode) =  lower(?1))\r\n"
+				+ "union\r\n"
+				+ "select employee,code from mg_employeemaster where active in (select active from mg_employeemaster where subdepartment = 'Human Resource Head' and lower(code) = lower(?1))"
+				+ " order by employee")
+		Set<Object[]> getDisplayEmpName(String userName);
+		
 
 		@Query(nativeQuery = true,value = "select gst_performancegoalsid,appraisalyear,empcode,empname,reportingto,reportingname,approve1,pmonth From gst_performancegoals where gst_performancegoalsid = ?1")
 		Set<Object[]> getPerformanceGoalsVOListById(Long id);

@@ -30,6 +30,8 @@ public interface PerformanceGoalsServices {
 
 	List<Map<String, Object>> getPerformanceGoalsbyUserName(String userName);
 	
+	List<Map<String, Object>> getDisplayEmpName(String userName);
+	
 	List<Map<String, Object>> getReportingUserName(String userName);
 
 	List<PerformanceGoalsVO> getAllPerformanceGoalsVO();

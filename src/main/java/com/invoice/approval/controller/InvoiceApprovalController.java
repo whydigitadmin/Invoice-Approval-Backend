@@ -37,6 +37,35 @@ public class InvoiceApprovalController extends BaseController {
 	
 	
 	
+	@GetMapping("/getadminPendingDetails")
+	public ResponseEntity<ResponseDTO> getadminPendingDetails(@RequestParam String userName) {
+		String methodName = "getadminPendingDetails()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		List<Map<String, Object>> getadminPendingDetails = new ArrayList<Map<String, Object>>();
+		try {
+			getadminPendingDetails = invoiceApprovalService.getadminPendingApprovalReport(userName);
+
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isEmpty(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Pending PartyOS Details  found Successfullly");
+			responseObjectsMap.put("getadminPendingDetails", getadminPendingDetails);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Pending PartyOS Details information receive failed",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	
+	
 	@GetMapping("/getPendingDetails")
 	public ResponseEntity<ResponseDTO> getPendingDetails(@RequestParam String userType,@RequestParam String userName) {
 		String methodName = "getPendingDetails()";

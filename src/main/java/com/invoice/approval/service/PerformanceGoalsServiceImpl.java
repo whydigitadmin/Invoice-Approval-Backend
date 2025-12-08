@@ -110,7 +110,6 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsServices {
 
 			performanceGoalsDetailsVO.setPerspective(performanceGoalsDetailsDTO.getPerspective());
 			performanceGoalsDetailsVO.setObjectivedesc(performanceGoalsDetailsDTO.getObjectivedesc());
-			performanceGoalsDetailsVO.setObjectivedesc(performanceGoalsDetailsDTO.getObjectivedesc());
 			performanceGoalsDetailsVO.setMeasurement(performanceGoalsDetailsDTO.getMeasurement());
 			performanceGoalsDetailsVO.setQtrtarget(performanceGoalsDetailsDTO.getQtrtarget());
 			performanceGoalsDetailsVO.setPerformance(performanceGoalsDetailsDTO.getPerformance());
@@ -120,6 +119,7 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsServices {
 			performanceGoalsDetailsVO.setAppraiserrating(performanceGoalsDetailsDTO.getAppraiserrating());
 			performanceGoalsDetailsVO.setPerformanceself(performanceGoalsDetailsDTO.getPerformanceself());
 			performanceGoalsDetailsVO.setApprjustification(performanceGoalsDetailsDTO.getApprjustification());
+			performanceGoalsDetailsVO.setPerassigned(performanceGoalsDetailsDTO.getPerassigned());
 
 			performanceGoalsDetailsVO.setPerformanceGoalsVO(performanceGoalsVO);
 			preGoalsDetailsVOs.add(performanceGoalsDetailsVO);
@@ -204,6 +204,7 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsServices {
 			performanceGoalsDetailsVO.setPerformanceself(performanceGoalsDetailsDTO.getPerformanceself());
 			performanceGoalsDetailsVO.setApprjustification(performanceGoalsDetailsDTO.getApprjustification());
 			performanceGoalsDetailsVO.setPerformanceGoalsVO(performanceGoalsVO);
+			performanceGoalsDetailsVO.setPerassigned(performanceGoalsDetailsDTO.getPerassigned());
 			performanceGoalsDetailsVOs.add(performanceGoalsDetailsVO);
 			
 
@@ -375,6 +376,29 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsServices {
 	}
 
 	
+	
+	@Override
+	public List<Map<String, Object>> getDisplayEmpName(String username) {
+		Set<Object[]> details = performanceGoalsRepo.getDisplayEmpName(username);
+		return getReportingUserName(details);
+	}
+
+	private List<Map<String, Object>> getDisplayEmpName(Set<Object[]> details) {
+		List<Map<String, Object>> report = new ArrayList<>();
+		for (Object[] det : details) {
+			DecimalFormat df = new DecimalFormat("0.00");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Map<String, Object> dtl = new HashMap<>();
+			
+			dtl.put("employee", det[0] != null ? det[0].toString() : "");
+			dtl.put("code", det[1] != null ? det[1].toString() : "");
+			
+			
+			report.add(dtl);
+		}
+		return report;
+	}
+
 
 	@Override
 	public PerformanceGoalsVO updatePerformanceGoalsApprovedDetails(Long id, String approve1,String approve1name) {

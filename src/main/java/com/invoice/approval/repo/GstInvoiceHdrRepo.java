@@ -14,9 +14,30 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 	
 	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,"
 			+ "b.creditdays,b.creditlimit,slabremarks,exceeddays,eligislab,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,osbeyond,excesscredit,category,controllingoffice , case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname from gst_invoicehdr a,mg_partyhdr b \r\n"
-			+ "where invproceed = 'F' and approve1 = 'F' and a.partycode = b.party_code and approve1name is null"
-			+ " AND eligislab = 1 AND a.branchcode in (select branchcode from vg_userbranch where (userName =?1 or 'admin'=?1 ))  order by a.createdon desc")
+			+ "where invproceed = 'F' and approve1 = 'F' and a.partycode = b.party_code and approve1name is null and a.cancel = 'F'"
+			+ " AND eligislab = 1 AND a.branchcode in (select branchcode from vg_userbranch where (userName =?1  ))  order by a.createdon desc")
 	Set<Object[]> getPendingDetailsApprove1slab1(String userName);
+	
+	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,slabremarks,exceeddays,eligislab,unapproveamt,approve1,approve1name,approve1on,approve2,approve2name,approve2on,approve3,approve3name,approve3on,osbeyond,excesscredit,category,controllingoffice, case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname \r\n"
+			+ "from gst_invoicehdr a,mg_partyhdr b \r\n"
+			+ "where invproceed = 'F' and eligislab = 1 and approve1 = 'T' and a.partycode = b.party_code and a.cancel = 'F' and  approve2='F' and approve2name is null and a.wstatus = 'Proforma' and a.branchcode in (select branchcode from vg_userbranch where (userName =?1  )) order by a.createdon desc")
+	Set<Object[]> getPendingDetailsApprove2slab1(String userName);
+
+	
+	
+	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,"
+			+ "b.creditdays,b.creditlimit,slabremarks,exceeddays,eligislab,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,osbeyond,excesscredit,category,controllingoffice , case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname from gst_invoicehdr a,mg_partyhdr b \r\n"
+			+ "where  approve1 = 'F' and a.partycode = b.party_code and approve1name is null and a.cancel = 'F'"
+			+ " AND eligislab in (1,2,3) AND a.branchcode in (select branchcode from vg_userbranch where (userName =?1  )) and a.wstatus = 'Proforma'  order by a.createdon desc")
+	Set<Object[]> getadminPendingDetailsApprove1slab2(String userName);
+	
+	
+	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,"
+			+ "b.creditdays,b.creditlimit,slabremarks,exceeddays,eligislab,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,osbeyond,excesscredit,category,controllingoffice , case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname from gst_invoicehdr a,mg_partyhdr b \r\n"
+			+ "where  approve1 = 'F' and a.partycode = b.party_code and approve1name is null and a.cancel = 'F'"
+			+ " AND eligislab in (2,3) AND a.branchcode in (select branchcode from vg_userbranch where (userName =?1 or 'admin'=?1 )) and a.wstatus = 'Proforma'  order by a.createdon desc")
+	Set<Object[]> getPendingDetailsApprove1slab2(String userName);
+	
 
 	@Query(value = "select a from GstInvoiceHdrVO a where a.gstInvoiceHdrId=?1")
 	GstInvoiceHdrVO findByGstInvoiceHdrId(Long id);
@@ -357,15 +378,6 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 	
 	
 	
-	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,slabremarks,decode(exceeddays,'91','90P',exceeddays)exceeddays,eligislab,unapproveamt,approve1,approve1name,approve1on,approve2,approve2name,approve2on,approve3,approve3name,approve3on,osbeyond,excesscredit,category,controllingoffice, case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname \r\n"
-			+ "from gst_invoicehdr a,mg_partyhdr b \r\n"
-			+ "where invproceed = 'F' and eligislab = 1 and approve1 = 'T' and a.partycode = b.party_code and  approve2='F' and approve2name is null and a.branchcode in (select branchcode from vg_userbranch where (userName =?1 or 'admin'=?1 )) order by a.createdon desc")
-	Set<Object[]> getPendingDetailsApprove2slab1(String userName);
-	
-	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,slabremarks,decode(exceeddays,'91','90P',exceeddays)exceeddays,eligislab,unapproveamt,approve1,approve1name,approve1on,approve2,approve2name,approve2on,approve3,approve3name,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname \r\n"
-			+ "from gst_invoicehdr a,mg_partyhdr b \r\n"
-			+ "where invproceed = 'F' and eligislab in (2,3) and approve1 = 'F' and a.partycode = b.party_code and approve1name is null and a.branchcode in (select branchcode from vg_userbranch where userName =?1) order by a.createdon desc")
-	Set<Object[]> getPendingDetailsApprove1slab2(String userName);
 	
 @Query(nativeQuery = true,value = "select mg_partyhdrid,b.party_name partyName,b.party_code partyCode,b.creditlimit,b.creditdays,category,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname, controllingoffice \r\n"
 			+ "from mg_partyhdr b \r\n"
@@ -867,18 +879,22 @@ public interface GstInvoiceHdrRepo extends JpaRepository<GstInvoiceHdrVO, Long> 
 			 + "             eligislab = decode ( ?1 , 'admin',0, eligislab)\r\n"
 			 + "             )  \r\n"
 			 + "             AND a.branchcode in (select distinct branchcode from vg_userbranch where userName = ?1)\r\n"
-			 + "             and docdt between  TRUNC(LAST_DAY(ADD_MONTHS(SYSDATE,-1)))+1 and TRUNC(LAST_DAY(SYSDATE))  ")
+			 + "             and docdt between TRUNC(LAST_DAY(ADD_MONTHS(SYSDATE,-1)))+1 and TRUNC(LAST_DAY(SYSDATE))"
+			 )
 	Set<Object[]> getInvDetailsApprove1(String userName);
 	
 	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname,slabremarks from gst_invoicehdr a,mg_partyhdr b \r\n"
 			+ "where invproceed = 'T' and a.partycode = b.party_code and approve2 = 'T' and approve2name is not null and ( approve2name=?1 or 'admin'=?1 ) \r\n"
-			+ " and eligislab = 1 AND a.branchcode in (select branchcode from vg_userbranch where userName =?1)  order by a.createdon desc")
+			+ " and eligislab = 1 AND a.branchcode in (select branchcode from vg_userbranch where userName =?1) "
+			+ " and docdt between TRUNC(LAST_DAY(ADD_MONTHS(SYSDATE,-1)))+1 and TRUNC(LAST_DAY(SYSDATE))    order by a.createdon desc"
+			)
 	Set<Object[]> getInvDetailsApprove2(String userName);
 	
 	
 	@Query(nativeQuery = true,value = "select gst_invoicehdrid,a.branchcode,finyr,docid,docdt,Partyname,partycode,outstanding,totinvamtlc,b.creditdays,b.creditlimit,unapproveamt,approve1,approve2,approve3,approve1name,approve1on,approve2name,approve2on,approve3on,osbeyond,excesscredit,category,controllingoffice,case when lower(salesperson) like 'uwl%' then 'Mr./Ms. '||initcap(salespersonname) else initcap(salespersonname) end salespersonname,slabremarks from gst_invoicehdr a,mg_partyhdr b \r\n"
 			+ "where approve1 = 'T' and a.partycode = b.party_code and approve1name is not null  and (approve1name=?1 or 'admin'=?1 ) \r\n"
-			+ " and eligislab in (2,3) AND a.branchcode in (select branchcode from vg_userbranch where userName =?1)  order by a.createdon desc")
+			+ " and eligislab in (2,3) AND a.branchcode in (select branchcode from vg_userbranch where userName =?1) "
+			+ " and docdt between  TRUNC(LAST_DAY(ADD_MONTHS(SYSDATE,-1)))+1 and TRUNC(LAST_DAY(SYSDATE))  order by a.createdon desc")
 	Set<Object[]> getInvDetailsApprove3(String userName);
 	
 	
