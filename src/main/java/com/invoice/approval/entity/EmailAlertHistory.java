@@ -22,8 +22,17 @@ public class EmailAlertHistory {
     @Column(name = "VENDOR_NAME")
     private String vendorName;
     
-    @Column(name = "MAIL_TO", nullable = false)  // Changed from VENDOR_EMAIL to MAIL_TO
+    @Column(name = "MAIL_TO", nullable = false)
     private String mailTo;
+    
+    @Column(name = "CC_EMAILS", length = 1000)
+    private String ccEmails;  // NEW FIELD
+    
+    @Column(name = "SALES_PERSON_NAME", length = 100)
+    private String salesPersonName;  // NEW FIELD
+    
+    @Column(name = "CUSTOMER_COUNT")
+    private Integer customerCount;  // NEW FIELD
     
     @Column(name = "ALERT_DATE")
     private LocalDateTime alertDate;
@@ -63,7 +72,7 @@ public class EmailAlertHistory {
         this.createdDate = LocalDateTime.now();
     }
     
-    // Getters and Setters
+    // Getters and Setters for all fields
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -78,6 +87,15 @@ public class EmailAlertHistory {
     
     public String getMailTo() { return mailTo; }
     public void setMailTo(String mailTo) { this.mailTo = mailTo; }
+    
+    public String getCcEmails() { return ccEmails; }
+    public void setCcEmails(String ccEmails) { this.ccEmails = ccEmails; }
+    
+    public String getSalesPersonName() { return salesPersonName; }
+    public void setSalesPersonName(String salesPersonName) { this.salesPersonName = salesPersonName; }
+    
+    public Integer getCustomerCount() { return customerCount; }
+    public void setCustomerCount(Integer customerCount) { this.customerCount = customerCount; }
     
     public LocalDateTime getAlertDate() { return alertDate; }
     public void setAlertDate(LocalDateTime alertDate) { this.alertDate = alertDate; }
@@ -106,7 +124,6 @@ public class EmailAlertHistory {
         if (createdBy == null) {
             createdBy = "SYSTEM";
         }
-        // Ensure mailTo is not null
         if (mailTo == null) {
             mailTo = "UNKNOWN";
         }

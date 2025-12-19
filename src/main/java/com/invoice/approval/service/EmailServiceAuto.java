@@ -3,7 +3,6 @@ package com.invoice.approval.service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,7 +45,7 @@ public class EmailServiceAuto {
     private EmployeeMasterRepo employeeRepository;
 
     @Autowired
-    private RestTemplate restTemplate; // Autowired RestTemplate
+    private RestTemplate restTemplate;
 
     private String watchDirectory;
     
@@ -153,56 +152,27 @@ public class EmailServiceAuto {
         }
     }
     
-    // Add this method for dashboard emails
     public void sendSalespersonAlertEmail(String toEmail, String subject, String emailContent) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         
-        // Set email properties
         helper.setFrom("gjayabalan08@gmail.com");
         helper.setTo(toEmail);
         helper.setSubject(subject);
         
-        // Add BCC if configured
         if (StringUtils.hasText(bccAddress)) {
             helper.setBcc(bccAddress);
         }
         
         helper.setText(emailContent, true);
         
-        // Send email
         mailSender.send(message);
         log.info("Salesperson dashboard email sent to: {}", toEmail);
     }
-    
-    // Existing methods (keep as is)...
-    public void sendSalespersonAlertEmail(String toEmail, List<SubledgerAlertDTO> subledgers, String priority) {
-        String subject = "";
-        
-        switch(priority) {
-            case "HIGH":
-                subject = "🚨 HIGH PRIORITY - Credit Limit Alert (" + subledgers.size() + " customers)";
-                break;
-            case "MEDIUM":
-                subject = "⚠️ MEDIUM PRIORITY - Credit Limit Alert (" + subledgers.size() + " customers)";
-                break;
-            case "LOW":
-                subject = "📋 LOW PRIORITY - Credit Limit Alert (" + subledgers.size() + " customers)";
-                break;
-            default:
-                subject = "Credit Limit Alert (" + subledgers.size() + " customers)";
-        }
-        
-        String emailContent = formatSalespersonEmail(subledgers, priority);
-        
-        // Send email logic here
-    }
 
     private String formatSalespersonEmail(List<SubledgerAlertDTO> subledgers, String priority) {
-        // Format email with priority indication
         StringBuilder email = new StringBuilder();
         
-        // Add priority badge
         email.append("<div style='padding:10px;margin-bottom:20px;border-radius:5px;");
         
         switch(priority) {
@@ -220,17 +190,15 @@ public class EmailServiceAuto {
                 break;
         }
         
-        // Rest of email content...
         return email.toString();
     }
 
     private boolean sendEmailWithAttachments(String toEmail, String subject, 
                                           Path textFile, Path pdfFile,String bccAddress) 
                                           throws MessagingException, IOException {
-        System.out.println("Preparing email to: " + toEmail);
+        log.info("Preparing email to: {}", toEmail);
         
         try {
-            // Read file contents
             String textContent = new String(Files.readAllBytes(textFile));
             byte[] pdfContent = Files.readAllBytes(pdfFile);
 
@@ -239,22 +207,20 @@ public class EmailServiceAuto {
 
             helper.setFrom("gjayabalan08@gmail.com");
             helper.setTo(toEmail);
-            // Add BCC if configured
             if (StringUtils.hasText(bccAddress)) {
                 helper.setBcc(bccAddress);
             }
             helper.setSubject(subject);
             helper.setText(buildEmailBody(textContent, toEmail.split("@")[0]), true);
             
-            // Attach PDF
             helper.addAttachment(pdfFile.getFileName().toString(), 
                               new ByteArrayResource(pdfContent));
 
             mailSender.send(message);
-            System.out.println("Successfully sent email to: " + toEmail);
+            log.info("Successfully sent email to: {}", toEmail);
             return true;
         } catch (Exception e) {
-            System.err.println("Failed to send email to " + toEmail + ": " + e.getMessage());
+            log.error("Failed to send email to {}: {}", toEmail, e.getMessage());
             return false;
         }
     }
@@ -265,13 +231,11 @@ public class EmailServiceAuto {
             return;
         }
 
-        // Group files by employee code
         Map<String, List<Path>> filesByEmployee = files.stream()
             .collect(Collectors.groupingBy(
                 file -> getBaseName(file.getFileName().toString())
             ));
 
-        // Process each employee's files
         for (Map.Entry<String, List<Path>> entry : filesByEmployee.entrySet()) {
             String employeeCode = entry.getKey();
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
@@ -296,7 +260,6 @@ public class EmailServiceAuto {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         
-        // Set email properties
         helper.setFrom("gjayabalan08@gmail.com");
         helper.setTo(toEmail);
         helper.setSubject(subject);
@@ -307,7 +270,6 @@ public class EmailServiceAuto {
         
         helper.setText(emailContent, true);
         
-        // Send email
         mailSender.send(message);
         log.info("Summary alert email sent to: {}", toEmail);
     }
@@ -342,27 +304,22 @@ public class EmailServiceAuto {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         
-        // Set email properties
         helper.setFrom("gjayabalan08@gmail.com");
         helper.setTo(subledger.getMailid());
         helper.setSubject("Credit Limit Alert: " + subledger.getSubledgerCode() + " - " + subledger.getSubledgerName());
         
-        // Use bccAddress instead of bccEmails
         if (StringUtils.hasText(bccAddress)) {
             helper.setBcc(bccAddress);
         }
         
-        // Build email body
         String body = buildSubledgerAlertEmailBody(subledger);
         helper.setText(body, true);
         
-        // Send email
         mailSender.send(message);
         log.info("Subledger alert email sent to: {}", subledger.getMailid());
     }
     
     private String buildSubledgerAlertEmailBody(SubledgerAlertDTO subledger) {
-        // Updated priority ranges
         String priority = "";
         String priorityColor = "";
         double utilization = subledger.getPercentage() != null ? subledger.getPercentage().doubleValue() : 0;
@@ -422,7 +379,6 @@ public class EmailServiceAuto {
                "</html>";
     }
 
-    // Helper methods
     private String getSafeString(String value) {
         return value != null ? value : "N/A";
     }
@@ -435,79 +391,43 @@ public class EmailServiceAuto {
         return value != null ? value.toString() : "0";
     }
 
-//    
-//    public void sendSalespersonAlertEmail(String salespersonEmail, List<SubledgerAlertDTO> subledgers) throws MessagingException {
-//        if (subledgers == null || subledgers.isEmpty()) {
-//            log.warn("No subledgers provided for salesperson: {}", salespersonEmail);
-//            return;
-//        }
-//        
-//        MimeMessage message = mailSender.createMimeMessage();
-//        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-//        
-//        // Get employee name from first record with null safety
-//        String employeeName = getSafeEmployeeName(subledgers);
-//        
-//        // Calculate counts with new priority ranges
-//        long criticalCount = subledgers.stream()
-//                .filter(s -> s != null && s.getPercentage() != null && s.getPercentage().doubleValue() >= 150)
-//                .count();
-//        long highCount = subledgers.stream()
-//                .filter(s -> s != null && s.getPercentage() != null && 
-//                           s.getPercentage().doubleValue() >= 120 && s.getPercentage().doubleValue() < 150)
-//                .count();
-//        long mediumCount = subledgers.stream()
-//                .filter(s -> s != null && s.getPercentage() != null && 
-//                           s.getPercentage().doubleValue() >= 100 && s.getPercentage().doubleValue() < 120)
-//                .count();
-//        long lowCount = subledgers.stream()
-//                .filter(s -> s != null && s.getPercentage() != null && 
-//                           s.getPercentage().doubleValue() >= 80 && s.getPercentage().doubleValue() < 100)
-//                .count();
-//        
-//        // Set email properties
-//        helper.setFrom("gjayabalan08@gmail.com");
-//        helper.setTo(salespersonEmail);
-//        helper.setSubject("🚨 Credit Limit Alerts - Your Customers (" + subledgers.size() + " alerts)");
-//        
-//        // Add BCC if configured
-//        if (StringUtils.hasText(bccAddress)) {
-//            helper.setBcc(bccAddress);
-//        }
-//        
-//        // Build email body with new priority ranges
-//        String body = buildSalespersonAlertEmailBody(employeeName, subledgers, salespersonEmail, 
-//                                                    criticalCount, highCount, mediumCount, lowCount);
-//        helper.setText(body, true);
-//        
-//        // Send email
-//        mailSender.send(message);
-//        log.info("Salesperson alert email sent to: {} (Employee: {}) with {} customers", 
-//                 salespersonEmail, employeeName, subledgers.size());
-//    }
-
     private String getSafeEmployeeName(List<SubledgerAlertDTO> subledgers) {
         for (SubledgerAlertDTO subledger : subledgers) {
             if (subledger != null && subledger.getEmployee() != null && !subledger.getEmployee().trim().isEmpty()) {
                 return subledger.getEmployee();
             }
         }
-        return "Valued Employee";
+        return "All";
     }
+    
+ // In SubledgerAlertService, call this:
+    // In SubledgerAlertService, call this:
+  
 
+    // FIXED METHOD: This was line 509 with the URLEncoder issue
     private String buildSalespersonAlertEmailBody(String employeeName, List<SubledgerAlertDTO> subledgers, 
             String salespersonEmail, long criticalCount, long highCount, 
             long mediumCount, long lowCount, List<String> ccEmails) {
         
         String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm"));
 
-        // Create personalized download link with null safety
         String safeEmployeeName = employeeName != null ? employeeName : "Employee";
         String safeSalespersonEmail = salespersonEmail != null ? salespersonEmail : "";
 
+        // FIXED: Use old Java compatible URL encoding
+        String encodedEmail = "";
+        String encodedName = "";
+        try {
+            encodedEmail = URLEncoder.encode(safeSalespersonEmail, "UTF-8");
+            encodedName = URLEncoder.encode(safeEmployeeName, "UTF-8");
+        } catch (Exception e) {
+            log.error("Error encoding URL parameters: {}", e.getMessage());
+            encodedEmail = safeSalespersonEmail.replace(" ", "%20");
+            encodedName = safeEmployeeName.replace(" ", "%20");
+        }
+
         String downloadLink = baseUrl + "/api/alerts/download-excel?salespersonEmail=" + 
-                URLEncoder.encode(safeSalespersonEmail, StandardCharsets.UTF_8) +
-                "&employeeName=" + URLEncoder.encode(safeEmployeeName, StandardCharsets.UTF_8);
+                encodedEmail + "&employeeName=" + encodedName;
 
         StringBuilder email = new StringBuilder();
 
@@ -546,7 +466,6 @@ public class EmailServiceAuto {
         .append("<h2>Dear Mr./Ms.").append(getSafeString(employeeName)).append(",</h2>")
         .append("<p>The following customers under your responsibility have reached 80% or more of their credit limits:</p>");
         
-        // Add CC information section if CC emails exist
         if (ccEmails != null && !ccEmails.isEmpty()) {
             email.append("<div class='cc-info'>")
             .append("<strong>📧 This email has been copied to:</strong> ")
@@ -554,12 +473,10 @@ public class EmailServiceAuto {
             .append("</div>");
         }
 
-        // Summary section with new priority ranges
         email.append("<div class='summary'>")
         .append("<h3 style='margin-top: 0; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px;'>📊 Quick Summary</h3>")
         .append("<table style='width:100%; border-collapse: collapse; margin-top: 15px; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>")
 
-        // Header row with values and ranges
         .append("<tr>")
         .append("<th style='border:1px solid #e0e0e0; padding:10px 15px; text-align:center; background:#2c3e50; color:white; font-size:16px;'>")
         .append("<div style='display:flex; align-items:center; justify-content:center;'>")
@@ -615,7 +532,6 @@ public class EmailServiceAuto {
         .append("</table>")
         .append("</div>")
 
-        // Download Button
         .append("<div style='text-align: center; margin: 20px 0;'>")
         .append("<a href='").append(downloadLink).append("' class='download-btn'>")
         .append("📊 Download Your Customer Data (Excel)")
@@ -623,12 +539,11 @@ public class EmailServiceAuto {
         .append("<p style='font-size: 12px; color: #666;'>Download your specific customer data in Excel format</p>")
         .append("</div>")
 
-        // Customers table
         .append("<h3>Customer Details</h3>")
         .append("<table class='alert-table'>")
         .append("<thead>")
         .append("<tr>")
-        .append("<th>S.No</th>")  // Serial number column
+        .append("<th>S.No</th>")
         .append("<th>Priority</th>")
         .append("<th>Customer Code</th>")
         .append("<th>Customer Name</th>")
@@ -643,7 +558,6 @@ public class EmailServiceAuto {
         .append("</thead>")
         .append("<tbody>");
 
-        // Add table rows for each customer with new priority ranges and serial number
         int serialNo = 1;
         for (SubledgerAlertDTO subledger : subledgers) {
             if (subledger == null) continue;
@@ -672,7 +586,7 @@ public class EmailServiceAuto {
             }
 
             email.append("<tr class='").append(priorityClass).append("'>")
-            .append("<td class='serial-no'>").append(serialNo++).append("</td>")  // Serial number
+            .append("<td class='serial-no'>").append(serialNo++).append("</td>")
             .append("<td>").append(prioritySpan).append("</td>")
             .append("<td>").append(getSafeString(subledger.getSubledgerCode())).append("</td>")
             .append("<td>").append(getSafeString(subledger.getSubledgerName())).append("</td>")
@@ -703,9 +617,6 @@ public class EmailServiceAuto {
         return email.toString();
     }
 
-
-    
- // Update this method to accept CC emails
     public void sendSalespersonAlertEmailWithCC(String salespersonEmail, List<SubledgerAlertDTO> subledgers, 
                                                List<String> ccEmails) throws MessagingException {
         if (subledgers == null || subledgers.isEmpty()) {
@@ -716,10 +627,8 @@ public class EmailServiceAuto {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         
-        // Get employee name
         String employeeName = getSafeEmployeeName(subledgers);
         
-        // Calculate counts
         long criticalCount = subledgers.stream()
                 .filter(s -> s != null && s.getPercentage() != null && s.getPercentage().doubleValue() >= 150)
                 .count();
@@ -736,11 +645,9 @@ public class EmailServiceAuto {
                            s.getPercentage().doubleValue() >= 80 && s.getPercentage().doubleValue() < 100)
                 .count();
         
-        // Set email properties
         helper.setFrom("gjayabalan08@gmail.com");
         helper.setTo(salespersonEmail);
         
-        // Add CC emails if provided
         if (ccEmails != null && !ccEmails.isEmpty()) {
             helper.setCc(ccEmails.toArray(new String[0]));
             log.info("Adding CC emails for {}: {}", salespersonEmail, String.join(", ", ccEmails));
@@ -748,12 +655,10 @@ public class EmailServiceAuto {
         
         helper.setSubject("🚨 Credit Limit Alerts - Your Customers (" + subledgers.size() + " alerts)");
         
-        // Build email body with CC info
         String body = buildSalespersonAlertEmailBody(employeeName, subledgers, salespersonEmail, 
                                                     criticalCount, highCount, mediumCount, lowCount, ccEmails);
         helper.setText(body, true);
         
-        // Send email
         mailSender.send(message);
         log.info("Salesperson alert email sent to: {} with CC: {} ({} customers)", 
                  salespersonEmail, 
@@ -761,7 +666,6 @@ public class EmailServiceAuto {
                  subledgers.size());
     }
 
-    // Update existing method to call the new one
     public void sendSalespersonAlertEmail(String salespersonEmail, List<SubledgerAlertDTO> subledgers) throws MessagingException {
         sendSalespersonAlertEmailWithCC(salespersonEmail, subledgers, null);
     }

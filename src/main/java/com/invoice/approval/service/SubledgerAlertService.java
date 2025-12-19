@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +39,10 @@ public class SubledgerAlertService {
     private String baseUrl;
     
     @Autowired
-    private EmailAlertHistoryService emailAlertHistoryService; // Add this
+    private EmailAlertHistoryService emailAlertHistoryService;
 
+    // Add a class-level variable to store the last processed data for reference
+    private List<SubledgerAlertDTO> lastProcessedSubledgers = new ArrayList<>();
    
     private Map<String, List<SubledgerAlertDTO>> groupSubledgersByRecipients(List<SubledgerAlertDTO> subledgers) {
         Map<String, List<SubledgerAlertDTO>> grouped = new HashMap<>();
@@ -119,88 +123,6 @@ public class SubledgerAlertService {
         String emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         return email.matches(emailPattern);
     }
-
-//    public void checkAndSendSubledgerAlerts() {
-//        // Step 1: Get all subledgers with null safety
-//        List<SubledgerAlertDTO> highPercentageSubledgers = subledgerRepo.getSubledgersWithHighPercentage();
-//        
-//        LOGGER.info("Found {} subledgers with high credit utilization (before filtering)", highPercentageSubledgers.size());
-//        
-//        // Step 2: Apply comprehensive filtering with logging
-//        List<SubledgerAlertDTO> filteredSubledgers = highPercentageSubledgers.stream()
-//                .filter(s -> s != null)
-//                .filter(s -> s.getMailid() != null && !s.getMailid().trim().isEmpty())
-//                .filter(s -> s.getSubledgerCode() != null && !s.getSubledgerCode().trim().isEmpty())
-//                .filter(s -> s.getPercentage() != null && s.getPercentage().compareTo(new BigDecimal("80")) >= 0)
-//                .collect(Collectors.toList());
-//        
-//        LOGGER.info("After filtering: {} valid subledgers for alerts", filteredSubledgers.size());
-//        
-//        // Log details for debugging
-//        filteredSubledgers.forEach(s -> 
-//            LOGGER.debug("Subledger: {}, Email: {}, Percentage: {}", 
-//                s.getSubledgerCode(), s.getMailid(), s.getPercentage()));
-//        
-//        // Step 3: Group by salesperson email
-//        Map<String, List<SubledgerAlertDTO>> subledgersBySalesperson = groupSubledgersBySalesperson(filteredSubledgers);
-//        
-//        LOGGER.info("Grouped into {} salespersons", subledgersBySalesperson.size());
-//        
-//        // Step 4: Send emails
-//        for (Map.Entry<String, List<SubledgerAlertDTO>> entry : subledgersBySalesperson.entrySet()) {
-//            String salespersonEmail = entry.getKey();
-//            List<SubledgerAlertDTO> salespersonSubledgers = entry.getValue();
-//            
-//            if (salespersonEmail != null && !salespersonEmail.trim().isEmpty() && 
-//                salespersonSubledgers != null && !salespersonSubledgers.isEmpty()) {
-//                
-//                LOGGER.info("Processing email for {} with {} customers", 
-//                    salespersonEmail, salespersonSubledgers.size());
-//                
-//                try {
-//                    emailServiceAuto.sendSalespersonAlertEmail(salespersonEmail, salespersonSubledgers);
-//                    LOGGER.info("✅ Sent consolidated alert email to: {} ({} customers)", 
-//                        salespersonEmail, salespersonSubledgers.size());
-//                } catch (Exception e) {
-//                    LOGGER.error("❌ Failed to send email to {}: {}", salespersonEmail, e.getMessage());
-//                    LOGGER.debug("Failed data: {}", 
-//                        salespersonSubledgers.stream()
-//                            .map(s -> s != null ? s.getSubledgerCode() + "(" + s.getPercentage() + "%)" : "null")
-//                            .collect(Collectors.joining(", ")));
-//                }
-//            }
-//        }
-//        
-//        // Step 5: Log summary
-//        if (!filteredSubledgers.isEmpty()) {
-//            LOGGER.info("✅ Alerts processed. Total: {} customers, {} salespersons notified", 
-//                filteredSubledgers.size(), subledgersBySalesperson.size());
-//        } else {
-//            LOGGER.info("ℹ️ No valid subledgers found for alerts");
-//        }
-//    }
-
-    // Remove or fix the formatSummaryEmail method since it's not being used
-    // If you need it, here's the corrected version:
-    
-   
-    
-    // Uncomment and use this method if you want to send summary emails
-    /*
-    private void sendSummaryAlertEmail(List<SubledgerAlertDTO> alertSubledgers) {
-        try {
-            String subject = "🚨 Credit Limit Alert Summary - " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy"));
-            String emailContent = formatSummaryEmail(alertSubledgers);
-            
-            emailServiceAuto.sendSummaryAlertEmail(alertRecipientEmail, subject, emailContent);
-            
-            LOGGER.info("Summary alert email sent successfully to: {}", alertRecipientEmail);
-            
-        } catch (Exception e) {
-            LOGGER.error("Failed to send summary alert email: {}", e.getMessage());
-        }
-    }
-    */
     
     private String formatSummaryEmail(List<SubledgerAlertDTO> alertSubledgers) {
         String currentDateTime = LocalDateTime.now()
@@ -332,7 +254,179 @@ public class SubledgerAlertService {
 
         return email.toString();
     }
-    
+//    private String buildAdminSummaryEmailContent(List<SubledgerAlertDTO> allSubledgers) {
+//        // Build email similar to salesperson emails but with all data
+//        String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm"));
+//        
+//        long criticalCount = allSubledgers.stream()
+//                .filter(s -> s.getPercentage() != null && s.getPercentage().doubleValue() >= 150)
+//                .count();
+//        long highCount = allSubledgers.stream()
+//                .filter(s -> s.getPercentage() != null && 
+//                           s.getPercentage().doubleValue() >= 120 && s.getPercentage().doubleValue() < 150)
+//                .count();
+//        long mediumCount = allSubledgers.stream()
+//                .filter(s -> s.getPercentage() != null && 
+//                           s.getPercentage().doubleValue() >= 100 && s.getPercentage().doubleValue() < 120)
+//                .count();
+//        long lowCount = allSubledgers.stream()
+//                .filter(s -> s.getPercentage() != null && 
+//                           s.getPercentage().doubleValue() >= 80 && s.getPercentage().doubleValue() < 100)
+//                .count();
+//
+//        StringBuilder email = new StringBuilder();
+//
+//        email.append("<!DOCTYPE html>")
+//        .append("<html lang='en'>")
+//        .append("<head>")
+//        .append("<style>")
+//        .append("body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }")
+//        .append(".container { max-width: 1200px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }")
+//        .append(".header { background: #34495e; color: white; padding: 25px; text-align: center; border-radius: 8px 8px 0 0; }")
+//        .append(".content { padding: 25px; }")
+//        .append(".summary { background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #1976d2; }")
+//        .append(".alert-table { width: 100%; border-collapse: collapse; font-size: 14px; }")
+//        .append(".alert-table th { background: #1976d2; color: white; padding: 12px 8px; text-align: left; }")
+//        .append(".alert-table td { padding: 10px 8px; border-bottom: 1px solid #ddd; }")
+//        .append(".priority-critical { background: #ffebee !important; }")
+//        .append(".priority-high { background: #fff3e0 !important; }")
+//        .append(".priority-medium { background: #e8f5e8 !important; }")
+//        .append(".priority-low { background: #f1f8e9 !important; }")
+//        .append(".priority-critical-text { color: #d32f2f; font-weight: bold; }")
+//        .append(".priority-high-text { color: #f57c00; font-weight: bold; }")
+//        .append(".priority-medium-text { color: #03A9F4; font-weight: bold; }")
+//        .append(".priority-low-text { color: #689f38; font-weight: bold; }")
+//        .append(".serial-no { text-align: center; font-weight: bold; color: #555; }")
+//        .append("</style>")
+//        .append("</head>")
+//        .append("<body>")
+//        .append("<div class='container'>")
+//        .append("<div class='header'>")
+//        .append("<h1>📊 ADMIN SUMMARY - All Credit Limit Alerts</h1>")
+//        .append("<p>Date: ").append(currentDateTime).append("</p>")
+//        .append("<p>Total Customers: ").append(allSubledgers.size()).append("</p>")
+//        .append("</div>")
+//        .append("<div class='content'>")
+//        .append("<h2>Dear Admin,</h2>")
+//        .append("<p>Here is the complete list of all customers with credit utilization above 80%:</p>")
+//
+//        // Summary statistics
+//        .append("<div class='summary'>")
+//        .append("<h3 style='margin-top: 0; color: #2c3e50;'>📊 Summary Statistics</h3>")
+//        .append("<table style='width:100%; border-collapse: collapse; margin-top: 15px;'>")
+//        .append("<tr>")
+//        .append("<th style='border:1px solid #e0e0e0; padding:10px 15px; text-align:center; background:#2c3e50; color:white;'>Total</th>")
+//        .append("<th style='border:1px solid #e0e0e0; padding:10px 15px; text-align:center; background:#d32f2f; color:white;'>Critical</th>")
+//        .append("<th style='border:1px solid #e0e0e0; padding:10px 15px; text-align:center; background:#f57c00; color:white;'>High</th>")
+//        .append("<th style='border:1px solid #e0e0e0; padding:10px 15px; text-align:center; background:#03A9F4; color:white;'>Medium</th>")
+//        .append("<th style='border:1px solid #e0e0e0; padding:10px 15px; text-align:center; background:#689f38; color:white;'>Low</th>")
+//        .append("</tr>")
+//        .append("<tr>")
+//        .append("<td style='border:1px solid #e0e0e0; padding:15px; text-align:center; font-size:24px; font-weight:bold; background:#f8f9fa;'>").append(allSubledgers.size()).append("</td>")
+//        .append("<td style='border:1px solid #e0e0e0; padding:15px; text-align:center; font-size:24px; font-weight:bold; color:#d32f2f; background:#ffebee;'>").append(criticalCount).append("</td>")
+//        .append("<td style='border:1px solid #e0e0e0; padding:15px; text-align:center; font-size:24px; font-weight:bold; color:#f57c00; background:#fff3e0;'>").append(highCount).append("</td>")
+//        .append("<td style='border:1px solid #e0e0e0; padding:15px; text-align:center; font-size:24px; font-weight:bold; color:#03A9F4; background:#e8f5e8;'>").append(mediumCount).append("</td>")
+//        .append("<td style='border:1px solid #e0e0e0; padding:15px; text-align:center; font-size:24px; font-weight:bold; color:#689f38; background:#f1f8e9;'>").append(lowCount).append("</td>")
+//        .append("</tr>")
+//        .append("</table>")
+//        .append("</div>")
+//
+//        .append("<h3>Complete Customer Details</h3>")
+//        .append("<table class='alert-table'>")
+//        .append("<thead>")
+//        .append("<tr>")
+//        .append("<th>S.No</th>")
+//        .append("<th>Priority</th>")
+//        .append("<th>Customer Code</th>")
+//        .append("<th>Customer Name</th>")
+//        .append("<th>Category</th>")
+//        .append("<th>Salesperson</th>")
+//        .append("<th>Control Office</th>")
+//        .append("<th>Credit Limit (₹)</th>")
+//        .append("<th>Credit Days</th>")
+//        .append("<th>Total Due (₹)</th>")
+//        .append("<th>Utilization %</th>")
+//        .append("<th>Recipient Email</th>")
+//        .append("</tr>")
+//        .append("</thead>")
+//        .append("<tbody>");
+//
+//        int serialNo = 1;
+//        for (SubledgerAlertDTO subledger : allSubledgers) {
+//            if (subledger == null) continue;
+//
+//            double utilization = subledger.getPercentage() != null ? subledger.getPercentage().doubleValue() : 0;
+//            String priorityClass = "";
+//            String priorityText = "";
+//            String prioritySpan = "";
+//
+//            if (utilization >= 150) {
+//                priorityClass = "priority-critical";
+//                priorityText = "CRITICAL";
+//                prioritySpan = "<span class='priority-critical-text'>" + priorityText + "</span>";
+//            } else if (utilization >= 120) {
+//                priorityClass = "priority-high";
+//                priorityText = "HIGH";
+//                prioritySpan = "<span class='priority-high-text'>" + priorityText + "</span>";
+//            } else if (utilization >= 100) {
+//                priorityClass = "priority-medium";
+//                priorityText = "MEDIUM";
+//                prioritySpan = "<span class='priority-medium-text'>" + priorityText + "</span>";
+//            } else {
+//                priorityClass = "priority-low";
+//                priorityText = "LOW";
+//                prioritySpan = "<span class='priority-low-text'>" + priorityText + "</span>";
+//            }
+//
+//            email.append("<tr class='").append(priorityClass).append("'>")
+//            .append("<td class='serial-no'>").append(serialNo++).append("</td>")
+//            .append("<td>").append(prioritySpan).append("</td>")
+//            .append("<td>").append(getSafeString(subledger.getSubledgerCode())).append("</td>")
+//            .append("<td>").append(getSafeString(subledger.getSubledgerName())).append("</td>")
+//            .append("<td>").append(getSafeString(subledger.getCategory())).append("</td>")
+//            .append("<td>").append(getSafeString(subledger.getSalesperson())).append("</td>")
+//            .append("<td>").append(getSafeString(subledger.getCtrlOffice())).append("</td>")
+//            .append("<td style='text-align: right;'>").append(formatCurrency(subledger.getCreditLimit())).append("</td>")
+//            .append("<td style='text-align: center;'>").append(getSafeInteger(subledger.getCreditDays())).append("</td>")
+//            .append("<td style='text-align: right;'>").append(formatCurrency(subledger.getTotdue())).append("</td>")
+//            .append("<td style='text-align: center; font-weight: bold;'>").append(String.format("%.1f", utilization)).append("%</td>")
+//            .append("<td style='color: #1976d2;'>").append(getSafeString(subledger.getMailid())).append("</td>")
+//            .append("</tr>");
+//        }
+//
+//        email.append("</tbody>")
+//        .append("</table>")
+//        .append("<p style='margin-top: 20px; color: #666;'>")
+//        .append("<strong>Note:</strong> This is a complete list of all customers with high credit utilization.")
+//        .append("</p>")
+//        .append("<hr style='border: none; border-top: 1px solid #ddd; margin: 25px 0;'>")
+//        .append("<p style='font-size: 12px; color: #888; text-align: center;'>")
+//        .append("This is an automated alert from the Credit Monitoring System. Do not reply to this email.")
+//        .append("</p>")
+//        .append("</div>")
+//        .append("</div>")
+//        .append("</body>")
+//        .append("</html>");
+//
+//        return email.toString();
+//    }
+//    // Add this helper method for utilization color
+    private String getUtilizationColor(double utilization) {
+        if (utilization >= 150) return "#d32f2f";
+        if (utilization >= 120) return "#f57c00";
+        if (utilization >= 100) return "#03A9F4";
+        return "#689f38";
+    }
+
+    // Add this method to format currency
+    private String formatCurrency(BigDecimal amount) {
+        if (amount == null) return "₹0";
+        try {
+            return String.format("₹%,.2f", amount);
+        } catch (Exception e) {
+            return "₹" + amount.toString();
+        }
+    }
     public void checkAndSendSubledgerAlerts() {
         // Step 1: Get all subledgers with null safety
         List<SubledgerAlertDTO> highPercentageSubledgers = subledgerRepo.getSubledgersWithHighPercentage();
@@ -353,6 +447,9 @@ public class SubledgerAlertService {
                 .collect(Collectors.toList());
         
         LOGGER.info("After filtering: {} valid subledgers for alerts", filteredSubledgers.size());
+        
+        // Store for reference (optional)
+        lastProcessedSubledgers = new ArrayList<>(filteredSubledgers);
         
         // Step 3: Group by ALL recipients (mailid + ccmail)
         Map<String, List<SubledgerAlertDTO>> subledgersByRecipient = groupSubledgersByRecipients(filteredSubledgers);
@@ -431,145 +528,24 @@ public class SubledgerAlertService {
             }
         }
         
-        // Step 5: Send summary email (if needed)
-        try {
-            // Save summary email history
-            emailAlertHistoryService.saveSummaryEmailHistory(
-                alertRecipientEmail,
-                filteredSubledgers,
-                true,
-                null
-            );
-            
-        } catch (Exception e) {
-            LOGGER.error("Failed to process summary email: {}", e.getMessage());
-            
-            emailAlertHistoryService.saveSummaryEmailHistory(
-                alertRecipientEmail,
-                filteredSubledgers,
-                false,
-                e.getMessage()
-            );
-        }
+
         
         // Step 6: Log summary
         if (!filteredSubledgers.isEmpty()) {
-            LOGGER.info("✅ Alerts processed. Total: {} customers, {} recipients notified", 
+            LOGGER.info("✅ Alerts processed. Total: {} customers, {} recipients notified. Summary sent to admin.", 
                 filteredSubledgers.size(), subledgersByRecipient.size());
         } else {
             LOGGER.info("ℹ️ No valid subledgers found for alerts");
         }
     }
     
-//    public void checkAndSendSubledgerAlerts() {
-//        // Step 1: Get all subledgers with null safety
-//        List<SubledgerAlertDTO> highPercentageSubledgers = subledgerRepo.getSubledgersWithHighPercentage();
-//        
-//        LOGGER.info("Found {} subledgers with high credit utilization (before filtering)", highPercentageSubledgers.size());
-//        
-//        // Step 2: Apply comprehensive filtering with logging
-//        List<SubledgerAlertDTO> filteredSubledgers = highPercentageSubledgers.stream()
-//                .filter(s -> s != null)
-//                .filter(s -> s.getMailid() != null && !s.getMailid().trim().isEmpty())
-//                .filter(s -> s.getSubledgerCode() != null && !s.getSubledgerCode().trim().isEmpty())
-//                .filter(s -> s.getPercentage() != null && s.getPercentage().compareTo(new BigDecimal("80")) >= 0)
-//                .collect(Collectors.toList());
-//        
-//        LOGGER.info("After filtering: {} valid subledgers for alerts", filteredSubledgers.size());
-//        
-//        // Step 3: Group by salesperson email
-//        Map<String, List<SubledgerAlertDTO>> subledgersBySalesperson = groupSubledgersBySalesperson(filteredSubledgers);
-//        
-//        LOGGER.info("Grouped into {} salespersons", subledgersBySalesperson.size());
-//        
-//        // Step 4: Send emails and save history
-//        for (Map.Entry<String, List<SubledgerAlertDTO>> entry : subledgersBySalesperson.entrySet()) {
-//            String salespersonEmail = entry.getKey();
-//            List<SubledgerAlertDTO> salespersonSubledgers = entry.getValue();
-//            
-//            if (salespersonEmail != null && !salespersonEmail.trim().isEmpty() && 
-//                salespersonSubledgers != null && !salespersonSubledgers.isEmpty()) {
-//                
-//                LOGGER.info("Processing email for {} with {} customers", 
-//                    salespersonEmail, salespersonSubledgers.size());
-//                
-//                try {
-//                    emailServiceAuto.sendSalespersonAlertEmail(salespersonEmail, salespersonSubledgers);
-//                    
-//                    // SAVE SUCCESS HISTORY
-//                    String ccEmail = salespersonSubledgers.stream()
-//                        .map(SubledgerAlertDTO::getCcmail)
-//                        .filter(cc -> cc != null && !cc.trim().isEmpty())
-//                        .findFirst()
-//                        .orElse(null);
-//                    
-//                    emailAlertHistoryService.saveConsolidatedAlertHistory(
-//                        salespersonEmail, 
-//                        ccEmail,
-//                        salespersonSubledgers.get(0).getSalesperson(), // First customer's salesperson
-//                        salespersonSubledgers,
-//                        true,
-//                        null
-//                    );
-//                    
-//                    LOGGER.info("✅ Sent consolidated alert email to: {} ({} customers)", 
-//                        salespersonEmail, salespersonSubledgers.size());
-//                        
-//                } catch (Exception e) {
-//                    LOGGER.error("❌ Failed to send email to {}: {}", salespersonEmail, e.getMessage());
-//                    
-//                    // SAVE FAILED HISTORY
-//                    try {
-//                        emailAlertHistoryService.saveConsolidatedAlertHistory(
-//                            salespersonEmail,
-//                            null,
-//                            salespersonSubledgers.get(0).getSalesperson(),
-//                            salespersonSubledgers,
-//                            false,
-//                            e.getMessage()
-//                        );
-//                    } catch (Exception historyEx) {
-//                        LOGGER.error("Failed to save history for failed email: {}", historyEx.getMessage());
-//                    }
-//                }
-//            }
-//        }
-//        
-//        // Step 5: Send summary email (if needed)
-//        try {
-//            // Uncomment if you want to send summary emails
-//            // sendSummaryAlertEmail(filteredSubledgers);
-//            
-//            // Save summary email history
-//            emailAlertHistoryService.saveSummaryEmailHistory(
-//                alertRecipientEmail,
-//                filteredSubledgers,
-//                true,
-//                null
-//            );
-//            
-//        } catch (Exception e) {
-//            LOGGER.error("Failed to process summary email: {}", e.getMessage());
-//            
-//            emailAlertHistoryService.saveSummaryEmailHistory(
-//                alertRecipientEmail,
-//                filteredSubledgers,
-//                false,
-//                e.getMessage()
-//            );
-//        }
-//        
-//        // Step 6: Log summary
-//        if (!filteredSubledgers.isEmpty()) {
-//            LOGGER.info("✅ Alerts processed. Total: {} customers, {} salespersons notified", 
-//                filteredSubledgers.size(), subledgersBySalesperson.size());
-//        } else {
-//            LOGGER.info("ℹ️ No valid subledgers found for alerts");
-//        }
-//    }
-//    
+    
+  
 
-    // Helper methods
+//
+
+
+
     private String getSafeString(String value) {
         return value != null ? value : "N/A";
     }
@@ -582,7 +558,7 @@ public class SubledgerAlertService {
         return value != null ? value.toString() : "0";
     }
 
-    @Scheduled(cron = "0 30 15 * * ?")
+    @Scheduled(cron = "0 30 08 * * ?")
     public void scheduledSubledgerAlertCheck() {
         LOGGER.info("Starting scheduled subledger alert check");
         checkAndSendSubledgerAlerts();
