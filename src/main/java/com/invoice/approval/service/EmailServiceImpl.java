@@ -50,7 +50,7 @@ public class EmailServiceImpl {
 	
 
 	    // Send daily reports every day at 11:58 AM IST
-//	    @Scheduled(cron = "0 38 12 * * *", zone = "Asia/Kolkata")
+//	    @Scheduled(cron = "0 32 14 * * *", zone = "Asia/Kolkata")
 	    public void sendDailyReport() {
 	        System.out.println("Starting daily report email job...");
 	        

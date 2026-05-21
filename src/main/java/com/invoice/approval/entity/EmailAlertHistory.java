@@ -55,6 +55,8 @@ public class EmailAlertHistory {
     @Column(name = "MODIFIED_DATE")
     private LocalDateTime modifiedDate;
     
+
+    
     // Constructors
     public EmailAlertHistory() {
     }

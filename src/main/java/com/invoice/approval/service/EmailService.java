@@ -4,25 +4,25 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
+
 import javax.mail.MessagingException;
-import javax.mail.internet.*;
-import javax.mail.util.ByteArrayDataSource;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.invoice.approval.dto.SubledgerAlertDTO;
+import com.invoice.approval.entity.EmailAlertHistory;
 import com.invoice.approval.entity.EmployeeAttachmentVO;
+import com.invoice.approval.repo.EmailAlertHistoryRepo;
 import com.invoice.approval.repo.EmployeeAttachmentRepo;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.core.io.ByteArrayResource;
 
 @Service
 public class EmailService {
@@ -33,10 +33,13 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
     
+    @Autowired
+    private EmailAlertHistoryRepo emailAlertHistoryRepo;
+    
     @Value("#{'${email.bcc}'.split(',')}")
     private List<String> bccEmails;
 
-    @Scheduled(fixedRate = 60000) // Runs every minute
+//    @Scheduled(fixedRate = 60000) // Runs every minute
     public void processScheduledEmails() {
         List<EmployeeAttachmentVO> scheduledEmails = empattachRepo
             .findPendingScheduledEmails(LocalDateTime.now());
@@ -55,66 +58,269 @@ public class EmailService {
         }
     }
     
- // Add this method for individual subledger alerts
+    // ==================== NAME EXTRACTION METHODS ====================
+    
+    /**
+     * Extract name from email address
+     * Takes part before @ and before first dot
+     * Examples:
+     * - jayabalan.guru@uniworld-logistics.com -> Jayabalan
+     * - john.doe@company.com -> John
+     * - jane_doe@company.com -> Jane
+     * - alex@company.com -> Alex
+     */
+    private String extractNameFromEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return null;
+        }
+        
+        // Get everything before @
+        String namePart = email.split("@")[0];
+        
+        // Get only the part before the first dot
+        if (namePart.contains(".")) {
+            namePart = namePart.split("\\.")[0];
+        }
+        
+        // Replace underscores with spaces
+        namePart = namePart.replace("_", " ");
+        
+        // Capitalize first letter only
+        if (!namePart.isEmpty()) {
+            namePart = Character.toUpperCase(namePart.charAt(0)) + 
+                      (namePart.length() > 1 ? namePart.substring(1).toLowerCase() : "");
+        }
+        
+        return namePart.isEmpty() ? null : namePart;
+    }
+    
+    /**
+     * Format CC emails with names for display in email body
+     * Returns: "John (john@company.com), Jane (jane@company.com)"
+     */
+    private String formatCCEmailsWithNames(List<String> ccEmails) {
+        if (ccEmails == null || ccEmails.isEmpty()) {
+            return null;
+        }
+        
+        List<String> formattedCC = new ArrayList<>();
+        for (String ccEmail : ccEmails) {
+            String name = extractNameFromEmail(ccEmail);
+            if (name != null) {
+                formattedCC.add(name + " (" + ccEmail + ")");
+            } else {
+                formattedCC.add(ccEmail);
+            }
+        }
+        
+        return String.join(", ", formattedCC);
+    }
+    
+    // ==================== EMAIL SENDING METHODS ====================
+    
+    /**
+     * Send individual subledger alert email
+     */
     public void sendSubledgerAlertEmail(SubledgerAlertDTO subledger) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         
+        String recipientEmail = subledger.getMailid();
+        String recipientName = extractNameFromEmail(recipientEmail);
+        
         // Set email properties
         helper.setFrom("gjayabalan08@gmail.com");
-        helper.setTo(subledger.getMailid());
+        helper.setTo(recipientEmail);
         helper.setSubject("🚨 Credit Limit Alert: " + subledger.getSubledgerCode() + " - " + subledger.getSubledgerName());
         
         if (bccEmails != null && !bccEmails.isEmpty()) {
             helper.setBcc(bccEmails.toArray(new String[0]));
         }
         
-        // Build email body
-        String body = buildSubledgerAlertEmailBody(subledger);
+        // Build email body with personalized greeting
+        String body = buildSubledgerAlertEmailBody(subledger, recipientName);
         helper.setText(body, true);
         
-        // Send email
-        mailSender.send(message);
-//        LOGGER.info("Subledger alert email sent to: {}", subledger.getMailid());
+        try {
+            // Send email
+            mailSender.send(message);
+            System.out.println("Subledger alert email sent to: " + recipientEmail);
+            
+            // SAVE SUCCESS HISTORY
+            EmailAlertHistory history = new EmailAlertHistory();
+            history.setMailTo(recipientEmail);
+            history.setAlertDate(LocalDateTime.now());
+            history.setStatus("SUCCESS");
+            history.setCreatedBy("SYSTEM");
+            history.setCreatedDate(LocalDateTime.now());
+            history.setVendorId(subledger.getVendorId() != null ? subledger.getVendorId().longValue() : null);
+            history.setVendorName(subledger.getSubledgerName());
+            history.setSalesPersonName(recipientName);
+            
+            emailAlertHistoryRepo.save(history);
+            
+        } catch (Exception e) {
+            System.err.println("Failed to send email to: " + recipientEmail);
+            
+            // SAVE FAILURE HISTORY
+            EmailAlertHistory history = new EmailAlertHistory();
+            history.setMailTo(recipientEmail);
+            history.setAlertDate(LocalDateTime.now());
+            history.setStatus("FAILED");
+            history.setErrorMessage(e.getMessage());
+            history.setCreatedBy("SYSTEM");
+            history.setCreatedDate(LocalDateTime.now());
+            history.setVendorId(subledger.getVendorId() != null ? subledger.getVendorId().longValue() : null);
+            history.setVendorName(subledger.getSubledgerName());
+            
+            emailAlertHistoryRepo.save(history);
+            
+            throw e;
+        }
+    }
+    
+    /**
+     * Send summary alert email with CC support
+     * This method properly handles names for both TO and CC recipients
+     */
+    /**
+     * Send summary alert email with CC support
+     * This method sends separate personalized emails to each CC recipient
+     */
+    public void sendSummaryAlertEmail(String toEmail, List<String> ccEmails, String subject, String emailContent) throws MessagingException {
+        
+        // First, send email to the main recipient (TO)
+        sendPersonalizedEmail(toEmail, subject, emailContent, null);
+        
+        // Then, send separate personalized emails to each CC recipient
+        if (ccEmails != null && !ccEmails.isEmpty()) {
+            for (String ccEmail : ccEmails) {
+                try {
+                    sendPersonalizedEmail(ccEmail, subject, emailContent, null);
+                    System.out.println("CC email sent to: " + ccEmail);
+                } catch (Exception e) {
+                    System.err.println("Failed to send CC email to: " + ccEmail + " - " + e.getMessage());
+                }
+            }
+        }
     }
 
-    // Add this method for summary alerts
-    public void sendSummaryAlertEmail(String toEmail, String subject, String emailContent) throws MessagingException {
+    /**
+     * Send personalized email to a single recipient
+     */
+    private void sendPersonalizedEmail(String recipientEmail, String subject, String emailContent, List<String> additionalCC) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         
+        // Extract name from recipient email
+        String recipientName = extractNameFromEmail(recipientEmail);
+        String personalizedName = (recipientName != null) ? recipientName : "User";
+        
         // Set email properties
         helper.setFrom("gjayabalan08@gmail.com");
-        helper.setTo(toEmail);
-        helper.setSubject(subject);
+        helper.setTo(recipientEmail);
+        
+        // Add additional CC if provided (for the main TO email)
+        if (additionalCC != null && !additionalCC.isEmpty()) {
+            helper.setCc(additionalCC.toArray(new String[0]));
+        }
         
         if (bccEmails != null && !bccEmails.isEmpty()) {
             helper.setBcc(bccEmails.toArray(new String[0]));
         }
         
-        helper.setText(emailContent, true);
+        helper.setSubject(subject);
         
-        // Send email
-        mailSender.send(message);
-//        LOGGER.info("Summary alert email sent to: {}", toEmail);
+        // Replace placeholders in email content
+        String personalizedContent = emailContent.replace("{TO_NAME}", personalizedName);
+        
+        // If there's a CC placeholder, remove it for individual emails
+        personalizedContent = personalizedContent.replace("{CC_NAMES}", "");
+        
+        helper.setText(personalizedContent, true);
+        
+        try {
+            // Send email
+            mailSender.send(message);
+            System.out.println("Personalized email sent to: " + recipientEmail);
+            
+            // SAVE HISTORY
+            EmailAlertHistory history = new EmailAlertHistory();
+            history.setMailTo(recipientEmail);
+            history.setCcEmails(additionalCC != null ? String.join(",", additionalCC) : null);
+            history.setAlertDate(LocalDateTime.now());
+            history.setStatus("SUCCESS");
+            history.setCreatedBy("SYSTEM");
+            history.setCreatedDate(LocalDateTime.now());
+            history.setSalesPersonName(personalizedName);
+            
+            emailAlertHistoryRepo.save(history);
+            
+        } catch (Exception e) {
+            System.err.println("Failed to send email to: " + recipientEmail);
+            
+            // SAVE FAILURE HISTORY
+            EmailAlertHistory history = new EmailAlertHistory();
+            history.setMailTo(recipientEmail);
+            history.setCcEmails(additionalCC != null ? String.join(",", additionalCC) : null);
+            history.setAlertDate(LocalDateTime.now());
+            history.setStatus("FAILED");
+            history.setErrorMessage(e.getMessage());
+            history.setCreatedBy("SYSTEM");
+            history.setCreatedDate(LocalDateTime.now());
+            
+            emailAlertHistoryRepo.save(history);
+            
+            throw e;
+        }
+    }
+
+    /**
+     * Send summary alert email with CC support (original method - modified)
+     */
+    public void sendSummaryAlertEmailWithCCList(String toEmail, List<String> ccEmails, String subject, String emailContent) throws MessagingException {
+        // Format CC emails with names for display in the main email body
+        String formattedCCEmails = formatCCEmailsWithNames(ccEmails);
+        
+        // Replace CC placeholder in email content for the main email
+        String mainEmailContent = emailContent;
+        if (formattedCCEmails != null) {
+            mainEmailContent = emailContent.replace("{CC_NAMES}", formattedCCEmails);
+        }
+        
+        // Send main email to TO recipient
+        sendPersonalizedEmail(toEmail, subject, mainEmailContent, ccEmails);
+        
+        // Send separate personalized emails to each CC recipient
+        if (ccEmails != null && !ccEmails.isEmpty()) {
+            for (String ccEmail : ccEmails) {
+                try {
+                    // For CC emails, remove CC placeholder and don't add CC list
+                    String ccEmailContent = emailContent.replace("{CC_NAMES}", "");
+                    sendPersonalizedEmail(ccEmail, subject, ccEmailContent, null);
+                    System.out.println("CC email sent to: " + ccEmail + " with name: " + extractNameFromEmail(ccEmail));
+                } catch (Exception e) {
+                    System.err.println("Failed to send CC email to: " + ccEmail + " - " + e.getMessage());
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Overloaded method for backward compatibility (without CC)
+     */
+    public void sendSummaryAlertEmail(String toEmail, String subject, String emailContent) throws MessagingException {
+        sendSummaryAlertEmail(toEmail, null, subject, emailContent);
     }
     
-    // Helper methods for EmailService
-    private String getSafeString(String value) {
-        return value != null ? value : "N/A";
-    }
-
-    private String getSafeBigDecimal(BigDecimal value) {
-        return value != null ? value.toString() : "0";
-    }
-
-    private String getSafeInteger(Integer value) {
-        return value != null ? value.toString() : "0";
-    }
-
-    private String buildSubledgerAlertEmailBody(SubledgerAlertDTO subledger) {
+    // ==================== PRIVATE HELPER METHODS ====================
+    
+    private String buildSubledgerAlertEmailBody(SubledgerAlertDTO subledger, String recipientName) {
         String priority = subledger.getPercentage().intValue() >= 90 ? "HIGH" : "MEDIUM";
         String priorityColor = subledger.getPercentage().intValue() >= 90 ? "#FF0000" : "#FFA500";
+        
+        String greeting = (recipientName != null) ? "Dear " + recipientName + "," : "Dear Customer,";
         
         return "<!DOCTYPE html>" +
                "<html>" +
@@ -135,6 +341,7 @@ public class EmailService {
                "<h1>🚨 Credit Limit Alert</h1>" +
                "</div>" +
                "<div class='content'>" +
+               "<p>" + greeting + "</p>" +
                "<div class='alert-box'>" +
                "<h2 class='priority'>" + priority + " PRIORITY ALERT</h2>" +
                "<p>Credit utilization has reached " + subledger.getPercentage() + "% for customer: <strong>" + 
@@ -143,7 +350,7 @@ public class EmailService {
                "<table class='details-table'>" +
                "<tr><td><strong>Customer Code:</strong></td><td>" + getSafeString(subledger.getSubledgerCode()) + "</td></tr>" +
                "<tr><td><strong>Customer Name:</strong></td><td>" + getSafeString(subledger.getSubledgerName()) + "</td></tr>" +
-               "<tr><td><strong>Control Office:</strong></td><td>" + getSafeString(subledger.getCategory()) + "</td></tr>" +
+               "<tr><td><strong>Category:</strong></td><td>" + getSafeString(subledger.getCategory()) + "</td></tr>" +
                "<tr><td><strong>Control Office:</strong></td><td>" + getSafeString(subledger.getCtrlOffice()) + "</td></tr>" +
                "<tr><td><strong>Salesperson:</strong></td><td>" + getSafeString(subledger.getSalesperson()) + "</td></tr>" +
                "<tr><td><strong>Credit Limit:</strong></td><td>₹" + getSafeBigDecimal(subledger.getCreditLimit()) + "</td></tr>" +
@@ -156,15 +363,30 @@ public class EmailService {
                "</body>" +
                "</html>";
     }
-
+    
+    private String getSafeString(String value) {
+        return value != null && !value.trim().isEmpty() ? value : "N/A";
+    }
+    
+    private String getSafeBigDecimal(BigDecimal value) {
+        return value != null ? value.toString() : "0";
+    }
+    
+    private String getSafeInteger(Integer value) {
+        return value != null ? value.toString() : "0";
+    }
+    
     private void sendEmailWithPdf(EmployeeAttachmentVO email) 
             throws MessagingException, IOException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         
+        String recipientEmail = email.getEmployeeEmail();
+        String recipientName = extractNameFromEmail(recipientEmail);
+        
         // Set basic email properties
         helper.setFrom("gjayabalan08@gmail.com");
-        helper.setTo(email.getEmployeeEmail());
+        helper.setTo(recipientEmail);
         helper.setSubject(email.getEmailSubject());
         
         if (bccEmails != null && !bccEmails.isEmpty()) {
@@ -172,7 +394,7 @@ public class EmailService {
         }
         
         // Build email body with preview instructions
-        String body = buildEmailBody(email);
+        String body = buildEmailBody(email, recipientName);
         helper.setText(body, true);
         
         // Attach PDF
@@ -182,15 +404,44 @@ public class EmailService {
         message.setHeader("X-Attachment-Id", "pdf_" + System.currentTimeMillis());
         message.saveChanges();
         
-        // Send email
-        mailSender.send(message);
-        
-        // Update status
-        email.setSent(true);
-        empattachRepo.save(email);
-        System.out.println("Email successfully sent to: " + email.getEmployeeEmail());
+        try {
+            // Send email
+            mailSender.send(message);
+            
+            // Update status
+            email.setSent(true);
+            empattachRepo.save(email);
+            System.out.println("Email successfully sent to: " + recipientEmail);
+            
+            // SAVE HISTORY FOR PDF EMAIL
+            EmailAlertHistory history = new EmailAlertHistory();
+            history.setMailTo(recipientEmail);
+            history.setAlertDate(LocalDateTime.now());
+            history.setStatus("SUCCESS");
+            history.setCreatedBy("SYSTEM");
+            history.setCreatedDate(LocalDateTime.now());
+            history.setVendorName(recipientName);
+            
+            emailAlertHistoryRepo.save(history);
+            
+        } catch (Exception e) {
+            System.err.println("Failed to send email to: " + recipientEmail);
+            
+            // SAVE FAILURE HISTORY
+            EmailAlertHistory history = new EmailAlertHistory();
+            history.setMailTo(recipientEmail);
+            history.setAlertDate(LocalDateTime.now());
+            history.setStatus("FAILED");
+            history.setErrorMessage(e.getMessage());
+            history.setCreatedBy("SYSTEM");
+            history.setCreatedDate(LocalDateTime.now());
+            
+            emailAlertHistoryRepo.save(history);
+            
+            throw e;
+        }
     }
-
+    
     private void attachPdf(MimeMessageHelper helper, EmployeeAttachmentVO email) 
             throws MessagingException, IOException {
         if (email.getPdfFileData() == null || email.getPdfFileData().length == 0) {
@@ -210,14 +461,12 @@ public class EmailService {
         
         // Add as attachment
         helper.addAttachment(filename, resource);
-        
-        // If you want to also add as inline (optional)
-        // helper.addInline("pdfContent", resource, "application/pdf");
     }
     
-    
-    private String buildEmailBody(EmployeeAttachmentVO email) {
-        String name = extractNameFromEmail(email.getEmployeeEmail());
+    private String buildEmailBody(EmployeeAttachmentVO email, String recipientName) {
+        String name = (recipientName != null) ? recipientName : extractNameFromEmail(email.getEmployeeEmail());
+        if (name == null) name = "User";
+        
         String content = getTextContent(email);
         
         return "<!DOCTYPE html>" +
@@ -245,106 +494,11 @@ public class EmailService {
                pdfData[2] == 0x44 && pdfData[3] == 0x46 && 
                pdfData[4] == 0x2D;
     }
-
+    
     private String getTextContent(EmployeeAttachmentVO mapping) {
         if (mapping.getTextFileData() == null || mapping.getTextFileData().length == 0) {
             return "<p>No additional notes provided.</p>";
         }
         return new String(mapping.getTextFileData(), StandardCharsets.UTF_8);
     }
-    
-    private String extractNameFromEmail(String email) {
-        String namePart = email.split("@")[0];
-        namePart = namePart.replaceAll("[^a-zA-Z0-9]", " ");
-        namePart = Arrays.stream(namePart.split(" "))
-                       .map(word -> word.isEmpty() ? "" : 
-                           Character.toUpperCase(word.charAt(0)) + word.substring(1))
-                       .reduce((a, b) -> a + " " + b).orElse("User");
-        return namePart;
-    }
-
-
-//    public String getStyledBody() {
-//        return "<!DOCTYPE html>" +
-//               "<html>" +
-//               "<head>" +
-//               "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +
-//               "<style>" +
-//               "  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');" +
-//               "</style>" +
-//               "</head>" +
-//               "<body style=\"margin:0; padding:0; font-family: 'Montserrat', Arial, sans-serif;\">" +
-//               
-//               // Main container with background image
-//               "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" bgcolor=\"#f5f7fa\" style=\"background-image: url('https://example.com/path/to/celebration-bg.jpg'); background-size: cover;\">" +
-//               "<tr>" +
-//               "<td align=\"center\" style=\"padding:40px 0;\">" +
-//               
-//               // Email container
-//               "<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" bgcolor=\"#ffffff\" style=\"border-radius:8px; overflow:hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);\">" +
-//               
-//               // Header with celebration image
-//               "<tr>" +
-//               "<td bgcolor=\"#4CAF50\" style=\"padding:40px; text-align:center; background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);\">" +
-//               "<img src=\"https://example.com/path/to/celebration-icon.png\" alt=\"Celebration\" width=\"80\" style=\"display:block; margin:0 auto 15px;\">" +
-//               "<h1 style=\"color:white; margin:0; font-size:28px; font-weight:700;\">🎉 Congratulations on Your Promotion!</h1>" +
-//               "<p style=\"color:rgba(255,255,255,0.9); margin:10px 0 0; font-size:16px; line-height:1.5;\">We recognize and appreciate your valuable contributions</p>" +
-//               "</td>" +
-//               "</tr>" +
-//               
-//               // Main content
-//               "<tr>" +
-//               "<td style=\"padding:40px;\">" +
-//               "<h2 style=\"color:#2d3748; margin-top:0; font-size:22px; font-weight:600;\">Dear {name},</h2>" +
-//               
-//               // Personal content section
-//               "<div style=\"background:#f8fafc; padding:25px; border-radius:8px; margin-bottom:25px; border-left:4px solid #4CAF50;\">" +
-//               "{personal_content}" +
-//               "</div>" +
-//               
-//               // Key details
-//               "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"margin-bottom:25px;\">" +
-//               "<tr>" +
-//               "<td width=\"50%\" valign=\"top\" style=\"padding-right:15px;\">" +
-//               "<div style=\"background:#e8f5e9; padding:15px; border-radius:6px;\">" +
-//               "<h3 style=\"color:#2E7D32; margin-top:0; font-size:16px;\">Effective Date</h3>" +
-//               "<p style=\"color:#4a5568; margin:5px 0 0;\">{effective_date}</p>" +
-//               "</div>" +
-//               "</td>" +
-//               "<td width=\"50%\" valign=\"top\" style=\"padding-left:15px;\">" +
-//               "<div style=\"background:#e8f5e9; padding:15px; border-radius:6px;\">" +
-//               "<h3 style=\"color:#2E7D32; margin-top:0; font-size:16px;\">New Position</h3>" +
-//               "<p style=\"color:#4a5568; margin:5px 0 0;\">{new_position}</p>" +
-//               "</div>" +
-//               "</td>" +
-//               "</tr>" +
-//               "</table>" +
-//               
-//               // CTA Button
-//               "<a href=\"{hr_portal_link}\" style=\"display:inline-block; background:#4CAF50; color:white; text-decoration:none; padding:12px 30px; border-radius:6px; font-weight:600; text-align:center; margin:15px 0 25px; font-size:16px;\">" +
-//               "View Details in HR Portal" +
-//               "</a>" +
-//               
-//               // Footer
-//               "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" +
-//               "<tr>" +
-//               "<td style=\"border-top:1px solid #e2e8f0; padding:25px 0 0;\">" +
-//               "<p style=\"font-size:14px; color:#718096; text-align:center; margin-bottom:5px;\">" +
-//               "Please find attached your official promotion letter" +
-//               "</p>" +
-//               "<p style=\"font-size:12px; color:#a0aec0; text-align:center; margin:0;\">" +
-//               "This is an automated notification. For questions, contact <a href=\"mailto:hr@company.com\" style=\"color:#4CAF50; text-decoration:none;\">HR Department</a>" +
-//               "</p>" +
-//               "</td>" +
-//               "</tr>" +
-//               "</table>" +
-//               "</td>" +
-//               "</tr>" +
-//               "</table>" +
-//               "</td>" +
-//               "</tr>" +
-//               "</table>" +
-//               "</body>" +
-//               "</html>";
-//    }
 }

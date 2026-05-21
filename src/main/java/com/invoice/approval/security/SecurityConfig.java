@@ -35,7 +35,7 @@ public class SecurityConfig {
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security",
 						"/api/party/**", "/swagger-ui.html", "/swagger-ui/*", "/api/auth/signup", "/api/auth/login",
 						"/api/auth/logout", "/api/auth/getRefreshToken","/api/employeemaster/**" ,"/api/PO/**" , "/api/subledgers/**" , "/api/mail/**", "/api/auth/**", "/api/InvoiceApproval/**","/api/performancegoals/**", "/api/pregoals/**","/api/HeaderDetail/**","/api/TTInvoiceApproval/**","/api/Ticket/**","/api/WHInvoiceApproval/**","/api/crpreapp/**","/api/alerts/**","/api/reports/**","/api/expense/**",
-						"/api/user/getBranchCodeByUser","/api/employeeattachment/**","/api/master/**")
+						"/api/user/getBranchCodeByUser","/api/employeeattachment/**","/api/master/**","/api/quoterates/**","/api/quote-auto-reply/**","api/email-check/**","/api/test/**","/api/outstanding/**","/api/excel/**", "/api/exportjob/**","/api/importjob/**","api/quote-auto-reply/**")
 
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
 		http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
